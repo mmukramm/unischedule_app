@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
+import 'package:unischedule_app/core/utils/keys.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSize {
   final String title;
@@ -39,7 +40,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSize {
                   BlendMode.srcIn,
                 ),
               ),
-              onPressed: () {},
+              onPressed: () => navigatorKey.currentState!.pop(),
             )
           : null,
     );

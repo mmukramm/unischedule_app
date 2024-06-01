@@ -15,8 +15,8 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        withBackButton: withBackButton,
+      appBar: const CustomAppBar(
+        withBackButton: true,
       ),
       backgroundColor: scaffoldColor,
       body: SingleChildScrollView(
