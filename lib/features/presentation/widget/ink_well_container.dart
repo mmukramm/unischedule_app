@@ -7,6 +7,7 @@ class InkWellContainer extends StatelessWidget {
   final EdgeInsetsGeometry padding;
   final EdgeInsetsGeometry margin;
   final Color? containerBackgroundColor;
+  final Color splashColor;
   final BoxBorder? border;
   final BorderRadiusGeometry? borderRadiusGeometry;
 
@@ -17,6 +18,7 @@ class InkWellContainer extends StatelessWidget {
     this.padding = const EdgeInsets.all(0),
     this.margin = const EdgeInsets.all(0),
     this.containerBackgroundColor,
+    this.splashColor = primaryColor,
     this.border,
     this.borderRadiusGeometry,
   });
@@ -34,7 +36,7 @@ class InkWellContainer extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          splashColor: primaryColor,
+          splashColor: splashColor,
           onTap: onTap,
           child: Padding(padding: padding, child: child),
         ),

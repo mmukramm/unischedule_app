@@ -10,6 +10,9 @@ ThemeData get theme {
   ).copyWith(
     scaffoldBackgroundColor: scaffoldColor,
     primaryColor: primaryColor,
+    listTileTheme: const ListTileThemeData(
+      horizontalTitleGap: 4,
+    ),
     pageTransitionsTheme: const PageTransitionsTheme(
       builders: {
         TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),

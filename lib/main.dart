@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:unischedule_app/core/theme/theme.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/features/presentation/common/splash_page.dart';
+import 'package:unischedule_app/injection_container.dart' as di;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,6 +12,8 @@ void main() {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+
+  di.init();  
 
   runApp(const MyApp());
 }

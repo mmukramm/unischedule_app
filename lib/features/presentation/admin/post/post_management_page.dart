@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:unischedule_app/core/enums/post_type.dart';
+import 'package:unischedule_app/core/extensions/context_extension.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/features/presentation/admin/post/post_detail_page.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
+import 'package:unischedule_app/features/presentation/widget/custom_selector_dialog.dart';
 import 'package:unischedule_app/features/presentation/widget/ink_well_container.dart';
 
 class PostManagementPage extends StatefulWidget {
@@ -35,7 +37,16 @@ class _PostManagementPageState extends State<PostManagementPage> {
       ),
       backgroundColor: backgroundColor,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          context.showCustomSelectorDialog(
+            title: 'Pilih Tipe',
+            message: 'Pilih tipe postingan',
+            items: [
+              SelectorDialogParams(label: 'Kegiatan', onTap: (){}),
+              SelectorDialogParams(label: 'Mading', onTap: (){}),
+            ]
+          );
+        },
         shape: const RoundedRectangleBorder(),
         backgroundColor: infoColor,
         child: SvgPicture.asset(
@@ -123,6 +134,7 @@ class _PostManagementPageState extends State<PostManagementPage> {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: 5,
+                        padding: const EdgeInsets.only(bottom: 40),
                         itemBuilder: (context, index) {
                           return InkWellContainer(
                             padding: const EdgeInsets.all(12),
