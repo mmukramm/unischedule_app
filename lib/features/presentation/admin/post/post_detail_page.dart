@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
@@ -19,6 +17,7 @@ class PostDetailPage extends StatelessWidget {
       appBar: const CustomAppBar(
         title: 'Detail Postingan',
         withBackButton: true,
+        withDeleteButton: true,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},

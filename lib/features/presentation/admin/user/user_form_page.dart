@@ -62,16 +62,16 @@ class _UserFormPageState extends State<UserFormPage> {
           child: Center(
             child: Column(
               children: [
-                Text(
-                  'Foto Profil',
-                  textAlign: TextAlign.center,
-                  style: textTheme.headlineSmall!.copyWith(
-                    color: primaryTextColor,
+                  Text(
+                    'Foto Kegiatan',
+                    textAlign: TextAlign.center,
+                    style: textTheme.headlineSmall!.copyWith(
+                      color: primaryTextColor,
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
+                  const SizedBox(
+                    height: 12,
+                  ),
                 Stack(
                   alignment: Alignment.center,
                   children: [

@@ -30,7 +30,7 @@ class ImageService {
           toolbarColor: primaryColor,
           toolbarWidgetColor: secondaryTextColor,
           activeControlsWidgetColor: primaryColor,
-          backgroundColor: secondaryTextColor,
+          backgroundColor: backgroundColor,
           hideBottomControls: true,
         ),
         IOSUiSettings(

@@ -9,8 +9,13 @@ class CustomTextField extends StatelessWidget {
   final String? labelText;
   final bool isRequired;
   final int maxLines;
+  final bool readOnly;
+  final TextInputAction textInputAction;
+  final TextCapitalization textCapitalization;
   final TextAlign labelTextAlign;
+  final TextInputType? textInputType;
   final List<String? Function(String?)>? validators;
+  final VoidCallback? onTap;
 
   const CustomTextField({
     super.key,
@@ -18,9 +23,14 @@ class CustomTextField extends StatelessWidget {
     this.labelText,
     this.isRequired = true,
     this.maxLines = 1,
+    this.readOnly = false,
+    this.textInputAction = TextInputAction.next,
+    this.textCapitalization = TextCapitalization.sentences,
     required this.hintText,
     this.labelTextAlign = TextAlign.start,
+    this.textInputType,
     this.validators,
+    this.onTap,
   });
 
   @override
@@ -45,6 +55,9 @@ class CustomTextField extends StatelessWidget {
           ),
         FormBuilderTextField(
           name: name,
+          keyboardType: textInputType,
+          textInputAction: textInputAction,
+          textCapitalization: textCapitalization,
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: textTheme.bodyMedium!.copyWith(
@@ -57,9 +70,11 @@ class CustomTextField extends StatelessWidget {
           ),
           cursorColor: secondaryTextColor,
           maxLines: maxLines,
+          readOnly: readOnly,
           validator: validators != null
               ? FormBuilderValidators.compose(validators!)
               : null,
+          onTap: onTap,
         ),
       ],
     );

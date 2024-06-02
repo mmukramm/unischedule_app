@@ -8,11 +8,15 @@ import 'package:unischedule_app/core/utils/keys.dart';
 class CustomAppBar extends StatelessWidget implements PreferredSize {
   final String title;
   final bool withBackButton;
+  final bool withDeleteButton;
+  final VoidCallback? onTapDeleteButton;
 
   const CustomAppBar({
     super.key,
     this.title = "UNISCHEDULE",
     this.withBackButton = false,
+    this.withDeleteButton = false,
+    this.onTapDeleteButton,
   });
 
   @override
@@ -29,6 +33,29 @@ class CustomAppBar extends StatelessWidget implements PreferredSize {
       backgroundColor: primaryColor,
       centerTitle: true,
       elevation: 0,
+      actions: [
+        withDeleteButton
+            ? Padding(
+                padding: const EdgeInsets.only(right: 12),
+                child: IconButton(
+                  style: IconButton.styleFrom(
+                    backgroundColor: dangerColor,
+                    shape: const RoundedRectangleBorder(),
+                  ),
+                  icon: SvgPicture.asset(
+                    width: 32,
+                    height: 32,
+                    AssetPath.getIcons('trash-can.svg'),
+                    colorFilter: const ColorFilter.mode(
+                      scaffoldColor,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  onPressed: () => onTapDeleteButton,
+                ),
+              )
+            : const SizedBox(),
+      ],
       leading: withBackButton
           ? IconButton(
               icon: SvgPicture.asset(
@@ -50,5 +77,5 @@ class CustomAppBar extends StatelessWidget implements PreferredSize {
   Widget get child => const SizedBox();
 
   @override
-  Size get preferredSize => const Size.fromHeight(80);
+  Size get preferredSize => const Size.fromHeight(92);
 }

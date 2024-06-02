@@ -1,3 +1,4 @@
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:unischedule_app/core/theme/theme.dart';
@@ -13,7 +14,7 @@ void main() {
     DeviceOrientation.portraitDown,
   ]);
 
-  di.init();  
+  di.init();
 
   runApp(const MyApp());
 }
@@ -28,6 +29,19 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
       theme: theme,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+        child: child!,
+      ),
+      supportedLocales: const [
+        Locale('en', 'US'), // English
+        Locale('id', 'ID'), // Indonesia
+      ],
       home: const SplashPage(),
     );
   }

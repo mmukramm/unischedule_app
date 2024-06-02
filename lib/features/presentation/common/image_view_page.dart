@@ -27,13 +27,14 @@ class ImageViewPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: FileImage(File(imagePath!)),
+                      fit: BoxFit.contain,
                     ),
                   ),
                 )
               : Image.asset(
                   AssetPath.getImages('sample.png'),
                   width: double.infinity,
-                  fit: BoxFit.fitWidth,
+                  fit: BoxFit.contain,
                 ),
         ),
       ),

@@ -7,9 +7,9 @@ import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/features/presentation/admin/post/post_detail_page.dart';
+import 'package:unischedule_app/features/presentation/admin/post/post_form_page.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_selector_dialog.dart';
-import 'package:unischedule_app/features/presentation/widget/ink_well_container.dart';
 
 class PostManagementPage extends StatefulWidget {
   const PostManagementPage({super.key});
@@ -20,12 +20,14 @@ class PostManagementPage extends StatefulWidget {
 
 class _PostManagementPageState extends State<PostManagementPage> {
   late final ValueNotifier<PostType> postType;
+  late final ValueNotifier<String> eventStatus;
 
   @override
   void initState() {
     super.initState();
 
     postType = ValueNotifier(PostType.all);
+    eventStatus = ValueNotifier('Aktif');
   }
 
   @override
@@ -42,9 +44,31 @@ class _PostManagementPageState extends State<PostManagementPage> {
             title: 'Pilih Tipe',
             message: 'Pilih tipe postingan',
             items: [
-              SelectorDialogParams(label: 'Kegiatan', onTap: (){}),
-              SelectorDialogParams(label: 'Mading', onTap: (){}),
-            ]
+              SelectorDialogParams(
+                label: 'Kegiatan',
+                onTap: () {
+                  navigatorKey.currentState!.pop();
+                  navigatorKey.currentState!.push(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          const PostFormPage(isMagz: false, isEdit: false),
+                    ),
+                  );
+                },
+              ),
+              SelectorDialogParams(
+                label: 'Mading',
+                onTap: () {
+                  navigatorKey.currentState!.pop();
+                  navigatorKey.currentState!.push(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          const PostFormPage(isMagz: true, isEdit: false),
+                    ),
+                  );
+                },
+              ),
+            ],
           );
         },
         shape: const RoundedRectangleBorder(),
@@ -68,7 +92,7 @@ class _PostManagementPageState extends State<PostManagementPage> {
               ),
               ValueListenableBuilder(
                 valueListenable: postType,
-                builder: (context, value, child) {
+                builder: (context, value, _) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -80,7 +104,7 @@ class _PostManagementPageState extends State<PostManagementPage> {
                           ),
                           foregroundColor: scaffoldColor,
                           selectedBackgroundColor: scaffoldColor,
-                          backgroundColor: backgroundColor,
+                          backgroundColor: highlightTextColor,
                         ),
                         segments: const [
                           ButtonSegment(
@@ -105,28 +129,36 @@ class _PostManagementPageState extends State<PostManagementPage> {
                       const SizedBox(
                         height: 16,
                       ),
-                      DropdownButton(
-                        underline: const Divider(
-                          thickness: 2,
-                          height: 0,
-                          color: primaryColor,
-                        ),
-                        items: const [
-                          DropdownMenuItem(
-                            value: "Aktif",
-                            child: Text("Aktif"),
-                          ),
-                          DropdownMenuItem(
-                            value: "Riwayat",
-                            child: Text("Riwayat"),
-                          ),
-                        ],
-                        value: "Aktif",
-                        onChanged: (value) {},
-                        dropdownColor: primaryColor,
-                        borderRadius: BorderRadius.circular(12),
-                        isExpanded: true,
-                      ),
+                      value == PostType.event ?
+                      ValueListenableBuilder(
+                        valueListenable: eventStatus,
+                        builder: (context, value, _) {
+                          return DropdownButton(
+                            underline: const Divider(
+                              thickness: 2,
+                              height: 0,
+                              color: primaryColor,
+                            ),
+                            items: const [
+                              DropdownMenuItem(
+                                value: "Aktif",
+                                child: Text("Aktif"),
+                              ),
+                              DropdownMenuItem(
+                                value: "Riwayat",
+                                child: Text("Riwayat"),
+                              ),
+                            ],
+                            value: value,
+                            onChanged: (result) {
+                              eventStatus.value = result!;
+                            },
+                            dropdownColor: primaryColor,
+                            borderRadius: BorderRadius.circular(12),
+                            isExpanded: true,
+                          );
+                        },
+                      ) : const SizedBox(),
                       const SizedBox(
                         height: 24,
                       ),
@@ -136,10 +168,10 @@ class _PostManagementPageState extends State<PostManagementPage> {
                         itemCount: 5,
                         padding: const EdgeInsets.only(bottom: 40),
                         itemBuilder: (context, index) {
-                          return InkWellContainer(
+                          return Container(
                             padding: const EdgeInsets.all(12),
                             margin: const EdgeInsets.only(bottom: 12),
-                            containerBackgroundColor: scaffoldColor,
+                            color: scaffoldColor,
                             child: Column(
                               children: [
                                 Image.asset(
