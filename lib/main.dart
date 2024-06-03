@@ -1,10 +1,13 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:unischedule_app/core/theme/theme.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
+import 'package:unischedule_app/features/presentation/bloc/countdown/count_down_cubit.dart';
 import 'package:unischedule_app/features/presentation/common/splash_page.dart';
 import 'package:unischedule_app/injection_container.dart' as di;
+import 'package:unischedule_app/injection_container.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,25 +27,32 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      navigatorKey: navigatorKey,
-      theme: theme,
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => getIt<CountDownCubit>(),
+        ),
       ],
-      builder: (context, child) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-        child: child!,
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        navigatorKey: navigatorKey,
+        theme: theme,
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+          child: child!,
+        ),
+        supportedLocales: const [
+          Locale('en', 'US'), // English
+          Locale('id', 'ID'), // Indonesia
+        ],
+        home: const SplashPage(),
       ),
-      supportedLocales: const [
-        Locale('en', 'US'), // English
-        Locale('id', 'ID'), // Indonesia
-      ],
-      home: const SplashPage(),
     );
   }
 }

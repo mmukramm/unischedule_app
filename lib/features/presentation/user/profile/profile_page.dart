@@ -3,6 +3,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
+import 'package:unischedule_app/core/utils/keys.dart';
+import 'package:unischedule_app/features/presentation/common/login_page.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -15,8 +17,8 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        withBackButton: true,
+      appBar: CustomAppBar(
+        withBackButton: withBackButton,
       ),
       backgroundColor: scaffoldColor,
       body: SingleChildScrollView(
@@ -137,7 +139,11 @@ class ProfilePage extends StatelessWidget {
                         padding: EdgeInsets.zero,
                         backgroundColor: Colors.transparent,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        navigatorKey.currentState!.push(
+                          MaterialPageRoute(builder: (_) => const LoginPage()),
+                        );
+                      },
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [

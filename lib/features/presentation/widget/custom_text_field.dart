@@ -10,9 +10,11 @@ class CustomTextField extends StatelessWidget {
   final bool isRequired;
   final int maxLines;
   final bool readOnly;
+  final Widget? prefixIcon;
   final TextInputAction textInputAction;
   final TextCapitalization textCapitalization;
   final TextAlign labelTextAlign;
+  final TextAlign textAlign;
   final TextInputType? textInputType;
   final List<String? Function(String?)>? validators;
   final VoidCallback? onTap;
@@ -24,10 +26,12 @@ class CustomTextField extends StatelessWidget {
     this.isRequired = true,
     this.maxLines = 1,
     this.readOnly = false,
+    this.prefixIcon,
     this.textInputAction = TextInputAction.next,
     this.textCapitalization = TextCapitalization.sentences,
     required this.hintText,
     this.labelTextAlign = TextAlign.start,
+    this.textAlign = TextAlign.start,
     this.textInputType,
     this.validators,
     this.onTap,
@@ -58,12 +62,20 @@ class CustomTextField extends StatelessWidget {
           keyboardType: textInputType,
           textInputAction: textInputAction,
           textCapitalization: textCapitalization,
+          textAlign: textAlign,
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: textTheme.bodyMedium!.copyWith(
               color: highlightTextColor,
+              
             ),
-            contentPadding: const EdgeInsets.fromLTRB(4, 0, 4, 4),
+            contentPadding: const EdgeInsets.fromLTRB(4, 12, 4, 4),
+            prefixIcon: prefixIcon != null
+                ? Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: prefixIcon,
+                  )
+                : null,
           ),
           style: textTheme.bodyMedium!.copyWith(
             color: primaryTextColor,

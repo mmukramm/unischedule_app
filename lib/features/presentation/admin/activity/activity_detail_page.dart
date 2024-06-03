@@ -4,12 +4,12 @@ import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
-import 'package:unischedule_app/features/presentation/admin/post/event_participant_page.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/event_participant_page.dart';
 import 'package:unischedule_app/features/presentation/common/image_view_page.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 
-class PostDetailPage extends StatelessWidget {
-  const PostDetailPage({super.key});
+class ActivityDetailPage extends StatelessWidget {
+  const ActivityDetailPage({super.key});
 
   @override
   Widget build(BuildContext context) {

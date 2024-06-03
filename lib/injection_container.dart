@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:unischedule_app/features/presentation/bloc/countdown/count_down_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -11,19 +12,13 @@ Future<void> init() async {
 }
 
 void initBlocs() {
-
+  getIt.registerFactory(() => CountDownCubit());
 }
 
-void initUseCases() {
-}
+void initUseCases() {}
 
-void initRepositories() {
-}
+void initRepositories() {}
 
-void initDataSources() {
+void initDataSources() {}
 
-}
-
-Future<void> initExternal() async {
-
-}
+Future<void> initExternal() async {}

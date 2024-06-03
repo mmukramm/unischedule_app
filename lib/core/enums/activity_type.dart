@@ -1,3 +1,3 @@
-enum PostType {
+enum ActivityType {
   all, event, magz
 }

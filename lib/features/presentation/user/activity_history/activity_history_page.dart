@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
-import 'package:unischedule_app/core/utils/asset_path.dart';
+import 'package:unischedule_app/features/presentation/widget/activity_item.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 
 class ActivityHistoryPage extends StatelessWidget {
@@ -58,7 +58,7 @@ class ActivityHistoryPage extends StatelessWidget {
               height: 24,
             ),
             Text(
-              "History Kegiatan Yang Telah Diikuti",
+              "Kegiatan Yang Telah Diikuti",
               textAlign: TextAlign.center,
               style: textTheme.displaySmall!,
             ),
@@ -76,32 +76,8 @@ class ActivityHistoryPage extends StatelessWidget {
                   (index) => StaggeredGridTile.count(
                     crossAxisCellCount: 4,
                     mainAxisCellCount: 6,
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: const BoxDecoration(
-                        color: scaffoldColor,
-                      ),
-                      child: Column(
-                        children: [
-                          Image.asset(
-                            AssetPath.getImages("sample.png"),
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
-                          const SizedBox(
-                            height: 12,
-                          ),
-                          Text(
-                            "Kampus Merdeka Belajar Kampus Merdeka (MBKM) Program Kompetisi Kampus Merdeka (PKKM) 2023",
-                            maxLines: 4,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                            style: textTheme.titleSmall!.copyWith(
-                              color: primaryTextColor,
-                            ),
-                          )
-                        ],
-                      ),
+                    child: ActivityItem(
+                      data: data[index],
                     ),
                   ),
                 ),

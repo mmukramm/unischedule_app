@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
@@ -82,10 +83,13 @@ class ActivityPage extends StatelessWidget {
                       ),
                       child: Column(
                         children: [
-                          Image.asset(
-                            AssetPath.getImages("sample.png"),
-                            width: double.infinity,
-                            fit: BoxFit.cover,
+                          AspectRatio(
+                            aspectRatio: 12 / 11,
+                            child: Image.asset(
+                              AssetPath.getImages("sample.png"),
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                           const SizedBox(
                             height: 12,
@@ -104,39 +108,6 @@ class ActivityPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                // [
-                //   StaggeredGridTile.count(
-                //     crossAxisCellCount: 4,
-                //     mainAxisCellCount: 6,
-                //     child: Container(
-                //       padding: const EdgeInsets.all(8),
-                //       decoration: const BoxDecoration(
-                //         color: scaffoldColor,
-                //       ),
-                //       child: Column(
-                //         children: [
-                //           Image.asset(
-                //             AssetPath.getImages("sample.png"),
-                //             width: double.infinity,
-                //             fit: BoxFit.cover,
-                //           ),
-                //           const SizedBox(
-                //             height: 12,
-                //           ),
-                //           Text(
-                //             "Kampus Merdeka Belajar Kampus Merdeka (MBKM) Program Kompetisi Kampus Merdeka (PKKM) 2023",
-                //             maxLines: 4,
-                //             overflow: TextOverflow.ellipsis,
-                //             textAlign: TextAlign.center,
-                //             style: textTheme.titleSmall!.copyWith(
-                //               color: primaryTextColor,
-                //             ),
-                //           )
-                //         ],
-                //       ),
-                //     ),
-                //   ),
-                // ],
               ),
             ),
           ],

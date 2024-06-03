@@ -5,7 +5,7 @@ import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
-import 'package:unischedule_app/features/presentation/admin/post/post_management_page.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/activity_management_page.dart';
 import 'package:unischedule_app/features/presentation/admin/user/user_management_page.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 import 'package:unischedule_app/features/presentation/widget/ink_well_container.dart';
@@ -152,7 +152,7 @@ class HomePage extends StatelessWidget {
                     containerBackgroundColor: scaffoldColor,
                     onTap: () => navigatorKey.currentState!.push(
                       MaterialPageRoute(
-                        builder: (context) => const PostManagementPage(),
+                        builder: (context) => const ActivityManagementPage(),
                       ),
                     ),
                     child: Column(
@@ -170,7 +170,7 @@ class HomePage extends StatelessWidget {
                           height: 12,
                         ),
                         Text(
-                          "Kelola Postingan",
+                          "Kelola Aktivitas",
                           style: textTheme.titleLarge!.copyWith(
                             color: primaryTextColor,
                           ),

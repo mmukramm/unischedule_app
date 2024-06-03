@@ -48,6 +48,13 @@ class _UserFormPageState extends State<UserFormPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    genderType.dispose();
+    imagePath.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
@@ -62,16 +69,16 @@ class _UserFormPageState extends State<UserFormPage> {
           child: Center(
             child: Column(
               children: [
-                  Text(
-                    'Foto Kegiatan',
-                    textAlign: TextAlign.center,
-                    style: textTheme.headlineSmall!.copyWith(
-                      color: primaryTextColor,
-                    ),
+                Text(
+                  'Foto Kegiatan',
+                  textAlign: TextAlign.center,
+                  style: textTheme.headlineSmall!.copyWith(
+                    color: primaryTextColor,
                   ),
-                  const SizedBox(
-                    height: 12,
-                  ),
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
                 Stack(
                   alignment: Alignment.center,
                   children: [

@@ -17,20 +17,20 @@ import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart
 import 'package:unischedule_app/features/presentation/widget/custom_text_field.dart';
 import 'package:unischedule_app/features/presentation/widget/ink_well_container.dart';
 
-class PostFormPage extends StatefulWidget {
+class ActivityFormPage extends StatefulWidget {
   final bool isMagz;
   final bool isEdit;
-  const PostFormPage({
+  const ActivityFormPage({
     super.key,
     required this.isMagz,
     required this.isEdit,
   });
 
   @override
-  State<PostFormPage> createState() => _PostFormPageState();
+  State<ActivityFormPage> createState() => ActivityFormPageState();
 }
 
-class _PostFormPageState extends State<PostFormPage> {
+class ActivityFormPageState extends State<ActivityFormPage> {
   final formKey = GlobalKey<FormBuilderState>();
   late final ValueNotifier<String?> postImagePath;
   late DateTime dateTime;
@@ -41,6 +41,13 @@ class _PostFormPageState extends State<PostFormPage> {
 
     postImagePath = ValueNotifier(null);
     dateTime = DateTime.now();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    postImagePath.dispose();
   }
 
   @override

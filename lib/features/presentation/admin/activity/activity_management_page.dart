@@ -1,33 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:unischedule_app/core/enums/post_type.dart';
+import 'package:unischedule_app/core/enums/activity_type.dart';
 import 'package:unischedule_app/core/extensions/context_extension.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
-import 'package:unischedule_app/features/presentation/admin/post/post_detail_page.dart';
-import 'package:unischedule_app/features/presentation/admin/post/post_form_page.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/activity_detail_page.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/activity_form_page.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_selector_dialog.dart';
 
-class PostManagementPage extends StatefulWidget {
-  const PostManagementPage({super.key});
+class ActivityManagementPage extends StatefulWidget {
+  const ActivityManagementPage({super.key});
 
   @override
-  State<PostManagementPage> createState() => _PostManagementPageState();
+  State<ActivityManagementPage> createState() => ActivityManagementPageState();
 }
 
-class _PostManagementPageState extends State<PostManagementPage> {
-  late final ValueNotifier<PostType> postType;
+class ActivityManagementPageState extends State<ActivityManagementPage> {
+  late final ValueNotifier<ActivityType> activityType;
   late final ValueNotifier<String> eventStatus;
 
   @override
   void initState() {
     super.initState();
 
-    postType = ValueNotifier(PostType.all);
+    activityType = ValueNotifier(ActivityType.all);
     eventStatus = ValueNotifier('Aktif');
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    activityType.dispose();
+    eventStatus.dispose();
   }
 
   @override
@@ -51,7 +59,7 @@ class _PostManagementPageState extends State<PostManagementPage> {
                   navigatorKey.currentState!.push(
                     MaterialPageRoute(
                       builder: (_) =>
-                          const PostFormPage(isMagz: false, isEdit: false),
+                          const ActivityFormPage(isMagz: false, isEdit: false),
                     ),
                   );
                 },
@@ -62,8 +70,10 @@ class _PostManagementPageState extends State<PostManagementPage> {
                   navigatorKey.currentState!.pop();
                   navigatorKey.currentState!.push(
                     MaterialPageRoute(
-                      builder: (_) =>
-                          const PostFormPage(isMagz: true, isEdit: false),
+                      builder: (_) => const ActivityFormPage(
+                        isMagz: true,
+                        isEdit: false,
+                      ),
                     ),
                   );
                 },
@@ -91,12 +101,12 @@ class _PostManagementPageState extends State<PostManagementPage> {
                 height: 24,
               ),
               ValueListenableBuilder(
-                valueListenable: postType,
+                valueListenable: activityType,
                 builder: (context, value, _) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      SegmentedButton<PostType>(
+                      SegmentedButton<ActivityType>(
                         style: SegmentedButton.styleFrom(
                           side: const BorderSide(color: primaryColor),
                           shape: RoundedRectangleBorder(
@@ -108,57 +118,58 @@ class _PostManagementPageState extends State<PostManagementPage> {
                         ),
                         segments: const [
                           ButtonSegment(
-                            value: PostType.all,
+                            value: ActivityType.all,
                             label: Text("Semua"),
                           ),
                           ButtonSegment(
-                            value: PostType.event,
+                            value: ActivityType.event,
                             label: Text("Kegiatan"),
                           ),
                           ButtonSegment(
-                            value: PostType.magz,
+                            value: ActivityType.magz,
                             label: Text("Mading"),
                           ),
                         ],
                         selected: {value},
                         showSelectedIcon: false,
                         onSelectionChanged: (selection) {
-                          postType.value = selection.first;
+                          activityType.value = selection.first;
                         },
                       ),
                       const SizedBox(
                         height: 16,
                       ),
-                      value == PostType.event ?
-                      ValueListenableBuilder(
-                        valueListenable: eventStatus,
-                        builder: (context, value, _) {
-                          return DropdownButton(
-                            underline: const Divider(
-                              thickness: 2,
-                              height: 0,
-                              color: primaryColor,
-                            ),
-                            items: const [
-                              DropdownMenuItem(
-                                value: "Aktif",
-                                child: Text("Aktif"),
-                              ),
-                              DropdownMenuItem(
-                                value: "Riwayat",
-                                child: Text("Riwayat"),
-                              ),
-                            ],
-                            value: value,
-                            onChanged: (result) {
-                              eventStatus.value = result!;
-                            },
-                            dropdownColor: primaryColor,
-                            borderRadius: BorderRadius.circular(12),
-                            isExpanded: true,
-                          );
-                        },
-                      ) : const SizedBox(),
+                      value == ActivityType.event
+                          ? ValueListenableBuilder(
+                              valueListenable: eventStatus,
+                              builder: (context, value, _) {
+                                return DropdownButton(
+                                  underline: const Divider(
+                                    thickness: 2,
+                                    height: 0,
+                                    color: primaryColor,
+                                  ),
+                                  items: const [
+                                    DropdownMenuItem(
+                                      value: "Aktif",
+                                      child: Text("Aktif"),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: "Riwayat",
+                                      child: Text("Riwayat"),
+                                    ),
+                                  ],
+                                  value: value,
+                                  onChanged: (result) {
+                                    eventStatus.value = result!;
+                                  },
+                                  dropdownColor: primaryColor,
+                                  borderRadius: BorderRadius.circular(12),
+                                  isExpanded: true,
+                                );
+                              },
+                            )
+                          : const SizedBox(),
                       const SizedBox(
                         height: 24,
                       ),
@@ -263,7 +274,8 @@ class _PostManagementPageState extends State<PostManagementPage> {
                                     onPressed: () =>
                                         navigatorKey.currentState!.push(
                                       MaterialPageRoute(
-                                        builder: (_) => const PostDetailPage(),
+                                        builder: (_) =>
+                                            const ActivityDetailPage(),
                                       ),
                                     ),
                                     style: FilledButton.styleFrom(
