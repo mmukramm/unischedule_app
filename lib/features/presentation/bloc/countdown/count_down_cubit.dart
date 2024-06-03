@@ -4,8 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CountDownCubit extends Cubit<int> {
   Timer? _timer;
-  final int second;
-  CountDownCubit({this.second = 60}) : super(second);
+  CountDownCubit() : super(125);
 
   void startCountDown({
     int second = 125,
