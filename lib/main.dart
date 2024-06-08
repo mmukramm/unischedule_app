@@ -3,13 +3,15 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:unischedule_app/core/theme/theme.dart';
+import 'package:unischedule_app/core/utils/credential_saver.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/features/presentation/bloc/countdown/count_down_cubit.dart';
+import 'package:unischedule_app/features/presentation/bloc/sign_in/sign_in_cubit.dart';
 import 'package:unischedule_app/features/presentation/common/splash_page.dart';
 import 'package:unischedule_app/injection_container.dart' as di;
 import 'package:unischedule_app/injection_container.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   SystemChrome.setPreferredOrientations([
@@ -17,7 +19,9 @@ void main() {
     DeviceOrientation.portraitDown,
   ]);
 
-  di.init();
+  await di.init();
+
+  await CredentialSaver.init();
 
   runApp(const MyApp());
 }
@@ -32,11 +36,15 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (_) => getIt<CountDownCubit>(),
         ),
+        BlocProvider(
+          create: (_) => getIt<SignInCubit>(),
+        ),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,
         navigatorKey: navigatorKey,
+        scaffoldMessengerKey: scaffoldMessengerKey,
         theme: theme,
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,

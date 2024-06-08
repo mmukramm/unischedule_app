@@ -416,8 +416,6 @@ class ActivityFormPageState extends State<ActivityFormPage> {
             colorScheme: colorScheme.copyWith(
               primary: secondaryTextColor,
               onPrimary: primaryColor,
-              background: scaffoldColor,
-              onBackground: secondaryTextColor,
               surface: scaffoldColor,
               onSurface: primaryTextColor,
             ),
