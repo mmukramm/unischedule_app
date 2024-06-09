@@ -4,15 +4,18 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:unischedule_app/core/enums/snack_bar_type.dart';
+import 'package:unischedule_app/core/env/env.dart';
 import 'package:unischedule_app/core/extensions/context_extension.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
 import 'package:unischedule_app/core/utils/const.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
+import 'package:unischedule_app/features/presentation/admin/home_page.dart';
 import 'package:unischedule_app/features/presentation/bloc/sign_in/sign_in_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/sign_in/sign_in_state.dart';
 import 'package:unischedule_app/features/presentation/common/register_page.dart';
+import 'package:unischedule_app/features/presentation/user/user_main_menu.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_password_text_field.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_text_field.dart';
@@ -44,13 +47,47 @@ class _LoginPageState extends State<LoginPage> {
 
         if (state.isFailure) {
           if (state.message == kNoInternetConnection) {
+            navigatorKey.currentState!.pop();
             context.showCustomSnackbar(
               message: 'Pastikan perangkat tidak terhubung ke internet',
               type: SnackBarType.error,
             );
           } else {
-            context.showCustomSnackbar(message: state.message!);
+            navigatorKey.currentState!.pop();
+            context.showCustomSnackbar(
+              message: state.message!,
+              type: SnackBarType.error,
+            );
           }
+        }
+
+        if (state.isSuccess) {
+          navigatorKey.currentState!.pop();
+          context.showCustomSnackbar(
+            message: 'Anda berhasil login',
+            type: SnackBarType.success,
+          );
+          signInCubit.userInfo();
+        }
+
+        if (state.isAdmin) {
+          navigatorKey.currentState!.pop();
+          navigatorKey.currentState!.pop();
+          navigatorKey.currentState!.pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => const HomePage(),
+            ),
+          );
+        }
+
+        if (state.isUser) {
+          navigatorKey.currentState!.pop();
+          navigatorKey.currentState!.pop();
+          navigatorKey.currentState!.pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => const UserMainMenu(),
+            ),
+          );
         }
       },
       child: Scaffold(
@@ -121,8 +158,10 @@ class _LoginPageState extends State<LoginPage> {
                   width: double.infinity,
                   child: FilledButton(
                     onPressed: () {
+                      debugPrint(Env.baseUrl);
                       if (formKey.currentState!.saveAndValidate()) {
                         final value = formKey.currentState!.value;
+                        signInCubit.signIn(value);
                       }
                     },
                     style: FilledButton.styleFrom(

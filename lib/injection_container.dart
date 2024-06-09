@@ -1,12 +1,18 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:unischedule_app/core/env/env.dart';
 import 'package:unischedule_app/features/data/datasources/auth_datasources.dart';
 import 'package:unischedule_app/features/data/datasources/auth_preferences_helper.dart';
 import 'package:unischedule_app/features/data/repositories/auth_repository_impl.dart';
 import 'package:unischedule_app/features/domain/repositories/auth_repository.dart';
+import 'package:unischedule_app/features/domain/usecases/delete_access_token.dart';
+import 'package:unischedule_app/features/domain/usecases/get_user_info.dart';
 import 'package:unischedule_app/features/domain/usecases/post_sign_in.dart';
+import 'package:unischedule_app/features/domain/usecases/post_sign_up.dart';
 import 'package:unischedule_app/features/presentation/bloc/countdown/count_down_cubit.dart';
+import 'package:unischedule_app/features/presentation/bloc/is_sign_in/is_sign_in_cubit.dart';
+import 'package:unischedule_app/features/presentation/bloc/profile/profile_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/sign_in/sign_in_cubit.dart';
 
 final getIt = GetIt.instance;
@@ -21,16 +27,30 @@ Future<void> init() async {
 
 void initBlocs() {
   getIt.registerFactory(() => CountDownCubit());
-  getIt.registerFactory(() => SignInCubit(
-        getIt(),
-      ));
+  getIt.registerFactory(
+    () => SignInCubit(getIt(), getIt()),
+  );
+  getIt.registerFactory(
+    () => IsSignInCubit(getIt()),
+  );
+  getIt.registerFactory(
+    () => ProfileCubit(getIt(), getIt()),
+  );
 }
 
 void initUseCases() {
   getIt.registerLazySingleton(
     () => PostSignIn(getIt()),
   );
-  
+  getIt.registerLazySingleton(
+    () => GetUserInfo(getIt()),
+  );
+  getIt.registerLazySingleton(
+    () => DeleteAccessToken(getIt()),
+  );
+  getIt.registerLazySingleton(
+    () => PostSignUp(getIt()),
+  );
 }
 
 void initRepositories() {
@@ -44,7 +64,7 @@ void initRepositories() {
 
 void initDataSources() {
   getIt.registerLazySingleton(
-    () => AuthDataSource(getIt()),
+    () => AuthDataSource(getIt(), baseUrl: Env.baseUrl),
   );
 
   getIt.registerLazySingleton<AuthPreferencesHelper>(

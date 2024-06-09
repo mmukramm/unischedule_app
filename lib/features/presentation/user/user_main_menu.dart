@@ -24,7 +24,9 @@ class _UserMainMenuState extends State<UserMainMenu> {
     pages = [
       const ActivityPage(),
       const ActivityHistoryPage(),
-      const ProfilePage(),
+      const ProfilePage(
+        withBackButton: false,
+      ),
     ];
 
     _currentIndexMenu = 0;
@@ -59,7 +61,8 @@ class _UserMainMenuState extends State<UserMainMenu> {
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(100),
-                  color: _currentIndexMenu == 0 ? primaryColor : backgroundColor,
+                  color:
+                      _currentIndexMenu == 0 ? primaryColor : backgroundColor,
                 ),
                 child: SvgPicture.asset(
                   colorFilter: ColorFilter.mode(
@@ -81,7 +84,8 @@ class _UserMainMenuState extends State<UserMainMenu> {
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(100),
-                  color: _currentIndexMenu == 1 ? primaryColor : backgroundColor,
+                  color:
+                      _currentIndexMenu == 1 ? primaryColor : backgroundColor,
                 ),
                 child: SvgPicture.asset(
                   colorFilter: ColorFilter.mode(
@@ -102,7 +106,8 @@ class _UserMainMenuState extends State<UserMainMenu> {
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(100),
-                  color: _currentIndexMenu == 2 ? primaryColor : backgroundColor,
+                  color:
+                      _currentIndexMenu == 2 ? primaryColor : backgroundColor,
                 ),
                 child: SvgPicture.asset(
                   colorFilter: ColorFilter.mode(

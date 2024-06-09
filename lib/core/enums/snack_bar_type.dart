@@ -5,7 +5,7 @@ import 'package:unischedule_app/core/theme/colors.dart';
 enum SnackBarType {
   primary(scaffoldColor, primaryColor),
   error(scaffoldColor, dangerColor),
-  success(scaffoldColor, infoColor);
+  success(scaffoldColor, successColor);
 
   final Color textColor;
   final Color backgroundColor;

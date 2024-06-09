@@ -7,6 +7,7 @@ import 'package:unischedule_app/core/utils/asset_path.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/features/presentation/admin/activity/activity_management_page.dart';
 import 'package:unischedule_app/features/presentation/admin/user/user_management_page.dart';
+import 'package:unischedule_app/features/presentation/user/profile/profile_page.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 import 'package:unischedule_app/features/presentation/widget/ink_well_container.dart';
 
@@ -16,7 +17,9 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(),
+      appBar: const CustomAppBar(
+        withBackButton: false,
+      ),
       backgroundColor: backgroundColor,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -37,25 +40,34 @@ class HomePage extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    width: 72,
-                    height: 72,
-                    decoration: BoxDecoration(
-                      color: secondaryTextColor,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        width: 2,
-                        color: primaryColor,
+                  InkWell(
+                    onTap: () => navigatorKey.currentState!.push(
+                      MaterialPageRoute(
+                        builder: (_) => const ProfilePage(
+                          withBackButton: true,
+                        ),
                       ),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: SvgPicture.asset(
-                        width: 80,
-                        AssetPath.getIcons('user.svg'),
-                        colorFilter: const ColorFilter.mode(
-                          primaryColor,
-                          BlendMode.srcIn,
+                    child: Container(
+                      width: 72,
+                      height: 72,
+                      decoration: BoxDecoration(
+                        color: secondaryTextColor,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          width: 2,
+                          color: primaryColor,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: SvgPicture.asset(
+                          width: 80,
+                          AssetPath.getIcons('user.svg'),
+                          colorFilter: const ColorFilter.mode(
+                            primaryColor,
+                            BlendMode.srcIn,
+                          ),
                         ),
                       ),
                     ),

@@ -6,7 +6,7 @@ import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
-import 'package:unischedule_app/features/presentation/user/user_main_menu.dart';
+import 'package:unischedule_app/features/presentation/common/wrapper.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -60,7 +60,7 @@ class _SplashPageState extends State<SplashPage>
       () {
         navigatorKey.currentState!.pushReplacement(
           MaterialPageRoute(
-            builder: (context) => const UserMainMenu(),
+            builder: (context) => const Wrapper(),
           ),
         );
       },

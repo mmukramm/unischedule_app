@@ -50,7 +50,9 @@ class ActivityPage extends StatelessWidget {
     ];
 
     return Scaffold(
-      appBar: const CustomAppBar(),
+      appBar: const CustomAppBar(
+        withBackButton: false,
+      ),
       backgroundColor: backgroundColor,
       body: SingleChildScrollView(
         child: Column(

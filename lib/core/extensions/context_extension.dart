@@ -6,12 +6,10 @@ import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_selector_dialog.dart';
 import 'package:unischedule_app/features/presentation/widget/loading.dart';
 
-
 extension CustomSnackBarExtension on BuildContext {
   showCustomSnackbar({
     required String message,
     Color backgroundColor = primaryColor,
-    Color textColor = scaffoldColor,
     SnackBarType type = SnackBarType.primary,
   }) {
     final snackBar = SnackBar(
@@ -59,4 +57,3 @@ extension CustomDialogExtension on BuildContext {
     );
   }
 }
-

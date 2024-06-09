@@ -4,6 +4,9 @@ class SignInState<T> {
   final bool isFailure;
   final bool isSuccess;
 
+  final bool isAdmin;
+  final bool isUser;
+
   final String? message;
   final T? data;
 
@@ -12,6 +15,8 @@ class SignInState<T> {
     this.isInProgress = false,
     this.isFailure = false,
     this.isSuccess = false,
+    this.isAdmin = false,
+    this.isUser = false,
     this.message = '',
     this.data,
   });
@@ -25,4 +30,8 @@ class SignInState<T> {
 
   factory SignInState.success({required T data}) =>
       SignInState(isSuccess: true, data: data);
+
+  factory SignInState.admin() => const SignInState(isAdmin: true);
+
+  factory SignInState.user() => const SignInState(isUser: true);
 }

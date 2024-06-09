@@ -6,6 +6,8 @@ import 'package:unischedule_app/core/theme/theme.dart';
 import 'package:unischedule_app/core/utils/credential_saver.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/features/presentation/bloc/countdown/count_down_cubit.dart';
+import 'package:unischedule_app/features/presentation/bloc/is_sign_in/is_sign_in_cubit.dart';
+import 'package:unischedule_app/features/presentation/bloc/profile/profile_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/sign_in/sign_in_cubit.dart';
 import 'package:unischedule_app/features/presentation/common/splash_page.dart';
 import 'package:unischedule_app/injection_container.dart' as di;
@@ -38,6 +40,12 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => getIt<SignInCubit>(),
+        ),
+        BlocProvider(
+          create: (_) => getIt<IsSignInCubit>(),
+        ),
+        BlocProvider(
+          create: (_) => getIt<ProfileCubit>(),
         ),
       ],
       child: MaterialApp(
