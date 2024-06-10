@@ -14,6 +14,7 @@ import 'package:unischedule_app/features/presentation/bloc/countdown/count_down_
 import 'package:unischedule_app/features/presentation/bloc/is_sign_in/is_sign_in_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/profile/profile_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/sign_in/sign_in_cubit.dart';
+import 'package:unischedule_app/features/presentation/bloc/sign_up/sign_up_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -35,6 +36,9 @@ void initBlocs() {
   );
   getIt.registerFactory(
     () => ProfileCubit(getIt(), getIt()),
+  );
+  getIt.registerFactory(
+    () => SignUpCubit(getIt()),
   );
 }
 

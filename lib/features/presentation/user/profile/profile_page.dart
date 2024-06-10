@@ -46,7 +46,6 @@ class _ProfilePageState extends State<ProfilePage> {
       body: BlocConsumer<ProfileCubit, ProfileState>(
         listener: (context, state) {
           if (state.isInfoLogin) {
-            debugPrint(state.isLogin.toString());
             if (!state.isLogin) {
               navigatorKey.currentState!.push(
                 MaterialPageRoute(

@@ -36,14 +36,14 @@ abstract class AuthDataSource {
   );
 }
 
-class SignUpResponse {
+class SignUpParams {
   final String name;
   final String stdCode;
   final String gender;
   final String email;
   final String phoneNumber;
   final String password;
-  SignUpResponse({
+  SignUpParams({
     required this.name,
     required this.stdCode,
     required this.gender,

@@ -19,6 +19,7 @@ class CustomPasswordTextField extends StatefulWidget {
   final TextAlign labelTextAlign;
   final TextInputType? textInputType;
   final List<String? Function(String?)>? validators;
+  final Function(String?)? onChanged;
   final VoidCallback? onTap;
 
   const CustomPasswordTextField({
@@ -35,6 +36,7 @@ class CustomPasswordTextField extends StatefulWidget {
     this.labelTextAlign = TextAlign.start,
     this.textInputType,
     this.validators,
+    this.onChanged,
     this.onTap,
   });
 
@@ -114,6 +116,7 @@ class _CustomPasswordTextFieldState extends State<CustomPasswordTextField> {
                   },
                 ),
               ),
+              onChanged: widget.onChanged,
               style: textTheme.bodyMedium!.copyWith(
                 color: primaryTextColor,
               ),
