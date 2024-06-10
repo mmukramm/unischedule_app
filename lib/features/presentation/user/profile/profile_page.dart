@@ -64,7 +64,12 @@ class _ProfilePageState extends State<ProfilePage> {
           }
 
           if (state.isLogout) {
+            if (CredentialSaver.userInfo?.role == 'ADMIN') {
+              navigatorKey.currentState!.pop();
+            }
             navigatorKey.currentState!.pop();
+            CredentialSaver.accessToken = null;
+            CredentialSaver.userInfo = null;
             navigatorKey.currentState!.push(
               MaterialPageRoute(
                 builder: (_) => const UserMainMenu(),
@@ -114,12 +119,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       height: 32,
                     ),
                     Text(
-                      "19280483",
+                      CredentialSaver.userInfo?.stdCode ?? '',
                       textAlign: TextAlign.center,
                       style: textTheme.titleLarge!,
                     ),
                     Text(
-                      "Hamid Al-Hafidzurrahman",
+                      CredentialSaver.userInfo?.name ?? '',
                       textAlign: TextAlign.center,
                       style: textTheme.bodyLarge!,
                     ),
@@ -127,7 +132,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       height: 20,
                     ),
                     Text(
-                      "Laki-Laki",
+                      CredentialSaver.userInfo?.gender ?? '',
                       textAlign: TextAlign.center,
                       style: textTheme.bodyLarge!,
                     ),
@@ -135,12 +140,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       height: 20,
                     ),
                     Text(
-                      "08982791298482",
+                      CredentialSaver.userInfo?.phoneNumber ?? '',
                       textAlign: TextAlign.center,
                       style: textTheme.bodyLarge!,
                     ),
                     Text(
-                      "hmd@gmail.com",
+                      CredentialSaver.userInfo?.email ?? '',
                       textAlign: TextAlign.center,
                       style: textTheme.bodyLarge!,
                     ),
@@ -148,46 +153,50 @@ class _ProfilePageState extends State<ProfilePage> {
                       height: 40,
                     ),
                     Text(
-                      "Mahasiswa",
+                      CredentialSaver.userInfo?.role ?? '',
                       textAlign: TextAlign.center,
                       style: textTheme.bodyLarge!.copyWith(
-                        color: infoColor,
+                        color: CredentialSaver.userInfo?.role == 'ADMIN'
+                            ? dangerColor
+                            : infoColor,
                       ),
                     ),
                     const SizedBox(
-                      height: 120,
+                      height: 40,
                     ),
-                    // Column(
-                    //   children: [
-                    //     const SizedBox(
-                    //       height: 40,
-                    //     ),
-                    //     Text(
-                    //       "Verifikasi Email untuk mendaftar di acara",
-                    //       style: textTheme.bodyMedium!.copyWith(
-                    //         color: dangerColor,
-                    //       ),
-                    //     ),
-                    //     const SizedBox(
-                    //       height: 8,
-                    //     ),
-                    //     FilledButton(
-                    //       style: FilledButton.styleFrom(
-                    //           backgroundColor: warningColor,
-                    //           shape: const RoundedRectangleBorder()),
-                    //       onPressed: () {},
-                    //       child: Text(
-                    //         'Verifikasi Email',
-                    //         style: textTheme.titleMedium!.copyWith(
-                    //           color: primaryTextColor,
-                    //         ),
-                    //       ),
-                    //     ),
-                    //     const SizedBox(
-                    //       height: 32,
-                    //     ),
-                    //   ],
-                    // ),
+                    if (CredentialSaver.userInfo!.role != 'ADMIN' &&
+                        !CredentialSaver.userInfo!.emailVerified!)
+                      Column(
+                        children: [
+                          const SizedBox(
+                            height: 40,
+                          ),
+                          Text(
+                            "Verifikasi Email untuk mendaftar di acara",
+                            style: textTheme.bodyMedium!.copyWith(
+                              color: dangerColor,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          FilledButton(
+                            style: FilledButton.styleFrom(
+                                backgroundColor: warningColor,
+                                shape: const RoundedRectangleBorder()),
+                            onPressed: () {},
+                            child: Text(
+                              'Verifikasi Email',
+                              style: textTheme.titleMedium!.copyWith(
+                                color: primaryTextColor,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 32,
+                          ),
+                        ],
+                      ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       child: Row(
@@ -230,7 +239,30 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             );
           }
-          return const SizedBox();
+          return Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Silahkan Login',
+                  style: textTheme.titleMedium,
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                FilledButton(
+                  onPressed: () {
+                    profileCubit.userInfo();
+                  },
+                  child: Text(
+                    'Login',
+                    style:
+                        textTheme.titleSmall!.copyWith(color: primaryTextColor),
+                  ),
+                ),
+              ],
+            ),
+          );
         },
       ),
     );

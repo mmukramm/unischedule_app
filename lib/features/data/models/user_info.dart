@@ -9,7 +9,7 @@ class UserInfo {
   final String? phoneNumber;
   final String? gender;
   final String? role;
-  final bool? isVerified;
+  final bool? emailVerified;
 
   UserInfo({
     this.id,
@@ -19,7 +19,7 @@ class UserInfo {
     this.phoneNumber,
     this.gender,
     this.role,
-    this.isVerified,
+    this.emailVerified,
   });
 
   UserInfo copyWith({
@@ -30,7 +30,7 @@ class UserInfo {
     String? phoneNumber,
     String? gender,
     String? role,
-    bool? isVerified,
+    bool? emailVerified,
   }) {
     return UserInfo(
       id: id ?? this.id,
@@ -40,7 +40,7 @@ class UserInfo {
       phoneNumber: phoneNumber ?? this.phoneNumber,
       gender: gender ?? this.gender,
       role: role ?? this.role,
-      isVerified: isVerified ?? this.isVerified,
+      emailVerified: emailVerified ?? this.emailVerified,
     );
   }
 
@@ -53,7 +53,7 @@ class UserInfo {
       'phone_number': phoneNumber,
       'gender': gender,
       'role': role,
-      'is_verified': isVerified,
+      'email_verified': emailVerified,
     };
   }
 
@@ -66,7 +66,7 @@ class UserInfo {
       phoneNumber: map['phone_number'] != null ? map['phone_number'] as String : null,
       gender: map['gender'] != null ? map['gender'] as String : null,
       role: map['role'] != null ? map['role'] as String : null,
-      isVerified: map['is_verified'] != null ? map['is_verified'] as bool : null,
+      emailVerified: map['email_verified'] != null ? map['email_verified'] as bool : null,
     );
   }
 
@@ -77,7 +77,7 @@ class UserInfo {
 
   @override
   String toString() {
-    return 'UserInfo(id: $id, name: $name, stdCode: $stdCode, email: $email, phoneNumber: $phoneNumber, gender: $gender, role: $role, isVerified: $isVerified)';
+    return 'UserInfo(id: $id, name: $name, stdCode: $stdCode, email: $email, phoneNumber: $phoneNumber, gender: $gender, role: $role, emailVerified: $emailVerified)';
   }
 
   @override
@@ -92,7 +92,7 @@ class UserInfo {
       other.phoneNumber == phoneNumber &&
       other.gender == gender &&
       other.role == role &&
-      other.isVerified == isVerified;
+      other.emailVerified == emailVerified;
   }
 
   @override
@@ -104,6 +104,6 @@ class UserInfo {
       phoneNumber.hashCode ^
       gender.hashCode ^
       role.hashCode ^
-      isVerified.hashCode;
+      emailVerified.hashCode;
   }
 }

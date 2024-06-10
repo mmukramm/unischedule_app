@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:unischedule_app/core/usecases/no_params.dart';
-import 'package:unischedule_app/core/utils/credential_saver.dart';
+import 'package:unischedule_app/core/utils/const.dart';
 import 'package:unischedule_app/features/domain/usecases/delete_access_token.dart';
 import 'package:unischedule_app/features/domain/usecases/get_user_info.dart';
 import 'package:unischedule_app/features/presentation/bloc/profile/profile_state.dart';
@@ -18,11 +18,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
     result.fold(
       (l) => emit(ProfileState.failure(l.message)),
-      (r) {
-        CredentialSaver.accessToken = null;
-        CredentialSaver.userInfo = null;
-        emit(ProfileState.logout());
-      },
+      (r) => emit(ProfileState.logout()),
     );
   }
 
@@ -32,7 +28,13 @@ class ProfileCubit extends Cubit<ProfileState> {
     final result = await getUserInfo(NoParams());
 
     result.fold(
-      (l) => emit(ProfileState.loginInfo(isLogin: false)),
+      (l) {
+        if (l.message == kNoInternetConnection) {
+          emit(ProfileState.failure(l.message));
+        } else {
+          emit(ProfileState.loginInfo(isLogin: false));
+        }
+      },
       (r) => emit(ProfileState.loginInfo(isLogin: true)),
     );
   }
