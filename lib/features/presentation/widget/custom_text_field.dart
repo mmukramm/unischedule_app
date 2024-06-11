@@ -16,6 +16,7 @@ class CustomTextField extends StatelessWidget {
   final TextAlign labelTextAlign;
   final TextAlign textAlign;
   final TextInputType? textInputType;
+  final FocusNode? focusNode;
   final List<String? Function(String?)>? validators;
   final VoidCallback? onTap;
 
@@ -33,6 +34,7 @@ class CustomTextField extends StatelessWidget {
     this.labelTextAlign = TextAlign.start,
     this.textAlign = TextAlign.start,
     this.textInputType,
+    this.focusNode,
     this.validators,
     this.onTap,
   });
@@ -59,7 +61,10 @@ class CustomTextField extends StatelessWidget {
           ),
         FormBuilderTextField(
           name: name,
+          autofocus: false,
+          autocorrect: false,
           keyboardType: textInputType,
+          focusNode: focusNode,
           textInputAction: textInputAction,
           textCapitalization: textCapitalization,
           textAlign: textAlign,

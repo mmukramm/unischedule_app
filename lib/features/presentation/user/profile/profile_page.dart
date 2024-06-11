@@ -10,6 +10,7 @@ import 'package:unischedule_app/core/utils/credential_saver.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/features/presentation/bloc/profile/profile_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/profile/profile_state.dart';
+import 'package:unischedule_app/features/presentation/common/email_verification_page.dart';
 import 'package:unischedule_app/features/presentation/common/login_page.dart';
 import 'package:unischedule_app/features/presentation/user/user_main_menu.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
@@ -45,15 +46,6 @@ class _ProfilePageState extends State<ProfilePage> {
       backgroundColor: scaffoldColor,
       body: BlocConsumer<ProfileCubit, ProfileState>(
         listener: (context, state) {
-          if (state.isInfoLogin) {
-            if (!state.isLogin) {
-              navigatorKey.currentState!.push(
-                MaterialPageRoute(
-                  builder: (_) => const LoginPage(),
-                ),
-              );
-            }
-          }
 
           if (state.isFailure) {
             context.showCustomSnackbar(
@@ -183,7 +175,15 @@ class _ProfilePageState extends State<ProfilePage> {
                             style: FilledButton.styleFrom(
                                 backgroundColor: warningColor,
                                 shape: const RoundedRectangleBorder()),
-                            onPressed: () {},
+                            onPressed: () {
+                              navigatorKey.currentState!.push(
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const EmailVerificationPage(
+                                          isSend: false),
+                                ),
+                              );
+                            },
                             child: Text(
                               'Verifikasi Email',
                               style: textTheme.titleMedium!.copyWith(
@@ -251,7 +251,17 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 FilledButton(
                   onPressed: () {
-                    profileCubit.userInfo();
+                    navigatorKey.currentState!
+                        .push(
+                      MaterialPageRoute(
+                        builder: (_) => const LoginPage(),
+                      ),
+                    )
+                        .then(
+                      (_) {
+                        profileCubit.userInfo();
+                      },
+                    );
                   },
                   child: Text(
                     'Login',

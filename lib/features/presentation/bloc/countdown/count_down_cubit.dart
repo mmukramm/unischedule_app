@@ -20,9 +20,15 @@ class CountDownCubit extends Cubit<int> {
     });
   }
 
+  void pauseTimer() {
+    emit(123);
+    _timer?.cancel();
+  }
+
   @override
   Future<void> close() {
     _timer?.cancel();
+    // return null;
     return super.close();
   }
 }

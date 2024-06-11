@@ -7,10 +7,13 @@ import 'package:unischedule_app/features/data/datasources/auth_preferences_helpe
 import 'package:unischedule_app/features/data/repositories/auth_repository_impl.dart';
 import 'package:unischedule_app/features/domain/repositories/auth_repository.dart';
 import 'package:unischedule_app/features/domain/usecases/delete_access_token.dart';
+import 'package:unischedule_app/features/domain/usecases/get_resend_email_verification.dart';
 import 'package:unischedule_app/features/domain/usecases/get_user_info.dart';
 import 'package:unischedule_app/features/domain/usecases/post_sign_in.dart';
 import 'package:unischedule_app/features/domain/usecases/post_sign_up.dart';
+import 'package:unischedule_app/features/domain/usecases/post_verification_email.dart';
 import 'package:unischedule_app/features/presentation/bloc/countdown/count_down_cubit.dart';
+import 'package:unischedule_app/features/presentation/bloc/email_verification/email_verification_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/is_sign_in/is_sign_in_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/profile/profile_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/sign_in/sign_in_cubit.dart';
@@ -38,7 +41,10 @@ void initBlocs() {
     () => ProfileCubit(getIt(), getIt()),
   );
   getIt.registerFactory(
-    () => SignUpCubit(getIt()),
+    () => SignUpCubit(getIt(), getIt()),
+  );
+  getIt.registerFactory(
+    () => EmailVerificationCubit(getIt(), getIt()),
   );
 }
 
@@ -54,6 +60,12 @@ void initUseCases() {
   );
   getIt.registerLazySingleton(
     () => PostSignUp(getIt()),
+  );
+  getIt.registerLazySingleton(
+    () => GetResendEmailVerification(getIt()),
+  );
+  getIt.registerLazySingleton(
+    () => PostVerificationEmail(getIt()),
   );
 }
 

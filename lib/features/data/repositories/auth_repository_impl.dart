@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:unischedule_app/core/errors/exceptions.dart';
 import 'package:unischedule_app/core/errors/failures.dart';
 import 'package:unischedule_app/core/utils/api_response.dart';
@@ -39,11 +40,12 @@ class AuthRepositoryImpl implements AuthRepository {
       }
 
       if (e.response != null) {
+        debugPrint(e.response.toString());
         return Left(failureMessageHandler(
             ApiResponse.fromJson(e.response!.data).message!));
       }
 
-      return Left(ServerFailure(e.message!));
+      return Left(ServerFailure(e.message ?? 'Unknown'));
     }
   }
 
@@ -53,6 +55,10 @@ class AuthRepositoryImpl implements AuthRepository {
       final result = await authDataSource.whoAmI(
         'Bearer ${CredentialSaver.accessToken}',
       );
+
+      if (result.data == null) {
+        return Left(ServerFailure(result.message!));
+      }
 
       CredentialSaver.userInfo = UserInfo.fromMap(result.data);
 
@@ -72,7 +78,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, String>> signUp(Map<String, dynamic> params) async{
+  Future<Either<Failure, String>> signUp(Map<String, dynamic> params) async {
     try {
       final result = await authDataSource.signUp(params);
 
@@ -100,16 +106,54 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, String>> resendVerificationCode() {
-    // TODO: implement resendVerificationCode
-    throw UnimplementedError();
+  Future<Either<Failure, String>> resendVerificationCode() async {
+    try {
+      final result = await authDataSource.resendVerificationCode(
+        'Bearer ${CredentialSaver.accessToken}',
+      );
+
+      return Right(result.data as String);
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError) {
+        return const Left(ConnectionFailure(kNoInternetConnection));
+      }
+
+      if (e.response != null) {
+        return Left(failureMessageHandler(
+            ApiResponse.fromJson(e.response!.data).message ?? ''));
+      }
+
+      return Left(ServerFailure(e.message!));
+    }
   }
 
   @override
   Future<Either<Failure, String>> verificationEmail(
-      Map<String, dynamic> accessToken) {
-    // TODO: implement verificationEmail
-    throw UnimplementedError();
+    Map<String, dynamic> pin,
+  ) async {
+    try {
+      final result = await authDataSource.verificationEmail(
+        'Bearer ${CredentialSaver.accessToken}',
+        pin,
+      );
+
+      return Right(result.message!);
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError) {
+        return const Left(ConnectionFailure(kNoInternetConnection));
+      }
+
+      if (e.response != null) {
+        debugPrint(e.response.toString());
+        if (e.response is String) {
+          return Left(ServerFailure(e.message!));
+        }
+        return Left(failureMessageHandler(
+            ApiResponse.fromJson(e.response?.data).message ?? ''));
+      }
+
+      return Left(ServerFailure(e.message!));
+    }
   }
 
   @override

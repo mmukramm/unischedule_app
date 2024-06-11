@@ -12,6 +12,5 @@ abstract class AuthRepository {
 
   Future<Either<Failure, String>> resendVerificationCode();
 
-  Future<Either<Failure, String>> verificationEmail(
-      Map<String, dynamic> accessToken);
+  Future<Either<Failure, String>> verificationEmail(Map<String, dynamic> pin);
 }

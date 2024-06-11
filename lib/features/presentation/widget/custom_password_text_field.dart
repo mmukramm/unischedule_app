@@ -86,6 +86,8 @@ class _CustomPasswordTextFieldState extends State<CustomPasswordTextField> {
             return FormBuilderTextField(
               name: widget.name,
               obscureText: value,
+              autocorrect: false,
+              autofocus: false,
               keyboardType: widget.textInputType,
               textInputAction: widget.textInputAction,
               textCapitalization: widget.textCapitalization,
