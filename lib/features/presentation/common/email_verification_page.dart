@@ -58,7 +58,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage>
         body: BlocListener<EmailVerificationCubit, EmailVerificationState>(
           listener: (context, state) {
             if (state.isInProgress) {
-              debugPrint('Loadiiiiiing');
+              context.showLoadingDialog();
             }
             if (state.isFailure) {
               context.showCustomSnackbar(
@@ -73,7 +73,6 @@ class _EmailVerificationPageState extends State<EmailVerificationPage>
                 type: SnackBarType.success,
               );
               countDown.startCountDown(second: 123);
-              debugPrint('Kode kirim ulang');
             }
             if (state.isPinCorrect) {
               context.showCustomSnackbar(

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -40,9 +42,11 @@ class AuthRepositoryImpl implements AuthRepository {
       }
 
       if (e.response != null) {
-        debugPrint(e.response.toString());
+        if (e.response?.statusCode == HttpStatus.internalServerError) {
+          return Left(ServerFailure(e.message!));
+        }
         return Left(failureMessageHandler(
-            ApiResponse.fromJson(e.response!.data).message!));
+            ApiResponse.fromJson(e.response?.data).message ?? ''));
       }
 
       return Left(ServerFailure(e.message ?? 'Unknown'));
@@ -69,11 +73,14 @@ class AuthRepositoryImpl implements AuthRepository {
       }
 
       if (e.response != null) {
+        if (e.response?.statusCode == HttpStatus.internalServerError) {
+          return Left(ServerFailure(e.message!));
+        }
         return Left(failureMessageHandler(
-            ApiResponse.fromJson(e.response!.data).message!));
+            ApiResponse.fromJson(e.response?.data).message ?? ''));
       }
 
-      return Left(ServerFailure(e.message!));
+      return Left(ServerFailure(e.message ?? 'Unknown'));
     }
   }
 
@@ -97,11 +104,14 @@ class AuthRepositoryImpl implements AuthRepository {
       }
 
       if (e.response != null) {
+        if (e.response?.statusCode == HttpStatus.internalServerError) {
+          return Left(ServerFailure(e.message!));
+        }
         return Left(failureMessageHandler(
-            ApiResponse.fromJson(e.response!.data).message!));
+            ApiResponse.fromJson(e.response?.data).message ?? ''));
       }
 
-      return Left(ServerFailure(e.message!));
+      return Left(ServerFailure(e.message ?? 'Unknown'));
     }
   }
 
@@ -119,11 +129,14 @@ class AuthRepositoryImpl implements AuthRepository {
       }
 
       if (e.response != null) {
+        if (e.response?.statusCode == HttpStatus.internalServerError) {
+          return Left(ServerFailure(e.message!));
+        }
         return Left(failureMessageHandler(
-            ApiResponse.fromJson(e.response!.data).message ?? ''));
+            ApiResponse.fromJson(e.response?.data).message ?? ''));
       }
 
-      return Left(ServerFailure(e.message!));
+      return Left(ServerFailure(e.message ?? 'Unknown'));
     }
   }
 
@@ -144,15 +157,14 @@ class AuthRepositoryImpl implements AuthRepository {
       }
 
       if (e.response != null) {
-        debugPrint(e.response.toString());
-        if (e.response is String) {
+        if (e.response?.statusCode == HttpStatus.internalServerError) {
           return Left(ServerFailure(e.message!));
         }
         return Left(failureMessageHandler(
             ApiResponse.fromJson(e.response?.data).message ?? ''));
       }
 
-      return Left(ServerFailure(e.message!));
+      return Left(ServerFailure(e.message ?? 'Unknown'));
     }
   }
 
