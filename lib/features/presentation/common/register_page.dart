@@ -9,7 +9,7 @@ import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/credential_saver.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
-import 'package:unischedule_app/features/data/datasources/auth_datasources.dart';
+import 'package:unischedule_app/features/data/datasources/auth_data_sources.dart';
 import 'package:unischedule_app/features/presentation/bloc/sign_up/sign_up_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/sign_up/sign_up_state.dart';
 import 'package:unischedule_app/features/presentation/common/email_verification_page.dart';

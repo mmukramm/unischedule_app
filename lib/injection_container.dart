@@ -2,16 +2,23 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unischedule_app/core/env/env.dart';
-import 'package:unischedule_app/features/data/datasources/auth_datasources.dart';
+import 'package:unischedule_app/features/data/datasources/auth_data_sources.dart';
 import 'package:unischedule_app/features/data/datasources/auth_preferences_helper.dart';
+import 'package:unischedule_app/features/data/datasources/user_data_sources.dart';
 import 'package:unischedule_app/features/data/repositories/auth_repository_impl.dart';
+import 'package:unischedule_app/features/data/repositories/user_repository_impl.dart';
 import 'package:unischedule_app/features/domain/repositories/auth_repository.dart';
+import 'package:unischedule_app/features/domain/repositories/user_repository.dart';
 import 'package:unischedule_app/features/domain/usecases/delete_access_token.dart';
+import 'package:unischedule_app/features/domain/usecases/delete_user.dart';
+import 'package:unischedule_app/features/domain/usecases/get_all_users.dart';
 import 'package:unischedule_app/features/domain/usecases/get_resend_email_verification.dart';
+import 'package:unischedule_app/features/domain/usecases/get_single_user.dart';
 import 'package:unischedule_app/features/domain/usecases/get_user_info.dart';
 import 'package:unischedule_app/features/domain/usecases/post_sign_in.dart';
 import 'package:unischedule_app/features/domain/usecases/post_sign_up.dart';
 import 'package:unischedule_app/features/domain/usecases/post_verification_email.dart';
+import 'package:unischedule_app/features/presentation/admin/user/bloc/users_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/countdown/count_down_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/email_verification/email_verification_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/is_sign_in/is_sign_in_cubit.dart';
@@ -46,6 +53,9 @@ void initBlocs() {
   getIt.registerFactory(
     () => EmailVerificationCubit(getIt(), getIt()),
   );
+  getIt.registerFactory(
+    () => UsersCubit(getIt(), getIt(), getIt()),
+  );
 }
 
 void initUseCases() {
@@ -67,24 +77,43 @@ void initUseCases() {
   getIt.registerLazySingleton(
     () => PostVerificationEmail(getIt()),
   );
+  getIt.registerLazySingleton(
+    () => GetAllUsers(getIt()),
+  );
+  getIt.registerLazySingleton(
+    () => GetSingleUser(getIt()),
+  );
+  getIt.registerLazySingleton(
+    () => DeleteUser(getIt()),
+  );
 }
 
 void initRepositories() {
   getIt.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(
-      authDataSource: getIt(),
+      authDataSources: getIt(),
       authPreferencesHelper: getIt(),
+    ),
+  );
+
+  getIt.registerLazySingleton<UserRepository>(
+    () => UserRepositoryImpl(
+      userDatasources: getIt(),
     ),
   );
 }
 
 void initDataSources() {
   getIt.registerLazySingleton(
-    () => AuthDataSource(getIt(), baseUrl: Env.baseUrl),
+    () => AuthDataSources(getIt(), baseUrl: Env.baseUrl),
   );
 
   getIt.registerLazySingleton<AuthPreferencesHelper>(
     () => AuthPreferencesHelperImpl(getIt()),
+  );
+
+  getIt.registerLazySingleton(
+    () => UserDatasources(getIt(), baseUrl: Env.baseUrl),
   );
 }
 

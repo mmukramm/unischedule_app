@@ -3,11 +3,11 @@ import 'package:retrofit/http.dart';
 
 import 'package:unischedule_app/core/utils/api_response.dart';
 
-part 'auth_datasources.g.dart';
+part 'auth_data_sources.g.dart';
 
 @RestApi(baseUrl: '')
-abstract class AuthDataSource {
-  factory AuthDataSource(Dio dio, {String baseUrl}) = _AuthDataSource;
+abstract class AuthDataSources {
+  factory AuthDataSources(Dio dio, {String baseUrl}) = _AuthDataSources;
 
   @POST('/login')
   Future<ApiResponse> signIn(
