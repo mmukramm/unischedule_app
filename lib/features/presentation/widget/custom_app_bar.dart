@@ -52,7 +52,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSize {
                       BlendMode.srcIn,
                     ),
                   ),
-                  onPressed: () => onTapDeleteButton,
+                  onPressed: onTapDeleteButton,
                 ),
               )
             : const SizedBox(),

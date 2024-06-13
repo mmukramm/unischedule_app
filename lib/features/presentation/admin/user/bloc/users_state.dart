@@ -29,5 +29,5 @@ class UsersState<T> {
       UsersState(isSuccess: true, data: data);
 
   factory UsersState.mutateDataSuccess({required String message}) =>
-      UsersState(isSuccess: true, message: message);
+      UsersState(isMutateDataSuccess: true, message: message);
 }

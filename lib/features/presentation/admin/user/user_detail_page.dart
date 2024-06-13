@@ -6,7 +6,9 @@ import 'package:unischedule_app/core/extensions/context_extension.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
+import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/features/data/models/user.dart';
+import 'package:unischedule_app/features/presentation/admin/user/bloc/user_detail_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/users_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/users_state.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
@@ -20,16 +22,18 @@ class UserDetailPage extends StatefulWidget {
 }
 
 class _UserDetailPageState extends State<UserDetailPage> {
+  late final UserDetailCubit userDetailCubit;
   late final UsersCubit usersCubit;
   @override
   void initState() {
     super.initState();
+    userDetailCubit = context.read<UserDetailCubit>();
     usersCubit = context.read<UsersCubit>();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<UsersCubit, UsersState>(
+    return BlocListener<UserDetailCubit, UsersState>(
       listener: (_, state) {
         if (state.isInProgress) {
           context.showLoadingDialog();
@@ -41,6 +45,9 @@ class _UserDetailPageState extends State<UserDetailPage> {
           );
         }
         if (state.isMutateDataSuccess) {
+          navigatorKey.currentState!.pop();
+          navigatorKey.currentState!.pop();
+          usersCubit.getUsers();
           context.showCustomSnackbar(
             message: state.message!,
             type: SnackBarType.success,
@@ -52,7 +59,15 @@ class _UserDetailPageState extends State<UserDetailPage> {
           withBackButton: true,
           withDeleteButton: true,
           onTapDeleteButton: () {
-            usersCubit.removeUser(widget.user.id!);
+            context.showCustomConfirmationDialog(
+              title: 'HAPUS USER',
+              message:
+                  'Yakin ingin menghapus data? Data yang dihapus tidak dapat dipulihkan.',
+              onTapDeleteButton: () {
+                navigatorKey.currentState!.pop();
+                userDetailCubit.removeUser(widget.user.id!);
+              },
+            );
           },
         ),
         backgroundColor: scaffoldColor,

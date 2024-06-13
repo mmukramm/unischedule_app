@@ -27,12 +27,12 @@ class UsersCubit extends Cubit<UsersState> {
 
   void removeUser(String id) async {
     emit(UsersState.inProgress());
+    
     final result = await deleteUser(id);
 
     result.fold(
       (l) => emit(UsersState.failure(l.message)),
       (r) => emit(UsersState.mutateDataSuccess(message: r)),
-      
     );
   }
 }

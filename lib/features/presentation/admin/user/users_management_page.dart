@@ -113,9 +113,8 @@ class _UsersManagementPageState extends State<UsersManagementPage> {
             );
           }
 
-          debugPrint(state.isInProgress.toString());
-
           if (state.isSuccess) {
+            users.clear();
             users.addAll(state.data as List<User>);
           }
 
