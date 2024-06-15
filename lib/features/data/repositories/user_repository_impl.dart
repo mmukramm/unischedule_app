@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:unischedule_app/core/errors/failures.dart';
 import 'package:unischedule_app/core/utils/api_response.dart';
 import 'package:unischedule_app/core/utils/const.dart';
@@ -87,6 +88,56 @@ class UserRepositoryImpl implements UserRepository {
       }
 
       if (e.response != null) {
+        if (e.response?.statusCode == HttpStatus.internalServerError) {
+          return Left(ServerFailure(e.message!));
+        }
+        return Left(failureMessageHandler(
+            ApiResponse.fromJson(e.response?.data).message ?? ''));
+      }
+
+      return Left(ServerFailure(e.message ?? 'Unknown'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> createUser(
+      CreateUserParams createUserParams) async {
+    try {
+      ApiResponse result;
+      debugPrint(createUserParams.picture.toString());
+      if (createUserParams.picture != null) {
+        result = await userDatasources.createUser(
+          'Bearer ${CredentialSaver.accessToken}',
+          createUserParams.name,
+          createUserParams.stdCode,
+          createUserParams.gender,
+          createUserParams.email,
+          createUserParams.phoneNumber,
+          createUserParams.password,
+          createUserParams.role,
+          File(createUserParams.picture!),
+        );
+      } else {
+        result = await userDatasources.createNoProfileUser(
+          'Bearer ${CredentialSaver.accessToken}',
+          createUserParams.name,
+          createUserParams.stdCode,
+          createUserParams.gender,
+          createUserParams.email,
+          createUserParams.phoneNumber,
+          createUserParams.password,
+          createUserParams.role,
+        );
+      }
+
+      return Right(result.message ?? 'Data berhasil ditambahkan');
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError) {
+        return const Left(ConnectionFailure(kNoInternetConnection));
+      }
+
+      if (e.response != null) {
+        debugPrint(e.response?.data.toString());
         if (e.response?.statusCode == HttpStatus.internalServerError) {
           return Left(ServerFailure(e.message!));
         }

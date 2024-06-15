@@ -17,6 +17,7 @@ import 'package:unischedule_app/features/domain/usecases/get_single_user.dart';
 import 'package:unischedule_app/features/domain/usecases/get_user_info.dart';
 import 'package:unischedule_app/features/domain/usecases/post_sign_in.dart';
 import 'package:unischedule_app/features/domain/usecases/post_sign_up.dart';
+import 'package:unischedule_app/features/domain/usecases/post_user.dart';
 import 'package:unischedule_app/features/domain/usecases/post_verification_email.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/user_detail_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/users_cubit.dart';
@@ -26,6 +27,7 @@ import 'package:unischedule_app/features/presentation/bloc/is_sign_in/is_sign_in
 import 'package:unischedule_app/features/presentation/bloc/profile/profile_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/sign_in/sign_in_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/sign_up/sign_up_cubit.dart';
+import 'package:unischedule_app/features/presentation/admin/user/bloc/user_form_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -60,6 +62,9 @@ void initBlocs() {
   getIt.registerFactory(
     () => UserDetailCubit(getIt()),
   );
+  getIt.registerFactory(
+    () => UserFormCubit(getIt()),
+  );
 }
 
 void initUseCases() {
@@ -89,6 +94,9 @@ void initUseCases() {
   );
   getIt.registerLazySingleton(
     () => DeleteUser(getIt()),
+  );
+  getIt.registerLazySingleton(
+    () => PostUser(getIt()),
   );
 }
 

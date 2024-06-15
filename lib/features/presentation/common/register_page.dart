@@ -26,8 +26,8 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final formKey = GlobalKey<FormBuilderState>();
-  late final ValueNotifier<bool> isPasswordSame;
   late final SignUpCubit signUpCubit;
+  late final ValueNotifier<bool> isPasswordSame;
   late String password;
 
   @override
@@ -239,7 +239,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           if (value['password'] != value['confirmPassword']) {
                             return;
                           }
-                          debugPrint(value.toString());
                           final signUpParams = SignUpParams(
                             name: value['name'],
                             stdCode: value['nim'],

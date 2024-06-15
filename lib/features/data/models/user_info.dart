@@ -10,6 +10,7 @@ class UserInfo {
   final String? gender;
   final String? role;
   final bool? emailVerified;
+  final String? profileImage;
 
   UserInfo({
     this.id,
@@ -20,6 +21,7 @@ class UserInfo {
     this.gender,
     this.role,
     this.emailVerified,
+    this.profileImage,
   });
 
   UserInfo copyWith({
@@ -31,6 +33,7 @@ class UserInfo {
     String? gender,
     String? role,
     bool? emailVerified,
+    String? profileImage,
   }) {
     return UserInfo(
       id: id ?? this.id,
@@ -41,6 +44,7 @@ class UserInfo {
       gender: gender ?? this.gender,
       role: role ?? this.role,
       emailVerified: emailVerified ?? this.emailVerified,
+      profileImage: profileImage ?? this.profileImage,
     );
   }
 
@@ -54,6 +58,7 @@ class UserInfo {
       'gender': gender,
       'role': role,
       'email_verified': emailVerified,
+      'profile_image': profileImage,
     };
   }
 
@@ -63,10 +68,14 @@ class UserInfo {
       name: map['name'] != null ? map['name'] as String : null,
       stdCode: map['std_code'] != null ? map['std_code'] as String : null,
       email: map['email'] != null ? map['email'] as String : null,
-      phoneNumber: map['phone_number'] != null ? map['phone_number'] as String : null,
+      phoneNumber:
+          map['phone_number'] != null ? map['phone_number'] as String : null,
       gender: map['gender'] != null ? map['gender'] as String : null,
       role: map['role'] != null ? map['role'] as String : null,
-      emailVerified: map['email_verified'] != null ? map['email_verified'] as bool : null,
+      emailVerified:
+          map['email_verified'] != null ? map['email_verified'] as bool : null,
+      profileImage:
+          map['profile_image'] != null ? map['profile_image'] as String : null,
     );
   }
 
@@ -77,33 +86,34 @@ class UserInfo {
 
   @override
   String toString() {
-    return 'UserInfo(id: $id, name: $name, stdCode: $stdCode, email: $email, phoneNumber: $phoneNumber, gender: $gender, role: $role, emailVerified: $emailVerified)';
+    return 'UserInfo(id: $id, name: $name, stdCode: $stdCode, email: $email, phoneNumber: $phoneNumber, gender: $gender, role: $role, emailVerified: $emailVerified, profileImage: $profileImage)';
   }
 
   @override
   bool operator ==(covariant UserInfo other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.id == id &&
-      other.name == name &&
-      other.stdCode == stdCode &&
-      other.email == email &&
-      other.phoneNumber == phoneNumber &&
-      other.gender == gender &&
-      other.role == role &&
-      other.emailVerified == emailVerified;
+
+    return other.id == id &&
+        other.name == name &&
+        other.stdCode == stdCode &&
+        other.email == email &&
+        other.phoneNumber == phoneNumber &&
+        other.gender == gender &&
+        other.role == role &&
+        other.emailVerified == emailVerified &&
+        other.profileImage == profileImage;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      name.hashCode ^
-      stdCode.hashCode ^
-      email.hashCode ^
-      phoneNumber.hashCode ^
-      gender.hashCode ^
-      role.hashCode ^
-      emailVerified.hashCode;
+        name.hashCode ^
+        stdCode.hashCode ^
+        email.hashCode ^
+        phoneNumber.hashCode ^
+        gender.hashCode ^
+        role.hashCode ^
+        emailVerified.hashCode ^
+        profileImage.hashCode;
   }
 }

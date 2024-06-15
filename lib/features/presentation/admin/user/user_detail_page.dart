@@ -11,6 +11,7 @@ import 'package:unischedule_app/features/data/models/user.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/user_detail_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/users_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/users_state.dart';
+import 'package:unischedule_app/features/presentation/admin/user/user_form_page.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 
 class UserDetailPage extends StatefulWidget {
@@ -39,6 +40,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
           context.showLoadingDialog();
         }
         if (state.isFailure) {
+          navigatorKey.currentState!.pop();
           context.showCustomSnackbar(
             message: state.message!,
             type: SnackBarType.error,
@@ -148,7 +150,31 @@ class _UserDetailPageState extends State<UserDetailPage> {
                   ),
                 ),
                 const SizedBox(
-                  height: 40,
+                  height: 80,
+                ),
+                FilledButton(
+                  onPressed: () {
+                    navigatorKey.currentState!.push(
+                      MaterialPageRoute(
+                        builder: (_) => UserFormPage(
+                          isAdmin: widget.user.role == 'ADMIN',
+                          isEdit: true,
+                          user: widget.user,
+                        ),
+                      ),
+                    );
+                  },
+                  style: FilledButton.styleFrom(
+                    shape: const RoundedRectangleBorder(),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                  ),
+                  child: Text(
+                    'Edit Data',
+                    style: textTheme.titleMedium,
+                  ),
                 ),
               ],
             ),

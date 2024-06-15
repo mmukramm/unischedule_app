@@ -16,6 +16,7 @@ class CustomTextField extends StatelessWidget {
   final TextAlign labelTextAlign;
   final TextAlign textAlign;
   final TextInputType? textInputType;
+  final String? initialValue;
   final FocusNode? focusNode;
   final List<String? Function(String?)>? validators;
   final VoidCallback? onTap;
@@ -34,6 +35,7 @@ class CustomTextField extends StatelessWidget {
     this.labelTextAlign = TextAlign.start,
     this.textAlign = TextAlign.start,
     this.textInputType,
+    this.initialValue,
     this.focusNode,
     this.validators,
     this.onTap,
@@ -66,13 +68,13 @@ class CustomTextField extends StatelessWidget {
           keyboardType: textInputType,
           focusNode: focusNode,
           textInputAction: textInputAction,
+          initialValue: initialValue,
           textCapitalization: textCapitalization,
           textAlign: textAlign,
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: textTheme.bodyMedium!.copyWith(
               color: highlightTextColor,
-              
             ),
             contentPadding: const EdgeInsets.fromLTRB(4, 12, 4, 4),
             prefixIcon: prefixIcon != null
