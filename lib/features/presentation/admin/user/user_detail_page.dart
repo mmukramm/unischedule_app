@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -12,7 +13,9 @@ import 'package:unischedule_app/features/presentation/admin/user/bloc/user_detai
 import 'package:unischedule_app/features/presentation/admin/user/bloc/users_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/users_state.dart';
 import 'package:unischedule_app/features/presentation/admin/user/user_form_page.dart';
+import 'package:unischedule_app/features/presentation/common/image_view_page.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
+import 'package:unischedule_app/features/presentation/widget/loading.dart';
 
 class UserDetailPage extends StatefulWidget {
   final User user;
@@ -84,25 +87,58 @@ class _UserDetailPageState extends State<UserDetailPage> {
                 Container(
                   width: 120,
                   height: 120,
+                  clipBehavior: Clip.hardEdge,
                   decoration: BoxDecoration(
                     color: secondaryTextColor,
                     shape: BoxShape.circle,
                     border: Border.all(
                       width: 3,
                       color: primaryColor,
+                      strokeAlign: BorderSide.strokeAlignOutside,
                     ),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: SvgPicture.asset(
-                      width: 80,
-                      AssetPath.getIcons('user.svg'),
-                      colorFilter: const ColorFilter.mode(
-                        primaryColor,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                  ),
+                  child: widget.user.profileImage == null
+                      ? Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: SvgPicture.asset(
+                            width: 80,
+                            AssetPath.getIcons('user.svg'),
+                            colorFilter: const ColorFilter.mode(
+                              primaryColor,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                        )
+                      : GestureDetector(
+                          onTap: () => navigatorKey.currentState!.push(
+                            MaterialPageRoute(
+                              builder: (_) => ImageViewPage(
+                                imagePath: widget.user.profileImage,
+                              ),
+                            ),
+                          ),
+                          child: CachedNetworkImage(
+                            imageUrl: widget.user.profileImage!,
+                            placeholder: (_, __) => const Padding(
+                              padding: EdgeInsets.all(20),
+                              child: Loading(
+                                color: scaffoldColor,
+                              ),
+                            ),
+                            errorWidget: (_, __, ___) => Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: SvgPicture.asset(
+                                width: 80,
+                                AssetPath.getIcons('user.svg'),
+                                colorFilter: const ColorFilter.mode(
+                                  primaryColor,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            ),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                 ),
                 const SizedBox(
                   height: 32,
@@ -121,7 +157,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                   height: 20,
                 ),
                 Text(
-                  widget.user.gender ?? '',
+                  widget.user.gender == 'MALE' ? 'Laki-Laki' : 'Perempuan',
                   textAlign: TextAlign.center,
                   style: textTheme.bodyLarge!,
                 ),

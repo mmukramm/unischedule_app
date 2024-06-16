@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -11,6 +12,7 @@ import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/features/presentation/bloc/profile/profile_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/profile/profile_state.dart';
 import 'package:unischedule_app/features/presentation/common/email_verification_page.dart';
+import 'package:unischedule_app/features/presentation/common/image_view_page.dart';
 import 'package:unischedule_app/features/presentation/common/login_page.dart';
 import 'package:unischedule_app/features/presentation/user/user_main_menu.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
@@ -46,7 +48,6 @@ class _ProfilePageState extends State<ProfilePage> {
       backgroundColor: scaffoldColor,
       body: BlocConsumer<ProfileCubit, ProfileState>(
         listener: (context, state) {
-
           if (state.isFailure) {
             context.showCustomSnackbar(
               message: state.message!,
@@ -94,17 +95,66 @@ class _ProfilePageState extends State<ProfilePage> {
                           color: primaryColor,
                         ),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: SvgPicture.asset(
-                          width: 80,
-                          AssetPath.getIcons('user.svg'),
-                          colorFilter: const ColorFilter.mode(
-                            primaryColor,
-                            BlendMode.srcIn,
-                          ),
-                        ),
-                      ),
+                      child: CredentialSaver.userInfo!.profileImage == null
+                          ? Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: SvgPicture.asset(
+                                width: 80,
+                                AssetPath.getIcons('user.svg'),
+                                colorFilter: const ColorFilter.mode(
+                                  primaryColor,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            )
+                          : InkWell(
+                              onTap: () {
+                                navigatorKey.currentState!.push(
+                                  MaterialPageRoute(
+                                    builder: (_) => ImageViewPage(
+                                      imagePath: CredentialSaver
+                                          .userInfo!.profileImage,
+                                    ),
+                                  ),
+                                );
+                              },
+                              borderRadius: BorderRadius.circular(500),
+                              child: Container(
+                                width: 160,
+                                height: 160,
+                                clipBehavior: Clip.hardEdge,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                      width: 3,
+                                      color: primaryColor,
+                                      strokeAlign:
+                                          BorderSide.strokeAlignOutside),
+                                ),
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                      CredentialSaver.userInfo!.profileImage!,
+                                  placeholder: (_, __) => const Padding(
+                                    padding: EdgeInsets.all(20),
+                                    child: Loading(
+                                      color: scaffoldColor,
+                                    ),
+                                  ),
+                                  errorWidget: (_, __, ___) => Padding(
+                                    padding: const EdgeInsets.all(12),
+                                    child: SvgPicture.asset(
+                                      width: 80,
+                                      AssetPath.getIcons('user.svg'),
+                                      colorFilter: const ColorFilter.mode(
+                                        primaryColor,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
                     ),
                     const SizedBox(
                       height: 32,

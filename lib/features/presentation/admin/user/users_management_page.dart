@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -183,25 +184,49 @@ class UserCardItem extends StatelessWidget {
           Container(
             width: 72,
             height: 72,
+            clipBehavior: Clip.hardEdge,
             decoration: BoxDecoration(
               color: secondaryTextColor,
               shape: BoxShape.circle,
               border: Border.all(
                 width: 2,
+                strokeAlign: BorderSide.strokeAlignOutside,
                 color: primaryColor,
               ),
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: SvgPicture.asset(
-                width: 80,
-                AssetPath.getIcons('user.svg'),
-                colorFilter: const ColorFilter.mode(
-                  primaryColor,
-                  BlendMode.srcIn,
-                ),
-              ),
-            ),
+            child: user.profileImage == null
+                ? Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: SvgPicture.asset(
+                      width: 80,
+                      AssetPath.getIcons('user.svg'),
+                      colorFilter: const ColorFilter.mode(
+                        primaryColor,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  )
+                : CachedNetworkImage(
+                    imageUrl: user.profileImage!,
+                    placeholder: (_, __) => const Padding(
+                      padding: EdgeInsets.all(12),
+                      child: Loading(
+                        color: scaffoldColor,
+                      ),
+                    ),
+                    errorWidget: (_, __, ___) => Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: SvgPicture.asset(
+                        width: 80,
+                        AssetPath.getIcons('user.svg'),
+                        colorFilter: const ColorFilter.mode(
+                          primaryColor,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
+                    fit: BoxFit.cover,
+                  ),
           ),
           const SizedBox(
             width: 12,

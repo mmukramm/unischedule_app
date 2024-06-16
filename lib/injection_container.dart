@@ -19,6 +19,7 @@ import 'package:unischedule_app/features/domain/usecases/post_sign_in.dart';
 import 'package:unischedule_app/features/domain/usecases/post_sign_up.dart';
 import 'package:unischedule_app/features/domain/usecases/post_user.dart';
 import 'package:unischedule_app/features/domain/usecases/post_verification_email.dart';
+import 'package:unischedule_app/features/domain/usecases/put_user.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/user_detail_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/users_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/countdown/count_down_cubit.dart';
@@ -63,7 +64,7 @@ void initBlocs() {
     () => UserDetailCubit(getIt()),
   );
   getIt.registerFactory(
-    () => UserFormCubit(getIt()),
+    () => UserFormCubit(getIt(), getIt()),
   );
 }
 
@@ -97,6 +98,9 @@ void initUseCases() {
   );
   getIt.registerLazySingleton(
     () => PostUser(getIt()),
+  );
+  getIt.registerLazySingleton(
+    () => PutUser(getIt()),
   );
 }
 

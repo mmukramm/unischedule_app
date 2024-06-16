@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -26,6 +27,7 @@ import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart
 import 'package:unischedule_app/features/presentation/widget/custom_password_text_field.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_text_field.dart';
 import 'package:unischedule_app/features/presentation/widget/ink_well_container.dart';
+import 'package:unischedule_app/features/presentation/widget/loading.dart';
 
 class UserFormPage extends StatefulWidget {
   final bool isEdit;
@@ -92,12 +94,16 @@ class _UserFormPageState extends State<UserFormPage> {
             );
           }
           if (state.isSuccess) {
+            if (widget.isEdit) {
+              navigatorKey.currentState!.pop();
+            }
             navigatorKey.currentState!.pop();
             context.showCustomSnackbar(
               message: state.data! as String,
               type: SnackBarType.success,
             );
             context.read<UsersCubit>().getUsers();
+
             navigatorKey.currentState!.pop();
           }
         },
@@ -123,16 +129,132 @@ class _UserFormPageState extends State<UserFormPage> {
                       ValueListenableBuilder(
                         valueListenable: imagePath,
                         builder: (context, value, _) {
+                          if (widget.isEdit) {
+                            return value == null
+                                ? widget.user!.profileImage != null
+                                    ? InkWell(
+                                        onTap: () {
+                                          navigatorKey.currentState!.push(
+                                            MaterialPageRoute(
+                                              builder: (_) => ImageViewPage(
+                                                imagePath:
+                                                    widget.user!.profileImage,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        borderRadius:
+                                            BorderRadius.circular(500),
+                                        child: Container(
+                                          width: 160,
+                                          height: 160,
+                                          clipBehavior: Clip.hardEdge,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              width: 3,
+                                              color: primaryColor,
+                                              strokeAlign:
+                                                  BorderSide.strokeAlignOutside,
+                                            ),
+                                          ),
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                                widget.user!.profileImage!,
+                                            placeholder: (_, __) =>
+                                                const Padding(
+                                              padding: EdgeInsets.all(20),
+                                              child: Loading(
+                                                color: scaffoldColor,
+                                              ),
+                                            ),
+                                            errorWidget: (_, __, ___) =>
+                                                Padding(
+                                              padding: const EdgeInsets.all(12),
+                                              child: SvgPicture.asset(
+                                                width: 80,
+                                                AssetPath.getIcons('user.svg'),
+                                                colorFilter:
+                                                    const ColorFilter.mode(
+                                                  primaryColor,
+                                                  BlendMode.srcIn,
+                                                ),
+                                              ),
+                                            ),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      )
+                                    : Container(
+                                        width: 160,
+                                        height: 160,
+                                        clipBehavior: Clip.hardEdge,
+                                        decoration: BoxDecoration(
+                                          color: secondaryTextColor,
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            width: 3,
+                                            color: primaryColor,
+                                            strokeAlign:
+                                                BorderSide.strokeAlignOutside,
+                                          ),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(12),
+                                          child: SvgPicture.asset(
+                                            width: 80,
+                                            AssetPath.getIcons('user.svg'),
+                                            colorFilter: const ColorFilter.mode(
+                                              primaryColor,
+                                              BlendMode.srcIn,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                : InkWell(
+                                    onTap: () {
+                                      navigatorKey.currentState!.push(
+                                        MaterialPageRoute(
+                                          builder: (_) => ImageViewPage(
+                                            imagePath: value,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    borderRadius: BorderRadius.circular(500),
+                                    child: Container(
+                                      width: 160,
+                                      height: 160,
+                                      clipBehavior: Clip.hardEdge,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          width: 3,
+                                          color: primaryColor,
+                                          strokeAlign:
+                                              BorderSide.strokeAlignOutside,
+                                        ),
+                                        image: DecorationImage(
+                                          image: FileImage(File(value)),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                          }
                           return value == null
                               ? Container(
                                   width: 160,
                                   height: 160,
+                                  clipBehavior: Clip.hardEdge,
                                   decoration: BoxDecoration(
                                     color: secondaryTextColor,
                                     shape: BoxShape.circle,
                                     border: Border.all(
                                       width: 3,
                                       color: primaryColor,
+                                      strokeAlign:
+                                          BorderSide.strokeAlignOutside,
                                     ),
                                   ),
                                   child: Padding(
@@ -161,14 +283,17 @@ class _UserFormPageState extends State<UserFormPage> {
                                   child: Container(
                                     width: 160,
                                     height: 160,
+                                    clipBehavior: Clip.hardEdge,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       border: Border.all(
-                                        width: 3,
-                                        color: primaryColor,
-                                      ),
+                                          width: 3,
+                                          color: primaryColor,
+                                          strokeAlign:
+                                              BorderSide.strokeAlignOutside),
                                       image: DecorationImage(
                                         image: FileImage(File(value)),
+                                        fit: BoxFit.cover,
                                       ),
                                     ),
                                   ),
@@ -282,14 +407,16 @@ class _UserFormPageState extends State<UserFormPage> {
                         CustomPasswordTextField(
                           name: 'password',
                           hintText: '********',
+                          isRequired: !widget.isEdit,
                           labelText: 'Password',
                           onChanged: (result) {
                             password = result!;
                           },
                           validators: [
-                            FormBuilderValidators.required(
-                              errorText: 'Bagian ini harus diisi',
-                            ),
+                            if (!widget.isEdit)
+                              FormBuilderValidators.required(
+                                errorText: 'Bagian ini harus diisi',
+                              ),
                           ],
                         ),
                         const SizedBox(
@@ -304,14 +431,16 @@ class _UserFormPageState extends State<UserFormPage> {
                                 CustomPasswordTextField(
                                   name: 'confirmPassword',
                                   hintText: '********',
+                                  isRequired: !widget.isEdit,
                                   labelText: 'Konfirmasi Password',
                                   onChanged: (result) {
                                     isPasswordSame.value = password == result!;
                                   },
                                   validators: [
-                                    FormBuilderValidators.required(
-                                      errorText: 'Bagian ini harus diisi',
-                                    ),
+                                    if (!widget.isEdit)
+                                      FormBuilderValidators.required(
+                                        errorText: 'Bagian ini harus diisi',
+                                      ),
                                   ],
                                 ),
                                 if (!value)
@@ -354,22 +483,32 @@ class _UserFormPageState extends State<UserFormPage> {
                             return;
                           }
 
-                          debugPrint(value.toString());
-
                           final createUserParams = CreateUserParams(
+                            id: widget.user?.id,
                             name: value['name'],
-                            stdCode: value['nim'],
+                            stdCode: value['nim'] == widget.user?.stdCode
+                                ? null
+                                : value['nim'],
                             gender: value['gender'] == Gender.male
                                 ? 'MALE'
                                 : 'FEMALE',
-                            email: value['email'],
-                            phoneNumber: value['phone'],
+                            email: value['email'] == widget.user?.email
+                                ? null
+                                : value['email'],
+                            phoneNumber:
+                                value['phone'] == widget.user?.phoneNumber
+                                    ? null
+                                    : value['phone'],
                             password: value['password'],
                             role: widget.isAdmin ? 'ADMIN' : 'USER',
                             picture: imagePath.value,
                           );
 
-                          userFormCubit.createUser(createUserParams);
+                          if (widget.isEdit) {
+                            userFormCubit.updateUser(createUserParams);
+                          } else {
+                            userFormCubit.createUser(createUserParams);
+                          }
                         }
                       },
                       child: Text(

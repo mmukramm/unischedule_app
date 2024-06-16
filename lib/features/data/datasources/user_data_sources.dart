@@ -55,25 +55,56 @@ abstract class UserDatasources {
     @Part(name: 'role') String role,
     @Part(name: 'password') String password,
   );
+
+  @MultiPart()
+  @PUT('/user/{id}')
+  Future<ApiResponse> updateNoProfileUser(
+    @Header('Authorization') String accessToken,
+    @Path('id') String id,
+    @Part(name: 'name') String name,
+    @Part(name: 'std_code') String? stdCode,
+    @Part(name: 'gender') String gender,
+    @Part(name: 'email') String? email,
+    @Part(name: 'phone_number') String? phoneNumber,
+    @Part(name: 'role') String role,
+    @Part(name: 'password') String? password,
+  );
+
+  @MultiPart()
+  @PUT('/user/{id}')
+  Future<ApiResponse> updateUser(
+    @Header('Authorization') String accessToken,
+    @Path('id') String id,
+    @Part(name: 'name') String name,
+    @Part(name: 'std_code') String? stdCode,
+    @Part(name: 'gender') String gender,
+    @Part(name: 'email') String? email,
+    @Part(name: 'phone_number') String? phoneNumber,
+    @Part(name: 'role') String role,
+    @Part(name: 'password') String? password,
+    @Part(name: 'picture', contentType: "image/jpg") File picture,
+  );
 }
 
 class CreateUserParams {
+  final String? id;
   final String name;
   final String? stdCode;
   final String gender;
-  final String email;
-  final String phoneNumber;
-  final String password;
+  final String? email;
+  final String? phoneNumber;
+  final String? password;
   final String role;
   final String? picture;
 
   CreateUserParams({
+    this.id,
     required this.name,
     this.stdCode,
     required this.gender,
-    required this.email,
-    required this.phoneNumber,
-    required this.password,
+    this.email,
+    this.phoneNumber,
+    this.password,
     required this.role,
     this.picture,
   });

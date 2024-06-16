@@ -1,8 +1,9 @@
-import 'dart:io';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
+import 'package:unischedule_app/features/presentation/widget/loading.dart';
 
 class ImageViewPage extends StatelessWidget {
   final String? imagePath;
@@ -22,18 +23,28 @@ class ImageViewPage extends StatelessWidget {
         child: SizedBox(
           height: double.infinity,
           child: imagePath != null
-              ? Container(
-                width: double.infinity,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: FileImage(File(imagePath!)),
-                      fit: BoxFit.contain,
+              ? SizedBox(
+                  child: CachedNetworkImage(
+                    imageUrl: imagePath!,
+                    placeholder: (_, __) => const Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Loading(
+                        color: scaffoldColor,
+                      ),
                     ),
+                    errorWidget: (_, __, ___) => Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Image.asset(
+                        AssetPath.getImages('no-image.jpg'),
+                        width: double.infinity,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    fit: BoxFit.contain,
                   ),
                 )
               : Image.asset(
-                  AssetPath.getImages('sample.png'),
-                  width: double.infinity,
+                  AssetPath.getImages('no-image.jpg'),
                   fit: BoxFit.contain,
                 ),
         ),

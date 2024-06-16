@@ -11,4 +11,6 @@ abstract class UserRepository {
   Future<Either<Failure, String>> removeUser(String id);
 
   Future<Either<Failure, String>> createUser(CreateUserParams createUserParams);
+
+  Future<Either<Failure, String>> updateUser(CreateUserParams createUserParams);
 }
