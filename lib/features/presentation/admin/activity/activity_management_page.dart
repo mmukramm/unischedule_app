@@ -1,15 +1,23 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:unischedule_app/core/enums/activity_type.dart';
+import 'package:unischedule_app/core/enums/snack_bar_type.dart';
 import 'package:unischedule_app/core/extensions/context_extension.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
+import 'package:unischedule_app/core/utils/date_formatter.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
+import 'package:unischedule_app/features/data/models/post.dart';
 import 'package:unischedule_app/features/presentation/admin/activity/activity_detail_page.dart';
 import 'package:unischedule_app/features/presentation/admin/activity/activity_form_page.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_management_cubit.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_management_state.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_selector_dialog.dart';
+import 'package:unischedule_app/features/presentation/widget/loading.dart';
 
 class ActivityManagementPage extends StatefulWidget {
   const ActivityManagementPage({super.key});
@@ -21,6 +29,8 @@ class ActivityManagementPage extends StatefulWidget {
 class ActivityManagementPageState extends State<ActivityManagementPage> {
   late final ValueNotifier<ActivityType> activityType;
   late final ValueNotifier<String> eventStatus;
+  late final ActivityManagementCubit activityManagementCubit;
+  late final List<Post> activities;
 
   @override
   void initState() {
@@ -28,6 +38,12 @@ class ActivityManagementPageState extends State<ActivityManagementPage> {
 
     activityType = ValueNotifier(ActivityType.all);
     eventStatus = ValueNotifier('Aktif');
+
+    activities = [];
+
+    activityManagementCubit = context.read<ActivityManagementCubit>();
+
+    activityManagementCubit.getAllPosts();
   }
 
   @override
@@ -173,134 +189,40 @@ class ActivityManagementPageState extends State<ActivityManagementPage> {
                       const SizedBox(
                         height: 24,
                       ),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: 5,
-                        padding: const EdgeInsets.only(bottom: 40),
-                        itemBuilder: (context, index) {
-                          return Container(
-                            padding: const EdgeInsets.all(12),
-                            margin: const EdgeInsets.only(bottom: 12),
-                            color: scaffoldColor,
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  width: double.infinity,
-                                  height: 240,
-                                  AssetPath.getImages('sample.png'),
-                                  fit: BoxFit.cover,
-                                ),
-                                const SizedBox(
-                                  height: 12,
-                                ),
-                                Text(
-                                  "Merdeka Belajar Kampus Merdeka (MBKM) Program Kompetisi Kampus Merdeka (PKKM) 2023.",
-                                  style: textTheme.titleMedium,
-                                ),
-                                const SizedBox(
-                                  height: 4,
-                                ),
-                                Text(
-                                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus condimentum justo nisi, a vestibulum justo tempor ut. Nam fringilla orci sed odio tempus consequat. Aenean lorem nisi, vulputate eget convallis vitae, hendrerit id elit. Nulla sollicitudin id sem et pulvinar. Morbi erat tortor, gravida euismod ante vitae, sodales tempus elit.",
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: textTheme.bodySmall!.copyWith(
-                                    color: highlightTextColor,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 12,
-                                ),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 2,
-                                      child: Row(
-                                        children: [
-                                          SvgPicture.asset(
-                                            AssetPath.getIcons('calendar.svg'),
-                                            width: 20,
-                                            colorFilter: const ColorFilter.mode(
-                                              highlightTextColor,
-                                              BlendMode.srcIn,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 4,
-                                          ),
-                                          Text(
-                                            "12 Februari 2024 18:00",
-                                            style:
-                                                textTheme.bodySmall!.copyWith(
-                                              color: highlightTextColor,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Row(
-                                        children: [
-                                          SvgPicture.asset(
-                                            AssetPath.getIcons('category.svg'),
-                                            width: 20,
-                                            colorFilter: const ColorFilter.mode(
-                                              highlightTextColor,
-                                              BlendMode.srcIn,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 4,
-                                          ),
-                                          Text(
-                                            "Mading",
-                                            style:
-                                                textTheme.bodySmall!.copyWith(
-                                              color: highlightTextColor,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 12,
-                                ),
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: FilledButton(
-                                    onPressed: () =>
-                                        navigatorKey.currentState!.push(
-                                      MaterialPageRoute(
-                                        builder: (_) =>
-                                            const ActivityDetailPage(),
-                                      ),
-                                    ),
-                                    style: FilledButton.styleFrom(
-                                        backgroundColor: infoColor,
-                                        shape: const RoundedRectangleBorder()),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        SvgPicture.asset(
-                                          AssetPath.getIcons('eye.svg'),
-                                          colorFilter: const ColorFilter.mode(
-                                            scaffoldColor,
-                                            BlendMode.srcIn,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          width: 12,
-                                        ),
-                                        const Text("Detail"),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
+                      BlocConsumer<ActivityManagementCubit,
+                          ActivityManagementState>(
+                        listener: (context, state) {
+                          if (state.isFailure) {
+                            context.showCustomSnackbar(
+                              message: state.message!,
+                              type: SnackBarType.error,
+                            );
+                          }
+                        },
+                        builder: (context, state) {
+                          if (state.isInProgress) {
+                            return const Loading(
+                              color: secondaryTextColor,
+                            );
+                          }
+
+                          if (state.isSuccess) {
+                            activities.clear();
+                            activities.addAll(state.data as List<Post>);
+                          }
+
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: activities.length,
+                            padding: const EdgeInsets.only(bottom: 40),
+                            itemBuilder: (context, index) {
+                              final activity = activities[index];
+
+                              return ActivityItemCard(
+                                item: activity,
+                              );
+                            },
                           );
                         },
                       ),
@@ -311,6 +233,151 @@ class ActivityManagementPageState extends State<ActivityManagementPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class ActivityItemCard extends StatelessWidget {
+  final Post item;
+  const ActivityItemCard({
+    super.key,
+    required this.item,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.only(bottom: 12),
+      color: scaffoldColor,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          CachedNetworkImage(
+            height: 240,
+            width: double.infinity,
+            imageUrl: item.picture!,
+            placeholder: (_, __) => const Padding(
+              padding: EdgeInsets.all(12),
+              child: Loading(
+                color: secondaryTextColor,
+              ),
+            ),
+            errorWidget: (_, __, ___) => Image.asset(
+              width: double.infinity,
+              height: 240,
+              AssetPath.getImages('no-image.jpg'),
+              fit: BoxFit.cover,
+            ),
+            fit: BoxFit.cover,
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          Text(
+            item.title ?? '',
+            textAlign: TextAlign.start,
+            style: textTheme.titleMedium,
+          ),
+          const SizedBox(
+            height: 4,
+          ),
+          Text(
+            item.content ?? '',
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: textTheme.bodySmall!.copyWith(
+              color: highlightTextColor,
+            ),
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: Row(
+                  children: [
+                    SvgPicture.asset(
+                      AssetPath.getIcons('calendar.svg'),
+                      width: 20,
+                      colorFilter: const ColorFilter.mode(
+                        highlightTextColor,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      formatDateTime(item.eventDate ?? ''),
+                      style: textTheme.bodySmall!.copyWith(
+                        color: highlightTextColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Row(
+                  children: [
+                    SvgPicture.asset(
+                      AssetPath.getIcons('category.svg'),
+                      width: 20,
+                      colorFilter: const ColorFilter.mode(
+                        highlightTextColor,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      item.isEvent ?? false ? 'Kegiatan' : 'Mading',
+                      style: textTheme.bodySmall!.copyWith(
+                        color: highlightTextColor,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: () => navigatorKey.currentState!.push(
+                MaterialPageRoute(
+                  builder: (_) => const ActivityDetailPage(),
+                ),
+              ),
+              style: FilledButton.styleFrom(
+                  backgroundColor: infoColor,
+                  shape: const RoundedRectangleBorder()),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset(
+                    AssetPath.getIcons('eye.svg'),
+                    colorFilter: const ColorFilter.mode(
+                      scaffoldColor,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 12,
+                  ),
+                  const Text("Detail"),
+                ],
+              ),
+            ),
+          )
+        ],
       ),
     );
   }

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:unischedule_app/core/theme/theme.dart';
 import 'package:unischedule_app/core/utils/credential_saver.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_management_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/user_detail_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/users_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/countdown/count_down_cubit.dart';
@@ -66,6 +67,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => getIt<UserFormCubit>(),
+        ),
+        BlocProvider(
+          create: (_) => getIt<ActivityManagementCubit>(),
         ),
       ],
       child: MaterialApp(
