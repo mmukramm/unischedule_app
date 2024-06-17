@@ -118,8 +118,10 @@ class ActivityManagementPageState extends State<ActivityManagementPage> {
               ),
               ValueListenableBuilder(
                 valueListenable: activityType,
-                builder: (context, value, _) {
-                  return Column(
+                builder: (context, activityTypeValue, _) =>
+                    ValueListenableBuilder(
+                  valueListenable: eventStatus,
+                  builder: (context, eventStatusValue, _) => Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       SegmentedButton<ActivityType>(
@@ -146,7 +148,7 @@ class ActivityManagementPageState extends State<ActivityManagementPage> {
                             label: Text("Mading"),
                           ),
                         ],
-                        selected: {value},
+                        selected: {activityTypeValue},
                         showSelectedIcon: false,
                         onSelectionChanged: (selection) {
                           activityType.value = selection.first;
@@ -155,35 +157,30 @@ class ActivityManagementPageState extends State<ActivityManagementPage> {
                       const SizedBox(
                         height: 16,
                       ),
-                      value == ActivityType.event
-                          ? ValueListenableBuilder(
-                              valueListenable: eventStatus,
-                              builder: (context, value, _) {
-                                return DropdownButton(
-                                  underline: const Divider(
-                                    thickness: 2,
-                                    height: 0,
-                                    color: primaryColor,
-                                  ),
-                                  items: const [
-                                    DropdownMenuItem(
-                                      value: "Aktif",
-                                      child: Text("Aktif"),
-                                    ),
-                                    DropdownMenuItem(
-                                      value: "Riwayat",
-                                      child: Text("Riwayat"),
-                                    ),
-                                  ],
-                                  value: value,
-                                  onChanged: (result) {
-                                    eventStatus.value = result!;
-                                  },
-                                  dropdownColor: primaryColor,
-                                  borderRadius: BorderRadius.circular(12),
-                                  isExpanded: true,
-                                );
+                      activityTypeValue == ActivityType.event
+                          ? DropdownButton(
+                              underline: const Divider(
+                                thickness: 2,
+                                height: 0,
+                                color: primaryColor,
+                              ),
+                              items: const [
+                                DropdownMenuItem(
+                                  value: "Aktif",
+                                  child: Text("Aktif"),
+                                ),
+                                DropdownMenuItem(
+                                  value: "Riwayat",
+                                  child: Text("Riwayat"),
+                                ),
+                              ],
+                              value: eventStatusValue,
+                              onChanged: (result) {
+                                eventStatus.value = result!;
                               },
+                              dropdownColor: primaryColor,
+                              borderRadius: BorderRadius.circular(12),
+                              isExpanded: true,
                             )
                           : const SizedBox(),
                       const SizedBox(
@@ -207,8 +204,30 @@ class ActivityManagementPageState extends State<ActivityManagementPage> {
                           }
 
                           if (state.isSuccess) {
+                            final result = state.data as List<Post>;
+                            List<Post> data;
+
+                            if (activityTypeValue == ActivityType.event) {
+                              data = result.where((element) {
+                                if (eventStatusValue == 'Aktif') {
+                                  final now = DateTime.now();
+                                  return element.isEvent! &&
+                                      now.isBefore(
+                                        DateTime.parse(element.eventDate!),
+                                      );
+                                }
+                                return element.isEvent!;
+                              }).toList();
+                            } else if (activityTypeValue == ActivityType.magz) {
+                              data = result
+                                  .where((element) => !element.isEvent!)
+                                  .toList();
+                            } else {
+                              data = result;
+                            }
+
                             activities.clear();
-                            activities.addAll(state.data as List<Post>);
+                            activities.addAll(data);
                           }
 
                           return ListView.builder(
@@ -227,8 +246,8 @@ class ActivityManagementPageState extends State<ActivityManagementPage> {
                         },
                       ),
                     ],
-                  );
-                },
+                  ),
+                ),
               ),
             ],
           ),
