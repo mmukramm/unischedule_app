@@ -4,7 +4,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:unischedule_app/core/enums/snack_bar_type.dart';
-import 'package:unischedule_app/core/env/env.dart';
 import 'package:unischedule_app/core/extensions/context_extension.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
@@ -158,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                   width: double.infinity,
                   child: FilledButton(
                     onPressed: () {
-                      debugPrint(Env.baseUrl);
+                      FocusManager.instance.primaryFocus?.unfocus();
                       if (formKey.currentState!.saveAndValidate()) {
                         final value = formKey.currentState!.value;
                         signInCubit.signIn(value);

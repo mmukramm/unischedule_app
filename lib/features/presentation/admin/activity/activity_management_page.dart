@@ -209,14 +209,16 @@ class ActivityManagementPageState extends State<ActivityManagementPage> {
 
                             if (activityTypeValue == ActivityType.event) {
                               data = result.where((element) {
+                                final now = DateTime.now();
                                 if (eventStatusValue == 'Aktif') {
-                                  final now = DateTime.now();
                                   return element.isEvent! &&
                                       now.isBefore(
                                         DateTime.parse(element.eventDate!),
                                       );
                                 }
-                                return element.isEvent!;
+                                return element.isEvent! &&
+                                    now.isAfter(
+                                        DateTime.parse(element.eventDate!));
                               }).toList();
                             } else if (activityTypeValue == ActivityType.magz) {
                               data = result

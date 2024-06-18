@@ -23,7 +23,7 @@ class ActivityFormCubit extends Cubit<ActivityManagementState> {
 
   void editActivity(CreatePostParams createPostParams) async {
     emit(ActivityManagementState.inProgress());
-    final result = await postActivity(createPostParams);
+    final result = await putActivity(createPostParams);
 
     result.fold(
       (l) => emit(ActivityManagementState.failure(l.message)),

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -13,23 +14,30 @@ import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/theme/theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
+import 'package:unischedule_app/core/utils/date_formatter.dart';
 import 'package:unischedule_app/core/utils/image_service.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/features/data/datasources/activity_data_sources.dart';
+import 'package:unischedule_app/features/data/models/post.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_detail_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_form_cubit.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_management_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_management_state.dart';
 import 'package:unischedule_app/features/presentation/common/image_view_page.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_text_field.dart';
 import 'package:unischedule_app/features/presentation/widget/ink_well_container.dart';
+import 'package:unischedule_app/features/presentation/widget/loading.dart';
 
 class ActivityFormPage extends StatefulWidget {
   final bool isMagz;
   final bool isEdit;
+  final Post? activity;
   const ActivityFormPage({
     super.key,
     required this.isMagz,
     required this.isEdit,
+    this.activity,
   });
 
   @override
@@ -47,8 +55,12 @@ class ActivityFormPageState extends State<ActivityFormPage> {
     super.initState();
 
     postImagePath = ValueNotifier(null);
-    dateTime = DateTime.now();
+    dateTime = DateTime.now().toUtc();
     activityFormCubit = context.read<ActivityFormCubit>();
+
+    if (widget.activity != null) {
+      dateTime = DateTime.parse(widget.activity!.eventDate!);
+    }
   }
 
   @override
@@ -87,6 +99,12 @@ class ActivityFormPageState extends State<ActivityFormPage> {
               message: state.data,
               type: SnackBarType.success,
             );
+            context.read<ActivityManagementCubit>().getAllPosts();
+            if (widget.activity != null) {
+              context
+                  .read<ActivityDetailCubit>()
+                  .getActivity(widget.activity!.id!);
+            }
           }
         },
         child: SingleChildScrollView(
@@ -116,6 +134,55 @@ class ActivityFormPageState extends State<ActivityFormPage> {
                         child: ValueListenableBuilder(
                           valueListenable: postImagePath,
                           builder: (context, value, _) {
+                            if (widget.activity != null) {
+                              if (value == null) {
+                                return InkWell(
+                                  onTap: () => navigatorKey.currentState!.push(
+                                    MaterialPageRoute(
+                                      builder: (_) => ImageViewPage(
+                                        imagePath: value,
+                                      ),
+                                    ),
+                                  ),
+                                  child: CachedNetworkImage(
+                                    height: 320,
+                                    width: double.infinity,
+                                    imageUrl: widget.activity!.picture!,
+                                    placeholder: (_, __) => const Padding(
+                                      padding: EdgeInsets.all(12),
+                                      child: Loading(
+                                        color: secondaryTextColor,
+                                      ),
+                                    ),
+                                    errorWidget: (_, __, ___) => Image.asset(
+                                      width: double.infinity,
+                                      height: 320,
+                                      AssetPath.getImages('no-image.jpg'),
+                                      fit: BoxFit.cover,
+                                    ),
+                                    fit: BoxFit.cover,
+                                  ),
+                                );
+                              } else {
+                                return InkWell(
+                                  onTap: () => navigatorKey.currentState!.push(
+                                    MaterialPageRoute(
+                                      builder: (_) => ImageViewPage(
+                                        imagePath: value,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: FileImage(File(value)),
+                                          fit: BoxFit.cover),
+                                    ),
+                                  ),
+                                );
+                              }
+                            }
+
                             if (value == null) {
                               return Container(
                                 decoration: const BoxDecoration(
@@ -215,19 +282,71 @@ class ActivityFormPageState extends State<ActivityFormPage> {
 
                           debugPrint(formValue.toString());
 
-                          final createPostParams = CreatePostParams(
-                            title: formValue['eventName'],
-                            content: formValue['description'],
-                            organizer: formValue['organizer'],
-                            eventDate: formValue['eventTime'] != ''
-                                ? dateTime.toIso8601String()
-                                : null,
-                            isEvent: !widget.isMagz,
-                            file: File(postImagePath.value!),
-                          );
+                          CreatePostParams createPostParams;
 
-                          if (!widget.isEdit) {
-                            activityFormCubit.createActivity(createPostParams);
+                          if (widget.isMagz) {
+                            if (widget.isEdit) {
+                              createPostParams = CreatePostParams(
+                                id: widget.activity?.id,
+                                title: formValue['magzName'],
+                                content: formValue['description'],
+                                organizer: formValue['organizer'],
+                                eventDate: widget.activity?.eventDate,
+                                isEvent: !widget.isMagz,
+                                file: postImagePath.value != null
+                                    ? File(postImagePath.value!)
+                                    : null,
+                              );
+                              activityFormCubit.editActivity(createPostParams);
+                            } else {
+                              createPostParams = CreatePostParams(
+                                title: formValue['magzName'],
+                                content: formValue['description'],
+                                organizer: formValue['organizer'],
+                                eventDate:
+                                    DateTime.now().toUtc().toIso8601String(),
+                                isEvent: !widget.isMagz,
+                                file: File(postImagePath.value!),
+                              );
+                              activityFormCubit
+                                  .createActivity(createPostParams);
+                            }
+                          } else {
+                            if (widget.isEdit) {
+                              createPostParams = CreatePostParams(
+                                id: widget.activity!.id,
+                                title: formValue['eventName'] != ''
+                                    ? formValue['eventName']
+                                    : null,
+                                content: formValue['description'] != ''
+                                    ? formValue['description']
+                                    : null,
+                                organizer: formValue['organizer'] != ''
+                                    ? formValue['organizer']
+                                    : null,
+                                eventDate: formValue['eventTime'] != ''
+                                    ? dateTime.toIso8601String()
+                                    : null,
+                                isEvent: !widget.isMagz,
+                                file: postImagePath.value != null
+                                    ? File(postImagePath.value!)
+                                    : null,
+                              );
+                              activityFormCubit.editActivity(createPostParams);
+                            } else {
+                              createPostParams = CreatePostParams(
+                                title: formValue['eventName'],
+                                content: formValue['description'],
+                                organizer: formValue['organizer'],
+                                eventDate: formValue['eventTime'] != ''
+                                    ? dateTime.toIso8601String()
+                                    : null,
+                                isEvent: !widget.isMagz,
+                                file: File(postImagePath.value!),
+                              );
+                              activityFormCubit
+                                  .createActivity(createPostParams);
+                            }
                           }
                         }
                       },
@@ -238,6 +357,9 @@ class ActivityFormPageState extends State<ActivityFormPage> {
                         ),
                       ),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 32,
                   ),
                 ],
               ),
@@ -254,6 +376,7 @@ class ActivityFormPageState extends State<ActivityFormPage> {
         CustomTextField(
           labelText: 'Nama Mading',
           name: 'magzName',
+          initialValue: widget.activity != null ? widget.activity!.title : '',
           hintText: 'Nama Mading',
           validators: [
             FormBuilderValidators.required(
@@ -267,6 +390,8 @@ class ActivityFormPageState extends State<ActivityFormPage> {
         CustomTextField(
           labelText: 'Penyelenggara',
           name: 'organizer',
+          initialValue:
+              widget.activity != null ? widget.activity!.organizer : '',
           hintText: 'Nama Penyelenggara',
           validators: [
             FormBuilderValidators.required(
@@ -280,7 +405,9 @@ class ActivityFormPageState extends State<ActivityFormPage> {
         CustomTextField(
           labelText: 'Deskripsi',
           name: 'description',
+          initialValue: widget.activity != null ? widget.activity!.content : '',
           hintText: 'Deskripsi',
+          maxLines: 3,
           validators: [
             FormBuilderValidators.required(
               errorText: 'Bagian ini harus diisi',
@@ -297,6 +424,7 @@ class ActivityFormPageState extends State<ActivityFormPage> {
         CustomTextField(
           labelText: 'Nama Kegiatan',
           name: 'eventName',
+          initialValue: widget.activity != null ? widget.activity!.title : '',
           hintText: 'Nama Kegiatan',
           validators: [
             FormBuilderValidators.required(
@@ -310,6 +438,8 @@ class ActivityFormPageState extends State<ActivityFormPage> {
         CustomTextField(
           labelText: 'Penyelenggara',
           name: 'organizer',
+          initialValue:
+              widget.activity != null ? widget.activity!.organizer : '',
           hintText: 'Nama Penyelenggara',
           validators: [
             FormBuilderValidators.required(
@@ -323,6 +453,9 @@ class ActivityFormPageState extends State<ActivityFormPage> {
         CustomTextField(
           labelText: 'Waktu',
           name: 'eventTime',
+          initialValue: widget.activity != null
+              ? formatDateTime(widget.activity!.eventDate ?? '')
+              : '',
           readOnly: true,
           hintText: 'Waktu Kegiatan',
           textInputType: TextInputType.none,
@@ -339,6 +472,7 @@ class ActivityFormPageState extends State<ActivityFormPage> {
         CustomTextField(
           labelText: 'Deskripsi',
           name: 'description',
+          initialValue: widget.activity != null ? widget.activity!.content : '',
           hintText: 'Deskripsi',
           maxLines: 3,
           validators: [
@@ -484,11 +618,10 @@ class ActivityFormPageState extends State<ActivityFormPage> {
     if (selectedTime == null) return;
 
     dateTime = selectedDate.copyWith(
-      hour: selectedTime.hour,
-      minute: selectedTime.minute,
-      second: 00,
-      isUtc: true
-    );
+        hour: selectedTime.hour,
+        minute: selectedTime.minute,
+        second: 00,
+        isUtc: true);
 
     debugPrint(dateTime.toIso8601String());
 

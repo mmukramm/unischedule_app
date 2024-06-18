@@ -10,7 +10,9 @@ import 'package:unischedule_app/core/utils/asset_path.dart';
 import 'package:unischedule_app/core/utils/date_formatter.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/features/data/models/post.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/activity_form_page.dart';
 import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_detail_cubit.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_management_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_management_state.dart';
 import 'package:unischedule_app/features/presentation/admin/activity/event_participant_page.dart';
 import 'package:unischedule_app/features/presentation/common/image_view_page.dart';
@@ -62,7 +64,17 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          navigatorKey.currentState!.push(
+            MaterialPageRoute(
+              builder: (_) => ActivityFormPage(
+                isMagz: !activity.isEvent!,
+                isEdit: true,
+                activity: activity,
+              ),
+            ),
+          );
+        },
         shape: const RoundedRectangleBorder(),
         backgroundColor: warningColor,
         child: SvgPicture.asset(
@@ -86,6 +98,8 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
               message: state.message!,
               type: SnackBarType.success,
             );
+            navigatorKey.currentState!.pop();
+            context.read<ActivityManagementCubit>().getAllPosts();
           }
         },
         builder: (context, state) {
@@ -108,7 +122,7 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
                     height: 24,
                   ),
                   Text(
-                    'Foto Kegiatan',
+                    'Foto ${(activity.isEvent ?? true) ? 'Kegiatan' : 'Mading'} ',
                     style: textTheme.headlineMedium,
                   ),
                   const SizedBox(
@@ -125,7 +139,7 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
                     child: CachedNetworkImage(
                       height: 320,
                       width: double.infinity,
-                      imageUrl: activity.picture!,
+                      imageUrl: activity.picture ?? '',
                       placeholder: (_, __) => const Padding(
                         padding: EdgeInsets.all(12),
                         child: Loading(
@@ -211,7 +225,7 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
                           Expanded(
                             flex: 2,
                             child: Text(
-                              'Waktu',
+                              (activity.isEvent ?? true) ? 'Waktu' : 'Waktu Dibuat',
                               style: textTheme.titleMedium,
                             ),
                           ),
@@ -234,38 +248,39 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
                       const SizedBox(
                         height: 20,
                       ),
-                      FilledButton(
-                        onPressed: () => navigatorKey.currentState!.push(
-                          MaterialPageRoute(
-                            builder: (_) => const EventParticipantPage(),
+                      if ((activity.isEvent ?? true))
+                        FilledButton(
+                          onPressed: () => navigatorKey.currentState!.push(
+                            MaterialPageRoute(
+                              builder: (_) => const EventParticipantPage(),
+                            ),
+                          ),
+                          style: FilledButton.styleFrom(
+                            padding: const EdgeInsets.all(12),
+                            shape: const RoundedRectangleBorder(),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SvgPicture.asset(
+                                AssetPath.getIcons('users-group.svg'),
+                                colorFilter: const ColorFilter.mode(
+                                  secondaryTextColor,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 12,
+                              ),
+                              Text(
+                                "Lihat Pendaftar",
+                                style: textTheme.titleMedium!.copyWith(
+                                  color: secondaryTextColor,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        style: FilledButton.styleFrom(
-                          padding: const EdgeInsets.all(12),
-                          shape: const RoundedRectangleBorder(),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            SvgPicture.asset(
-                              AssetPath.getIcons('users-group.svg'),
-                              colorFilter: const ColorFilter.mode(
-                                secondaryTextColor,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 12,
-                            ),
-                            Text(
-                              "Lihat Pendaftar",
-                              style: textTheme.titleMedium!.copyWith(
-                                color: secondaryTextColor,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                       const SizedBox(
                         height: 20,
                       ),
