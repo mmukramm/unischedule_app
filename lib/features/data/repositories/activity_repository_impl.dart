@@ -8,6 +8,7 @@ import 'package:unischedule_app/core/utils/api_response.dart';
 import 'package:unischedule_app/core/utils/const.dart';
 import 'package:unischedule_app/core/utils/credential_saver.dart';
 import 'package:unischedule_app/features/data/datasources/activity_data_sources.dart';
+import 'package:unischedule_app/features/data/models/activity_participant.dart';
 import 'package:unischedule_app/features/data/models/post.dart';
 import 'package:unischedule_app/features/domain/repositories/activity_repository.dart';
 
@@ -65,7 +66,7 @@ class ActivityRepositoryImpl implements ActivityRepository {
 
       if (e.response != null) {
         debugPrint(e.response.toString());
-        
+
         if (e.response?.statusCode == HttpStatus.internalServerError) {
           return Left(ServerFailure(e.message!));
         }
@@ -160,6 +161,59 @@ class ActivityRepositoryImpl implements ActivityRepository {
         );
       }
       return Right(result.message!);
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError) {
+        return const Left(ConnectionFailure(kNoInternetConnection));
+      }
+
+      if (e.response != null) {
+        if (e.response?.statusCode == HttpStatus.internalServerError) {
+          return Left(ServerFailure(e.message!));
+        }
+        return Left(failureMessageHandler(
+            ApiResponse.fromJson(e.response?.data).message ?? ''));
+      }
+
+      return Left(ServerFailure(e.message ?? 'Unknown'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ActivityParticipant>> getPostParticipants(
+      String postId) async {
+    try {
+      final result = await activityDataSources.getPostParticipants(
+        'Bearer ${CredentialSaver.accessToken}',
+        postId,
+      );
+
+      return Right(ActivityParticipant.fromMap(result.data));
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError) {
+        return const Left(ConnectionFailure(kNoInternetConnection));
+      }
+
+      if (e.response != null) {
+        if (e.response?.statusCode == HttpStatus.internalServerError) {
+          return Left(ServerFailure(e.message!));
+        }
+        return Left(failureMessageHandler(
+            ApiResponse.fromJson(e.response?.data).message ?? ''));
+      }
+
+      return Left(ServerFailure(e.message ?? 'Unknown'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> registerEvent(String postId) async {
+    try {
+      final result = await activityDataSources.registerEvent(
+        'Bearer ${CredentialSaver.accessToken}',
+        {'event_id': postId},
+      );
+
+      return Right(result.data);
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError) {
         return const Left(ConnectionFailure(kNoInternetConnection));

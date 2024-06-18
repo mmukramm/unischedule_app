@@ -12,6 +12,7 @@ part 'activity_data_sources.g.dart';
 abstract class ActivityDataSources {
   factory ActivityDataSources(Dio dio, {String baseUrl}) = _ActivityDataSources;
 
+  // Post / Activity
   @GET('/posts')
   Future<ApiResponse> getPosts();
 
@@ -62,6 +63,19 @@ abstract class ActivityDataSources {
   Future<ApiResponse> deletePost(
     @Header('Authorization') String accessToken,
     @Path('id') String id,
+  );
+
+  // Participant
+  @GET('/post-participant/{id}')
+  Future<ApiResponse> getPostParticipants(
+    @Header('Authorization') String accessToken,
+    @Path('id') String postId,
+  );
+
+  @POST('/register-event')
+  Future<ApiResponse> registerEvent(
+    @Header('Authorization') String accessToken,
+    @Body() Map<String, dynamic> params,
   );
 }
 

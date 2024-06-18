@@ -1,9 +1,11 @@
 import 'package:dartz/dartz.dart';
 import 'package:unischedule_app/core/errors/failures.dart';
 import 'package:unischedule_app/features/data/datasources/activity_data_sources.dart';
+import 'package:unischedule_app/features/data/models/activity_participant.dart';
 import 'package:unischedule_app/features/data/models/post.dart';
 
 abstract class ActivityRepository {
+  // Post / Activity
   Future<Either<Failure, List<Post>>> getPosts();
 
   Future<Either<Failure, Post>> getSinglePost(String id);
@@ -13,4 +15,10 @@ abstract class ActivityRepository {
   Future<Either<Failure, String>> createPost(CreatePostParams createPostParams);
 
   Future<Either<Failure, String>> updatePost(CreatePostParams createPostParams);
+
+  // Participant
+  Future<Either<Failure, ActivityParticipant>> getPostParticipants(
+      String postId);
+
+  Future<Either<Failure, String>> registerEvent(String postId);
 }

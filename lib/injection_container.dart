@@ -17,11 +17,13 @@ import 'package:unischedule_app/features/domain/usecases/delete_activity.dart';
 import 'package:unischedule_app/features/domain/usecases/delete_user.dart';
 import 'package:unischedule_app/features/domain/usecases/get_all_users.dart';
 import 'package:unischedule_app/features/domain/usecases/get_activities.dart';
+import 'package:unischedule_app/features/domain/usecases/get_post_participants.dart';
 import 'package:unischedule_app/features/domain/usecases/get_resend_email_verification.dart';
 import 'package:unischedule_app/features/domain/usecases/get_single_activity.dart';
 import 'package:unischedule_app/features/domain/usecases/get_single_user.dart';
 import 'package:unischedule_app/features/domain/usecases/get_user_info.dart';
 import 'package:unischedule_app/features/domain/usecases/post_activity.dart';
+import 'package:unischedule_app/features/domain/usecases/post_register_event.dart';
 import 'package:unischedule_app/features/domain/usecases/post_sign_in.dart';
 import 'package:unischedule_app/features/domain/usecases/post_sign_up.dart';
 import 'package:unischedule_app/features/domain/usecases/post_user.dart';
@@ -136,6 +138,12 @@ void initUseCases() {
   );
   getIt.registerLazySingleton(
     () => PutActivity(getIt()),
+  );
+  getIt.registerLazySingleton(
+    () => GetPostParticipants(getIt()),
+  );
+  getIt.registerLazySingleton(
+    () => PostRegisterEvent(getIt()),
   );
 }
 
