@@ -54,7 +54,9 @@ class ActivityRepositoryImpl implements ActivityRepository {
   Future<Either<Failure, String>> deletePost(String id) async {
     try {
       final result = await activityDataSources.deletePost(
-          'Bearer ${CredentialSaver.accessToken}', id);
+        'Bearer ${CredentialSaver.accessToken}',
+        id,
+      );
       return Right(result.message!);
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError) {
@@ -62,6 +64,8 @@ class ActivityRepositoryImpl implements ActivityRepository {
       }
 
       if (e.response != null) {
+        debugPrint(e.response.toString());
+        
         if (e.response?.statusCode == HttpStatus.internalServerError) {
           return Left(ServerFailure(e.message!));
         }
@@ -110,7 +114,7 @@ class ActivityRepositoryImpl implements ActivityRepository {
         id,
       );
 
-      return Right(result.data as Post);
+      return Right(Post.fromMap(result.data));
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError) {
         return const Left(ConnectionFailure(kNoInternetConnection));

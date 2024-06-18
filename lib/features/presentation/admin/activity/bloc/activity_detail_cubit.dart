@@ -29,8 +29,7 @@ class ActivityDetailCubit extends Cubit<ActivityManagementState> {
 
     result.fold(
       (l) => emit(ActivityManagementState.failure(l.message)),
-      (r) => emit(ActivityManagementState.success(data: r)),
+      (r) => emit(ActivityManagementState.mutateDataSuccess(message: r)),
     );
   }
-
 }

@@ -1,12 +1,21 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:unischedule_app/core/enums/snack_bar_type.dart';
+import 'package:unischedule_app/core/extensions/context_extension.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
+import 'package:unischedule_app/core/utils/date_formatter.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
+import 'package:unischedule_app/features/data/models/post.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_detail_cubit.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_management_state.dart';
 import 'package:unischedule_app/features/presentation/admin/activity/event_participant_page.dart';
 import 'package:unischedule_app/features/presentation/common/image_view_page.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
+import 'package:unischedule_app/features/presentation/widget/loading.dart';
 
 class ActivityDetailPage extends StatefulWidget {
   final String postId;
@@ -20,7 +29,19 @@ class ActivityDetailPage extends StatefulWidget {
 }
 
 class _ActivityDetailPageState extends State<ActivityDetailPage> {
-  
+  late final ActivityDetailCubit activityDetailCubit;
+  late Post activity;
+
+  @override
+  void initState() {
+    super.initState();
+
+    activityDetailCubit = context.read<ActivityDetailCubit>();
+    activityDetailCubit.getActivity(widget.postId);
+
+    activity = Post();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +49,17 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
         title: 'Detail Postingan',
         withBackButton: true,
         withDeleteButton: true,
-        onTapDeleteButton: () {},
+        onTapDeleteButton: () {
+          context.showCustomConfirmationDialog(
+            title:
+                'Hapus ${activity.isEvent ?? false ? 'Kegiatan' : 'Mading'} ini',
+            message: 'Data yang dihapus tidak dapat dipulihkan kembali.',
+            onTapDeleteButton: () {
+              activityDetailCubit.removeActivity(widget.postId);
+              navigatorKey.currentState!.pop();
+            },
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
@@ -42,180 +73,220 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 24,
-              ),
-              Text(
-                'Foto Kegiatan',
-                style: textTheme.headlineMedium,
-              ),
-              const SizedBox(
-                height: 12,
-              ),
-              InkWell(
-                onTap: () => navigatorKey.currentState!.push(
-                  MaterialPageRoute(
-                    builder: (_) => const ImageViewPage(),
-                  ),
-                ),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 320,
-                  child: Image.asset(
-                    AssetPath.getImages('sample.png'),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: BlocConsumer<ActivityDetailCubit, ActivityManagementState>(
+        listener: (context, state) {
+          if (state.isFailure) {
+            context.showCustomSnackbar(
+              message: state.message!,
+              type: SnackBarType.error,
+            );
+          }
+          if (state.isMutateDataSuccess) {
+            context.showCustomSnackbar(
+              message: state.message!,
+              type: SnackBarType.success,
+            );
+          }
+        },
+        builder: (context, state) {
+          if (state.isInProgress) {
+            return const Loading(
+              color: secondaryTextColor,
+            );
+          }
+
+          if (state.isSuccess) {
+            activity = state.data as Post;
+          }
+
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          'Nama Kegiatan',
-                          style: textTheme.titleMedium,
-                        ),
-                      ),
-                      Text(
-                        ':',
-                        style: textTheme.titleMedium,
-                      ),
-                      const SizedBox(
-                        width: 12,
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          'Sosialisasi Pertukaran Mahasiswa Merdeka 2023',
-                          style: textTheme.bodyMedium,
-                        ),
-                      ),
-                    ],
+                  const SizedBox(
+                    height: 24,
+                  ),
+                  Text(
+                    'Foto Kegiatan',
+                    style: textTheme.headlineMedium,
                   ),
                   const SizedBox(
-                    height: 4,
+                    height: 12,
                   ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          'Penyelenggara',
-                          style: textTheme.titleMedium,
-                        ),
-                      ),
-                      Text(
-                        ':',
-                        style: textTheme.titleMedium,
-                      ),
-                      const SizedBox(
-                        width: 12,
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          'Kemahasiswaan',
-                          style: textTheme.bodyMedium,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 4,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          'Waktu',
-                          style: textTheme.titleMedium,
-                        ),
-                      ),
-                      Text(
-                        ':',
-                        style: textTheme.titleMedium,
-                      ),
-                      const SizedBox(
-                        width: 12,
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          '30 Juli 2024 18:00',
-                          style: textTheme.bodyMedium,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  FilledButton(
-                    onPressed: () => navigatorKey.currentState!.push(
+                  InkWell(
+                    onTap: () => navigatorKey.currentState!.push(
                       MaterialPageRoute(
-                        builder: (_) => const EventParticipantPage(),
+                        builder: (_) => ImageViewPage(
+                          imagePath: activity.picture,
+                        ),
                       ),
                     ),
-                    style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.all(12),
-                      shape: const RoundedRectangleBorder(),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SvgPicture.asset(
-                          AssetPath.getIcons('users-group.svg'),
-                          colorFilter: const ColorFilter.mode(
-                            secondaryTextColor,
-                            BlendMode.srcIn,
-                          ),
+                    child: CachedNetworkImage(
+                      height: 320,
+                      width: double.infinity,
+                      imageUrl: activity.picture!,
+                      placeholder: (_, __) => const Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Loading(
+                          color: secondaryTextColor,
                         ),
-                        const SizedBox(
-                          width: 12,
-                        ),
-                        Text(
-                          "Lihat Pendaftar",
-                          style: textTheme.titleMedium!.copyWith(
-                            color: secondaryTextColor,
-                          ),
-                        ),
-                      ],
+                      ),
+                      errorWidget: (_, __, ___) => Image.asset(
+                        width: double.infinity,
+                        height: 320,
+                        AssetPath.getImages('no-image.jpg'),
+                        fit: BoxFit.cover,
+                      ),
+                      fit: BoxFit.cover,
                     ),
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 24,
                   ),
-                  Text(
-                    'Description',
-                    style: textTheme.titleMedium,
-                  ),
-                  const SizedBox(
-                    height: 4,
-                  ),
-                  Text(
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus eu neque vitae tortor rhoncus suscipit. Vivamus gravida neque et purus vulputate dictum.',
-                    style: textTheme.bodySmall,
-                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: Text(
+                              'Nama Kegiatan',
+                              style: textTheme.titleMedium,
+                            ),
+                          ),
+                          Text(
+                            ':',
+                            style: textTheme.titleMedium,
+                          ),
+                          const SizedBox(
+                            width: 12,
+                          ),
+                          Expanded(
+                            flex: 3,
+                            child: Text(
+                              activity.title ?? '',
+                              style: textTheme.bodyMedium,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: Text(
+                              'Penyelenggara',
+                              style: textTheme.titleMedium,
+                            ),
+                          ),
+                          Text(
+                            ':',
+                            style: textTheme.titleMedium,
+                          ),
+                          const SizedBox(
+                            width: 12,
+                          ),
+                          Expanded(
+                            flex: 3,
+                            child: Text(
+                              activity.organizer ?? '',
+                              style: textTheme.bodyMedium,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: Text(
+                              'Waktu',
+                              style: textTheme.titleMedium,
+                            ),
+                          ),
+                          Text(
+                            ':',
+                            style: textTheme.titleMedium,
+                          ),
+                          const SizedBox(
+                            width: 12,
+                          ),
+                          Expanded(
+                            flex: 3,
+                            child: Text(
+                              formatDateTime(activity.eventDate ?? ''),
+                              style: textTheme.bodyMedium,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      FilledButton(
+                        onPressed: () => navigatorKey.currentState!.push(
+                          MaterialPageRoute(
+                            builder: (_) => const EventParticipantPage(),
+                          ),
+                        ),
+                        style: FilledButton.styleFrom(
+                          padding: const EdgeInsets.all(12),
+                          shape: const RoundedRectangleBorder(),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SvgPicture.asset(
+                              AssetPath.getIcons('users-group.svg'),
+                              colorFilter: const ColorFilter.mode(
+                                secondaryTextColor,
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 12,
+                            ),
+                            Text(
+                              "Lihat Pendaftar",
+                              style: textTheme.titleMedium!.copyWith(
+                                color: secondaryTextColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        'Description',
+                        style: textTheme.titleMedium,
+                      ),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      Text(
+                        activity.content ?? '',
+                        style: textTheme.bodySmall,
+                      ),
+                    ],
+                  )
                 ],
-              )
-            ],
-          ),
-        ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
