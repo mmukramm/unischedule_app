@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:retrofit/retrofit.dart';
 
 import 'package:unischedule_app/core/utils/api_response.dart';
@@ -17,6 +18,7 @@ abstract class ActivityDataSources {
   @GET('/post/{id}')
   Future<ApiResponse> getSinglePost(
     @Header('Authorization') String accessToken,
+    @Path('id') String id,
   );
 
   @POST('/post')
@@ -28,7 +30,7 @@ abstract class ActivityDataSources {
     @Part(name: 'organizer') String organizer,
     @Part(name: 'eventDate') String eventDate,
     @Part(name: 'is_event') String isEvent,
-    @Part(name: 'picture') String picture,
+    @Part(name: 'picture', contentType: 'image/jpg') File picture,
   );
 
   @PUT('/post/{id}')
@@ -36,12 +38,12 @@ abstract class ActivityDataSources {
   Future<ApiResponse> updatePost(
     @Header('Authorization') String accessToken,
     @Path('id') String id,
-    @Part(name: 'title') String title,
-    @Part(name: 'content') String content,
-    @Part(name: 'organizer') String organizer,
-    @Part(name: 'eventDate') String eventDate,
-    @Part(name: 'is_event') String isEvent,
-    @Part(name: 'picture') String picture,
+    @Part(name: 'title') String? title,
+    @Part(name: 'content') String? content,
+    @Part(name: 'organizer') String? organizer,
+    @Part(name: 'eventDate') String? eventDate,
+    @Part(name: 'is_event') String? isEvent,
+    @Part(name: 'picture', contentType: 'image/jpg') File picture,
   );
 
   @PUT('/post/{id}')
@@ -69,7 +71,7 @@ class CreatePostParams {
   final String? content;
   final String? organizer;
   final String? eventDate;
-  final String? isEvent;
+  final bool? isEvent;
   final File? file;
 
   CreatePostParams({

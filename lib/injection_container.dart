@@ -13,17 +13,23 @@ import 'package:unischedule_app/features/domain/repositories/activity_repository
 import 'package:unischedule_app/features/domain/repositories/auth_repository.dart';
 import 'package:unischedule_app/features/domain/repositories/user_repository.dart';
 import 'package:unischedule_app/features/domain/usecases/delete_access_token.dart';
+import 'package:unischedule_app/features/domain/usecases/delete_activity.dart';
 import 'package:unischedule_app/features/domain/usecases/delete_user.dart';
 import 'package:unischedule_app/features/domain/usecases/get_all_users.dart';
-import 'package:unischedule_app/features/domain/usecases/get_posts.dart';
+import 'package:unischedule_app/features/domain/usecases/get_activities.dart';
 import 'package:unischedule_app/features/domain/usecases/get_resend_email_verification.dart';
+import 'package:unischedule_app/features/domain/usecases/get_single_activity.dart';
 import 'package:unischedule_app/features/domain/usecases/get_single_user.dart';
 import 'package:unischedule_app/features/domain/usecases/get_user_info.dart';
+import 'package:unischedule_app/features/domain/usecases/post_activity.dart';
 import 'package:unischedule_app/features/domain/usecases/post_sign_in.dart';
 import 'package:unischedule_app/features/domain/usecases/post_sign_up.dart';
 import 'package:unischedule_app/features/domain/usecases/post_user.dart';
 import 'package:unischedule_app/features/domain/usecases/post_verification_email.dart';
+import 'package:unischedule_app/features/domain/usecases/put_activity.dart';
 import 'package:unischedule_app/features/domain/usecases/put_user.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_detail_cubit.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_form_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_management_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/user_detail_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/users_cubit.dart';
@@ -74,6 +80,12 @@ void initBlocs() {
   getIt.registerFactory(
     () => ActivityManagementCubit(getIt()),
   );
+  getIt.registerFactory(
+    () => ActivityFormCubit(getIt(), getIt()),
+  );
+  getIt.registerFactory(
+    () => ActivityDetailCubit(getIt(), getIt()),
+  );
 }
 
 void initUseCases() {
@@ -111,7 +123,19 @@ void initUseCases() {
     () => PutUser(getIt()),
   );
   getIt.registerLazySingleton(
-    () => GetPosts(getIt()),
+    () => GetActivities(getIt()),
+  );
+  getIt.registerLazySingleton(
+    () => GetSingleActivity(getIt()),
+  );
+  getIt.registerLazySingleton(
+    () => PostActivity(getIt()),
+  );
+  getIt.registerLazySingleton(
+    () => DeleteActivity(getIt()),
+  );
+  getIt.registerLazySingleton(
+    () => PutActivity(getIt()),
   );
 }
 

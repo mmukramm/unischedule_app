@@ -8,16 +8,27 @@ import 'package:unischedule_app/features/presentation/admin/activity/event_parti
 import 'package:unischedule_app/features/presentation/common/image_view_page.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 
-class ActivityDetailPage extends StatelessWidget {
-  const ActivityDetailPage({super.key});
+class ActivityDetailPage extends StatefulWidget {
+  final String postId;
+  const ActivityDetailPage({
+    super.key,
+    required this.postId,
+  });
 
+  @override
+  State<ActivityDetailPage> createState() => _ActivityDetailPageState();
+}
+
+class _ActivityDetailPageState extends State<ActivityDetailPage> {
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
+      appBar: CustomAppBar(
         title: 'Detail Postingan',
         withBackButton: true,
         withDeleteButton: true,
+        onTapDeleteButton: () {},
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},

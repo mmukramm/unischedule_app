@@ -1,10 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:unischedule_app/core/enums/snack_bar_type.dart';
+import 'package:unischedule_app/core/extensions/context_extension.dart';
 import 'package:unischedule_app/core/extensions/date_time_extension.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
@@ -12,6 +15,9 @@ import 'package:unischedule_app/core/theme/theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
 import 'package:unischedule_app/core/utils/image_service.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
+import 'package:unischedule_app/features/data/datasources/activity_data_sources.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_form_cubit.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_management_state.dart';
 import 'package:unischedule_app/features/presentation/common/image_view_page.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_text_field.dart';
@@ -34,6 +40,7 @@ class ActivityFormPageState extends State<ActivityFormPage> {
   final formKey = GlobalKey<FormBuilderState>();
   late final ValueNotifier<String?> postImagePath;
   late DateTime dateTime;
+  late final ActivityFormCubit activityFormCubit;
 
   @override
   void initState() {
@@ -41,6 +48,7 @@ class ActivityFormPageState extends State<ActivityFormPage> {
 
     postImagePath = ValueNotifier(null);
     dateTime = DateTime.now();
+    activityFormCubit = context.read<ActivityFormCubit>();
   }
 
   @override
@@ -59,132 +67,180 @@ class ActivityFormPageState extends State<ActivityFormPage> {
             : 'Tambah ${widget.isMagz ? 'Mading' : 'Kegiatan'}',
         withBackButton: true,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Center(
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 24,
-                ),
-                Text(
-                  'Foto ${widget.isMagz ? 'Mading' : 'Kegiatan'}',
-                  textAlign: TextAlign.center,
-                  style: textTheme.headlineSmall!.copyWith(
-                    color: primaryTextColor,
+      body: BlocListener<ActivityFormCubit, ActivityManagementState>(
+        listener: (context, state) {
+          if (state.isInProgress) {
+            context.showLoadingDialog();
+          }
+
+          if (state.isFailure) {
+            navigatorKey.currentState!.pop();
+            context.showCustomSnackbar(
+              message: state.message!,
+              type: SnackBarType.error,
+            );
+          }
+          if (state.isSuccess) {
+            navigatorKey.currentState!.pop();
+            navigatorKey.currentState!.pop();
+            context.showCustomSnackbar(
+              message: state.data,
+              type: SnackBarType.success,
+            );
+          }
+        },
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Center(
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 24,
                   ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    AspectRatio(
-                      aspectRatio: 3 / 2,
-                      child: ValueListenableBuilder(
-                        valueListenable: postImagePath,
-                        builder: (context, value, _) {
-                          if (value == null) {
-                            return Container(
-                              decoration: const BoxDecoration(
-                                color: secondaryTextColor,
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: SvgPicture.asset(
-                                  width: 80,
-                                  AssetPath.getIcons('user.svg'),
-                                  colorFilter: const ColorFilter.mode(
-                                    primaryColor,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                              ),
-                            );
-                          } else {
-                            return InkWell(
-                              onTap: () => navigatorKey.currentState!.push(
-                                MaterialPageRoute(
-                                  builder: (_) => ImageViewPage(
-                                    imagePath: value,
-                                  ),
-                                ),
-                              ),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image: FileImage(File(value)),
-                                      fit: BoxFit.cover),
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                      ),
+                  Text(
+                    'Foto ${widget.isMagz ? 'Mading' : 'Kegiatan'}',
+                    textAlign: TextAlign.center,
+                    style: textTheme.headlineSmall!.copyWith(
+                      color: primaryTextColor,
                     ),
-                    Positioned(
-                      top: 12,
-                      right: 12,
-                      child: InkWellContainer(
-                        splashColor: Colors.transparent,
-                        onTap: () {
-                          showActionModalBottomSheet(context);
-                        },
-                        child: Container(
-                          width: 52,
-                          height: 52,
-                          decoration: BoxDecoration(
-                            color: highlightTextColor,
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              width: 2,
-                              color: primaryColor,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      AspectRatio(
+                        aspectRatio: 3 / 2,
+                        child: ValueListenableBuilder(
+                          valueListenable: postImagePath,
+                          builder: (context, value, _) {
+                            if (value == null) {
+                              return Container(
+                                decoration: const BoxDecoration(
+                                  color: secondaryTextColor,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: SvgPicture.asset(
+                                    width: 80,
+                                    AssetPath.getIcons('user.svg'),
+                                    colorFilter: const ColorFilter.mode(
+                                      primaryColor,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return InkWell(
+                                onTap: () => navigatorKey.currentState!.push(
+                                  MaterialPageRoute(
+                                    builder: (_) => ImageViewPage(
+                                      imagePath: value,
+                                    ),
+                                  ),
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: FileImage(File(value)),
+                                        fit: BoxFit.cover),
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                      Positioned(
+                        top: 12,
+                        right: 12,
+                        child: InkWellContainer(
+                          splashColor: Colors.transparent,
+                          onTap: () {
+                            showActionModalBottomSheet(context);
+                          },
+                          child: Container(
+                            width: 52,
+                            height: 52,
+                            decoration: BoxDecoration(
+                              color: highlightTextColor,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                width: 2,
+                                color: primaryColor,
+                              ),
                             ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: SvgPicture.asset(
-                              width: 80,
-                              AssetPath.getIcons('pencil.svg'),
-                              colorFilter: const ColorFilter.mode(
-                                primaryColor,
-                                BlendMode.srcIn,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: SvgPicture.asset(
+                                width: 80,
+                                AssetPath.getIcons('pencil.svg'),
+                                colorFilter: const ColorFilter.mode(
+                                  primaryColor,
+                                  BlendMode.srcIn,
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 32,
-                ),
-                FormBuilder(
-                  key: formKey,
-                  child: widget.isMagz ? buildMagzForm() : buildEventForm(),
-                ),
-                const SizedBox(
-                  height: 32,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(
-                    style: FilledButton.styleFrom(
-                      shape: const RoundedRectangleBorder(),
-                    ),
-                    onPressed: () {},
-                    child: Text(
-                      'Submit',
-                      style: textTheme.titleMedium!.copyWith(
-                        color: secondaryTextColor,
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 32,
+                  ),
+                  FormBuilder(
+                    key: formKey,
+                    child: widget.isMagz ? buildMagzForm() : buildEventForm(),
+                  ),
+                  const SizedBox(
+                    height: 32,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton(
+                      style: FilledButton.styleFrom(
+                        shape: const RoundedRectangleBorder(),
+                      ),
+                      onPressed: () {
+                        FocusManager.instance.primaryFocus?.unfocus();
+
+                        debugPrint(dateTime.toIso8601String());
+
+                        if (formKey.currentState!.saveAndValidate()) {
+                          final formValue = formKey.currentState!.value;
+
+                          debugPrint(formValue.toString());
+
+                          final createPostParams = CreatePostParams(
+                            title: formValue['eventName'],
+                            content: formValue['description'],
+                            organizer: formValue['organizer'],
+                            eventDate: formValue['eventTime'] != ''
+                                ? dateTime.toIso8601String()
+                                : null,
+                            isEvent: !widget.isMagz,
+                            file: File(postImagePath.value!),
+                          );
+
+                          if (!widget.isEdit) {
+                            activityFormCubit.createActivity(createPostParams);
+                          }
+                        }
+                      },
+                      child: Text(
+                        'Submit',
+                        style: textTheme.titleMedium!.copyWith(
+                          color: secondaryTextColor,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -430,9 +486,11 @@ class ActivityFormPageState extends State<ActivityFormPage> {
     dateTime = selectedDate.copyWith(
       hour: selectedTime.hour,
       minute: selectedTime.minute,
+      second: 00,
+      isUtc: true
     );
 
-    debugPrint(dateTime.toString());
+    debugPrint(dateTime.toIso8601String());
 
     final value = dateTime.toStringPattern('dd MMMM yyyy HH:mm');
 

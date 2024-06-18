@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:unischedule_app/core/theme/theme.dart';
 import 'package:unischedule_app/core/utils/credential_saver.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_detail_cubit.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_form_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_management_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/user_detail_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/users_cubit.dart';
@@ -70,6 +72,12 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => getIt<ActivityManagementCubit>(),
+        ),
+        BlocProvider(
+          create: (_) => getIt<ActivityFormCubit>(),
+        ),
+        BlocProvider(
+          create: (_) => getIt<ActivityDetailCubit>(),
         ),
       ],
       child: MaterialApp(

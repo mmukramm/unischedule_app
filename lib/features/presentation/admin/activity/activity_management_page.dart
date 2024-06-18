@@ -372,7 +372,9 @@ class ActivityItemCard extends StatelessWidget {
             child: FilledButton(
               onPressed: () => navigatorKey.currentState!.push(
                 MaterialPageRoute(
-                  builder: (_) => const ActivityDetailPage(),
+                  builder: (_) => ActivityDetailPage(
+                    postId: item.id!,
+                  ),
                 ),
               ),
               style: FilledButton.styleFrom(
