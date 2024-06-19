@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:unischedule_app/core/enums/snack_bar_type.dart';
 import 'package:unischedule_app/core/extensions/context_extension.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
@@ -86,9 +87,8 @@ class _ActivityPageState extends State<ActivityPage> {
                       activities.length,
                       (index) {
                         final activity = activities[index];
-                        return StaggeredGridTile.count(
+                        return StaggeredGridTile.fit(
                           crossAxisCellCount: 4,
-                          mainAxisCellCount: 6,
                           child: InkWellContainer(
                             padding: const EdgeInsets.all(8),
                             onTap: () {
@@ -128,13 +128,40 @@ class _ActivityPageState extends State<ActivityPage> {
                                 ),
                                 Text(
                                   activity.title ?? '',
-                                  maxLines: 4,
+                                  maxLines: 3,
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.center,
                                   style: textTheme.titleSmall!.copyWith(
                                     color: primaryTextColor,
                                   ),
-                                )
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SvgPicture.asset(
+                                      AssetPath.getIcons('category.svg'),
+                                      width: 16,
+                                      colorFilter: const ColorFilter.mode(
+                                        highlightTextColor,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 4,
+                                    ),
+                                    Text(
+                                      activity.isEvent ?? false
+                                          ? 'Kegiatan'
+                                          : 'Mading',
+                                      style: textTheme.bodySmall!.copyWith(
+                                        color: highlightTextColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
                           ),

@@ -8,6 +8,7 @@ import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
 import 'package:unischedule_app/core/utils/const.dart';
+import 'package:unischedule_app/core/utils/credential_saver.dart';
 import 'package:unischedule_app/core/utils/date_formatter.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/features/data/models/post.dart';
@@ -27,11 +28,16 @@ class UserActivityDetailPage extends StatefulWidget {
 
 class _UserActivityDetailPageState extends State<UserActivityDetailPage> {
   late final UserActivityDetailCubit userActivityDetailCubit;
+  late final bool isLogin;
+  late final bool isEmailVerified;
 
   @override
   void initState() {
     super.initState();
     userActivityDetailCubit = context.read<UserActivityDetailCubit>();
+    isLogin = CredentialSaver.accessToken != null;
+    isEmailVerified = (CredentialSaver.userInfo != null &&
+        CredentialSaver.userInfo!.emailVerified!);
   }
 
   @override
@@ -221,47 +227,80 @@ class _UserActivityDetailPageState extends State<UserActivityDetailPage> {
                       height: 32,
                     ),
                     if (widget.activity.isEvent ?? true)
-                      FilledButton(
-                        onPressed: () {
-                          context.showCustomConfirmationDialog(
-                            title: 'Daftar Kegiatan?',
-                            message:
-                                'Apakah Anda yakin ingin mendaftar pada kegiatan ini?',
-                            primaryButtonText: 'Daftar',
-                            onTapPrimaryButton: () {
-                              navigatorKey.currentState!.pop();
-                              userActivityDetailCubit.registerEvent(
-                                widget.activity.id!,
-                              );
-                            },
-                          );
-                        },
-                        style: FilledButton.styleFrom(
-                          padding: const EdgeInsets.all(12),
-                          shape: const RoundedRectangleBorder(),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            SvgPicture.asset(
-                              AssetPath.getIcons('users-group.svg'),
-                              colorFilter: const ColorFilter.mode(
-                                secondaryTextColor,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 12,
-                            ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          if (!isLogin)
                             Text(
-                              "Daftar Kegiatan",
-                              style: textTheme.titleMedium!.copyWith(
-                                color: secondaryTextColor,
+                              'Silahkan login terlebih dahulu',
+                              textAlign: TextAlign.center,
+                              style: textTheme.bodySmall!.copyWith(
+                                color: dangerColor,
                               ),
                             ),
-                          ],
-                        ),
+                          if (!isEmailVerified && isLogin)
+                            Text(
+                              'Anda tidak bisa mendaftar sebelum email Anda aktif',
+                              textAlign: TextAlign.center,
+                              style: textTheme.bodySmall!.copyWith(
+                                color: dangerColor,
+                              ),
+                            ),
+                          FilledButton(
+                            onPressed: isEmailVerified && isLogin
+                                ? () {
+                                    context.showCustomConfirmationDialog(
+                                      title: 'Daftar Kegiatan?',
+                                      message:
+                                          'Apakah Anda yakin ingin mendaftar pada kegiatan ini?',
+                                      primaryButtonText: 'Daftar',
+                                      onTapPrimaryButton: () {
+                                        navigatorKey.currentState!.pop();
+                                        userActivityDetailCubit.registerEvent(
+                                          widget.activity.id!,
+                                        );
+                                      },
+                                    );
+                                  }
+                                : null,
+                            style: FilledButton.styleFrom(
+                              padding: const EdgeInsets.all(12),
+                              shape: const RoundedRectangleBorder(),
+                              backgroundColor: isEmailVerified && isLogin
+                                  ? primaryColor
+                                  : greyColor,
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SvgPicture.asset(
+                                  AssetPath.getIcons('users-group.svg'),
+                                  colorFilter: ColorFilter.mode(
+                                    isEmailVerified && isLogin
+                                        ? secondaryTextColor
+                                        : scaffoldColor,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 12,
+                                ),
+                                Text(
+                                  "Daftar Kegiatan",
+                                  style: textTheme.titleMedium!.copyWith(
+                                    color: isEmailVerified && isLogin
+                                        ? secondaryTextColor
+                                        : scaffoldColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
+                    const SizedBox(
+                      height: 24,
+                    ),
                   ],
                 )
               ],
