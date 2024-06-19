@@ -111,9 +111,9 @@ class HomePage extends StatelessWidget {
                   child: InkWellContainer(
                     padding: const EdgeInsets.all(12),
                     border: Border.all(
-                      color: primaryColor,
-                      width: 3,
-                    ),
+                        color: primaryColor,
+                        width: 3,
+                        strokeAlign: BorderSide.strokeAlignOutside),
                     borderRadiusGeometry: const BorderRadius.only(
                       topRight: Radius.circular(24),
                     ),
@@ -156,6 +156,7 @@ class HomePage extends StatelessWidget {
                     border: Border.all(
                       color: primaryColor,
                       width: 3,
+                      strokeAlign: BorderSide.strokeAlignOutside,
                     ),
                     borderRadiusGeometry: const BorderRadius.only(
                       topRight: Radius.circular(24),
