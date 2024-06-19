@@ -17,6 +17,7 @@ import 'package:unischedule_app/features/presentation/bloc/profile/profile_cubit
 import 'package:unischedule_app/features/presentation/bloc/sign_in/sign_in_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/sign_up/sign_up_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/user_form_cubit.dart';
+import 'package:unischedule_app/features/presentation/bloc/user_activity_detail/user_activity_detail_cubit.dart';
 import 'package:unischedule_app/features/presentation/common/splash_page.dart';
 import 'package:unischedule_app/features/presentation/user/activity/bloc/activity_cubit.dart';
 import 'package:unischedule_app/injection_container.dart' as di;
@@ -82,6 +83,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => getIt<ActivityCubit>(),
+        ),
+        BlocProvider(
+          create: (_) => getIt<UserActivityDetailCubit>(),
         ),
       ],
       child: MaterialApp(

@@ -213,7 +213,7 @@ class ActivityRepositoryImpl implements ActivityRepository {
         {'event_id': postId},
       );
 
-      return Right(result.data);
+      return Right(result.message!);
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError) {
         return const Left(ConnectionFailure(kNoInternetConnection));

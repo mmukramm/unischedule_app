@@ -7,7 +7,9 @@ import 'package:unischedule_app/core/extensions/context_extension.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
+import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/features/data/models/post.dart';
+import 'package:unischedule_app/features/presentation/common/user_activity_detail_page.dart';
 import 'package:unischedule_app/features/presentation/user/activity/bloc/activity_cubit.dart';
 import 'package:unischedule_app/features/presentation/user/activity/bloc/activity_state.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
@@ -90,7 +92,13 @@ class _ActivityPageState extends State<ActivityPage> {
                           child: InkWellContainer(
                             padding: const EdgeInsets.all(8),
                             onTap: () {
-                              
+                              navigatorKey.currentState!.push(
+                                MaterialPageRoute(
+                                  builder: (_) => UserActivityDetailPage(
+                                    activity: activity,
+                                  ),
+                                ),
+                              );
                             },
                             containerBackgroundColor: scaffoldColor,
                             child: Column(

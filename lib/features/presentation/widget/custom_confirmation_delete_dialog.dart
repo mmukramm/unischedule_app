@@ -3,18 +3,16 @@ import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
 
-class CustomConfirmationDialog extends StatelessWidget {
+class CustomConfirmationDeleteDialog extends StatelessWidget {
   final String title;
   final String message;
-  final String primaryButtonText;
-  final VoidCallback onTapPrimaryButton;
+  final VoidCallback onTapDeleteButton;
 
-  const CustomConfirmationDialog({
+  const CustomConfirmationDeleteDialog({
     super.key,
     required this.title,
     required this.message,
-    required this.onTapPrimaryButton,
-    required this.primaryButtonText,
+    required this.onTapDeleteButton,
   });
 
   @override
@@ -77,14 +75,13 @@ class CustomConfirmationDialog extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton(
-                      onPressed: onTapPrimaryButton,
+                      onPressed: onTapDeleteButton,
                       style: FilledButton.styleFrom(
-                        backgroundColor: primaryColor,
+                        backgroundColor: dangerColor,
                         shape: const RoundedRectangleBorder(),
                       ),
-                      child: Text(
-                        primaryButtonText,
-                        style: textTheme.titleMedium!.copyWith(color: secondaryTextColor),
+                      child: const Text(
+                        'Hapus',
                       ),
                     ),
                   ),

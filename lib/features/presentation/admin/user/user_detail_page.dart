@@ -64,7 +64,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
           withBackButton: true,
           withDeleteButton: true,
           onTapDeleteButton: () {
-            context.showCustomConfirmationDialog(
+            context.showCustomConfirmationDeleteDialog(
               title: 'HAPUS USER',
               message:
                   'Yakin ingin menghapus data? Data yang dihapus tidak dapat dipulihkan.',

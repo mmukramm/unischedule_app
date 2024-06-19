@@ -52,7 +52,7 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
         withBackButton: true,
         withDeleteButton: true,
         onTapDeleteButton: () {
-          context.showCustomConfirmationDialog(
+          context.showCustomConfirmationDeleteDialog(
             title:
                 'Hapus ${activity.isEvent ?? false ? 'Kegiatan' : 'Mading'} ini',
             message: 'Data yang dihapus tidak dapat dipulihkan kembali.',

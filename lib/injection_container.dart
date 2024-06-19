@@ -42,6 +42,7 @@ import 'package:unischedule_app/features/presentation/bloc/profile/profile_cubit
 import 'package:unischedule_app/features/presentation/bloc/sign_in/sign_in_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/sign_up/sign_up_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/user_form_cubit.dart';
+import 'package:unischedule_app/features/presentation/bloc/user_activity_detail/user_activity_detail_cubit.dart';
 import 'package:unischedule_app/features/presentation/user/activity/bloc/activity_cubit.dart';
 
 final getIt = GetIt.instance;
@@ -91,6 +92,9 @@ void initBlocs() {
   );
   getIt.registerFactory(
     () => ActivityCubit(getIt()),
+  );
+  getIt.registerFactory(
+    () => UserActivityDetailCubit(getIt()),
   );
 }
 

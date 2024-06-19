@@ -4,6 +4,7 @@ import 'package:unischedule_app/core/enums/snack_bar_type.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
+import 'package:unischedule_app/features/presentation/widget/custom_confirmation_delete_dialog.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_confirmation_dialog.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_selector_dialog.dart';
 import 'package:unischedule_app/features/presentation/widget/loading.dart';
@@ -59,17 +60,34 @@ extension CustomDialogExtension on BuildContext {
     );
   }
 
-  Future<Object?> showCustomConfirmationDialog({
+  Future<Object?> showCustomConfirmationDeleteDialog({
     required String title,
     required String message,
     required VoidCallback onTapDeleteButton,
   }) {
     return showDialog(
       context: this,
-      builder: (context) => CustomConfirmationDialog(
+      builder: (context) => CustomConfirmationDeleteDialog(
         title: title,
         message: message,
         onTapDeleteButton: onTapDeleteButton,
+      ),
+    );
+  }
+
+  Future<Object?> showCustomConfirmationDialog({
+    required String title,
+    required String message,
+    required VoidCallback onTapPrimaryButton,
+    required String primaryButtonText,
+  }) {
+    return showDialog(
+      context: this,
+      builder: (context) => CustomConfirmationDialog(
+        title: title,
+        message: message,
+        onTapPrimaryButton: onTapPrimaryButton,
+        primaryButtonText: primaryButtonText,
       ),
     );
   }
