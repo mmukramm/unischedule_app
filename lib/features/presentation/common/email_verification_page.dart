@@ -21,10 +21,12 @@ import 'package:unischedule_app/features/presentation/widget/ink_well_container.
 
 class EmailVerificationPage extends StatefulWidget {
   final bool isSend;
+  final bool isFromRegister;
   final String? message;
   const EmailVerificationPage({
     super.key,
     required this.isSend,
+    required this.isFromRegister,
     this.message,
   });
 
@@ -43,7 +45,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage>
     super.initState();
     countDown = context.read<CountDownCubit>();
     emailVerificationCubit = context.read<EmailVerificationCubit>();
-    widget.isSend ? null : emailVerificationCubit.resendEmailVerification();
+    if (!widget.isSend) emailVerificationCubit.resendEmailVerification();
   }
 
   @override
@@ -68,7 +70,6 @@ class _EmailVerificationPageState extends State<EmailVerificationPage>
               );
             }
             if (state.isResendSuccess) {
-              navigatorKey.currentState!.pop();
               context.showCustomSnackbar(
                 message:
                     'Pin berhasil dikirim ulang ke email: ${CredentialSaver.userInfo?.email}',

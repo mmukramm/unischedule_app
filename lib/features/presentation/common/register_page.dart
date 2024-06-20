@@ -81,6 +81,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 navigatorKey.currentState!.pushReplacement(MaterialPageRoute(
                   builder: (context) => EmailVerificationPage(
                     isSend: true,
+                    isFromRegister: true,
                     message:
                         'Pin terkirim ke email ${CredentialSaver.userInfo!.email}',
                   ),

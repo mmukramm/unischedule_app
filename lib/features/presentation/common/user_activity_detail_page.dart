@@ -20,7 +20,12 @@ import 'package:unischedule_app/features/presentation/widget/loading.dart';
 
 class UserActivityDetailPage extends StatefulWidget {
   final Post activity;
-  const UserActivityDetailPage({super.key, required this.activity});
+  final bool isRegistered;
+  const UserActivityDetailPage({
+    super.key,
+    required this.activity,
+    this.isRegistered = false,
+  });
 
   @override
   State<UserActivityDetailPage> createState() => _UserActivityDetailPageState();
@@ -220,84 +225,86 @@ class _UserActivityDetailPageState extends State<UserActivityDetailPage> {
                     ),
                     Text(
                       widget.activity.content ?? '',
+                      maxLines: 4,
                       overflow: TextOverflow.ellipsis,
                       style: textTheme.bodySmall,
                     ),
                     const SizedBox(
                       height: 32,
                     ),
-                    if (widget.activity.isEvent ?? true)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          if (!isLogin)
-                            Text(
-                              'Silahkan login terlebih dahulu',
-                              textAlign: TextAlign.center,
-                              style: textTheme.bodySmall!.copyWith(
-                                color: dangerColor,
+                    if (!widget.isRegistered)
+                      if (widget.activity.isEvent ?? true)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            if (!isLogin)
+                              Text(
+                                'Silahkan login terlebih dahulu',
+                                textAlign: TextAlign.center,
+                                style: textTheme.bodySmall!.copyWith(
+                                  color: dangerColor,
+                                ),
+                              ),
+                            if (!isEmailVerified && isLogin)
+                              Text(
+                                'Anda tidak bisa mendaftar sebelum email Anda aktif',
+                                textAlign: TextAlign.center,
+                                style: textTheme.bodySmall!.copyWith(
+                                  color: dangerColor,
+                                ),
+                              ),
+                            FilledButton(
+                              onPressed: isEmailVerified && isLogin
+                                  ? () {
+                                      context.showCustomConfirmationDialog(
+                                        title: 'Daftar Kegiatan?',
+                                        message:
+                                            'Apakah Anda yakin ingin mendaftar pada kegiatan ini?',
+                                        primaryButtonText: 'Daftar',
+                                        onTapPrimaryButton: () {
+                                          navigatorKey.currentState!.pop();
+                                          userActivityDetailCubit.registerEvent(
+                                            widget.activity.id!,
+                                          );
+                                        },
+                                      );
+                                    }
+                                  : null,
+                              style: FilledButton.styleFrom(
+                                padding: const EdgeInsets.all(12),
+                                shape: const RoundedRectangleBorder(),
+                                backgroundColor: isEmailVerified && isLogin
+                                    ? primaryColor
+                                    : greyColor,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SvgPicture.asset(
+                                    AssetPath.getIcons('users-group.svg'),
+                                    colorFilter: ColorFilter.mode(
+                                      isEmailVerified && isLogin
+                                          ? secondaryTextColor
+                                          : scaffoldColor,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 12,
+                                  ),
+                                  Text(
+                                    "Daftar Kegiatan",
+                                    style: textTheme.titleMedium!.copyWith(
+                                      color: isEmailVerified && isLogin
+                                          ? secondaryTextColor
+                                          : scaffoldColor,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          if (!isEmailVerified && isLogin)
-                            Text(
-                              'Anda tidak bisa mendaftar sebelum email Anda aktif',
-                              textAlign: TextAlign.center,
-                              style: textTheme.bodySmall!.copyWith(
-                                color: dangerColor,
-                              ),
-                            ),
-                          FilledButton(
-                            onPressed: isEmailVerified && isLogin
-                                ? () {
-                                    context.showCustomConfirmationDialog(
-                                      title: 'Daftar Kegiatan?',
-                                      message:
-                                          'Apakah Anda yakin ingin mendaftar pada kegiatan ini?',
-                                      primaryButtonText: 'Daftar',
-                                      onTapPrimaryButton: () {
-                                        navigatorKey.currentState!.pop();
-                                        userActivityDetailCubit.registerEvent(
-                                          widget.activity.id!,
-                                        );
-                                      },
-                                    );
-                                  }
-                                : null,
-                            style: FilledButton.styleFrom(
-                              padding: const EdgeInsets.all(12),
-                              shape: const RoundedRectangleBorder(),
-                              backgroundColor: isEmailVerified && isLogin
-                                  ? primaryColor
-                                  : greyColor,
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SvgPicture.asset(
-                                  AssetPath.getIcons('users-group.svg'),
-                                  colorFilter: ColorFilter.mode(
-                                    isEmailVerified && isLogin
-                                        ? secondaryTextColor
-                                        : scaffoldColor,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 12,
-                                ),
-                                Text(
-                                  "Daftar Kegiatan",
-                                  style: textTheme.titleMedium!.copyWith(
-                                    color: isEmailVerified && isLogin
-                                        ? secondaryTextColor
-                                        : scaffoldColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
                     const SizedBox(
                       height: 24,
                     ),

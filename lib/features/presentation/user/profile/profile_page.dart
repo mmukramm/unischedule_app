@@ -223,13 +223,15 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           FilledButton(
                             style: FilledButton.styleFrom(
-                                backgroundColor: warningColor,
-                                shape: const RoundedRectangleBorder()),
+                              backgroundColor: warningColor,
+                              shape: const RoundedRectangleBorder(),
+                            ),
                             onPressed: () {
                               navigatorKey.currentState!.push(
                                 MaterialPageRoute(
                                   builder: (context) =>
                                       const EmailVerificationPage(
+                                    isFromRegister: false,
                                     isSend: false,
                                   ),
                                 ),

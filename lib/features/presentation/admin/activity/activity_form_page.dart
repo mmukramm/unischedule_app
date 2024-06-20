@@ -282,7 +282,7 @@ class ActivityFormPageState extends State<ActivityFormPage> {
 
                           debugPrint(formValue.toString());
 
-                          if (postImagePath.value == null) {
+                          if (postImagePath.value == null && !widget.isEdit) {
                             context.showCustomSnackbar(
                               message: 'Pilih gambar terlebih dahulu',
                               type: SnackBarType.error,

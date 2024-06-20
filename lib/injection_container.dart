@@ -15,6 +15,7 @@ import 'package:unischedule_app/features/domain/repositories/user_repository.dar
 import 'package:unischedule_app/features/domain/usecases/delete_access_token.dart';
 import 'package:unischedule_app/features/domain/usecases/delete_activity.dart';
 import 'package:unischedule_app/features/domain/usecases/delete_user.dart';
+import 'package:unischedule_app/features/domain/usecases/get_activities_by_user.dart';
 import 'package:unischedule_app/features/domain/usecases/get_all_users.dart';
 import 'package:unischedule_app/features/domain/usecases/get_activities.dart';
 import 'package:unischedule_app/features/domain/usecases/get_post_participants.dart';
@@ -46,6 +47,7 @@ import 'package:unischedule_app/features/presentation/bloc/sign_up/sign_up_cubit
 import 'package:unischedule_app/features/presentation/admin/user/bloc/user_form_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/user_activity_detail/user_activity_detail_cubit.dart';
 import 'package:unischedule_app/features/presentation/user/activity/bloc/activity_cubit.dart';
+import 'package:unischedule_app/features/presentation/user/activity_history/bloc/activity_history_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -94,6 +96,9 @@ void initBlocs() {
   );
   getIt.registerFactory(
     () => ActivityCubit(getIt()),
+  );
+  getIt.registerFactory(
+    () => ActivityHistoryCubit(getIt()),
   );
   getIt.registerFactory(
     () => UserActivityDetailCubit(getIt()),
@@ -160,6 +165,9 @@ void initUseCases() {
   );
   getIt.registerLazySingleton(
     () => PostRegisterFcpToken(getIt()),
+  );
+  getIt.registerLazySingleton(
+    () => GetActivitiesByUser(getIt()),
   );
 }
 

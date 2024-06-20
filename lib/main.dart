@@ -23,6 +23,7 @@ import 'package:unischedule_app/features/presentation/admin/user/bloc/user_form_
 import 'package:unischedule_app/features/presentation/bloc/user_activity_detail/user_activity_detail_cubit.dart';
 import 'package:unischedule_app/features/presentation/common/splash_page.dart';
 import 'package:unischedule_app/features/presentation/user/activity/bloc/activity_cubit.dart';
+import 'package:unischedule_app/features/presentation/user/activity_history/bloc/activity_history_cubit.dart';
 import 'package:unischedule_app/firebase_options.dart';
 import 'package:unischedule_app/injection_container.dart' as di;
 import 'package:unischedule_app/injection_container.dart';
@@ -40,7 +41,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  
+
   await FirebaseMessagingConfig().initNotifications();
 
   await CredentialSaver.init();
@@ -93,6 +94,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => getIt<ActivityCubit>(),
+        ),
+        BlocProvider(
+          create: (_) => getIt<ActivityHistoryCubit>(),
         ),
         BlocProvider(
           create: (_) => getIt<UserActivityDetailCubit>(),

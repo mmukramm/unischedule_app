@@ -3,6 +3,7 @@ import 'package:unischedule_app/core/errors/failures.dart';
 import 'package:unischedule_app/features/data/datasources/activity_data_sources.dart';
 import 'package:unischedule_app/features/data/models/activity_participant.dart';
 import 'package:unischedule_app/features/data/models/post.dart';
+import 'package:unischedule_app/features/data/models/post_by_user.dart';
 
 abstract class ActivityRepository {
   // Post / Activity
@@ -22,5 +23,5 @@ abstract class ActivityRepository {
 
   Future<Either<Failure, String>> registerEvent(String postId);
 
-  // Future<Either<Failure, List<Post>>> getPostsByUserId();
+  Future<Either<Failure, List<PostByUser>>> getPostsByUserId();
 }
