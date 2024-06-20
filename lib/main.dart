@@ -30,6 +30,8 @@ import 'package:unischedule_app/injection_container.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await di.init();
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -38,10 +40,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
+  
   await FirebaseMessagingConfig().initNotifications();
-
-  await di.init();
 
   await CredentialSaver.init();
 

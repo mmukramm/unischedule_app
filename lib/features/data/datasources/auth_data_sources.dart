@@ -34,6 +34,11 @@ abstract class AuthDataSources {
     @Header('Authorization') String accessToken,
     @Body() Map<String, dynamic> param,
   );
+
+  @POST('/register-fcp')
+  Future<ApiResponse> registerFcpToken(
+    @Body() Map<String, dynamic> param,
+  );
 }
 
 class SignUpParams {

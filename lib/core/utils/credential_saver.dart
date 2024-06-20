@@ -4,6 +4,8 @@ import 'package:unischedule_app/injection_container.dart';
 
 class CredentialSaver {
   static String? accessToken;
+  static String? fcmToken;
+  static bool? isFcmTokenChange;
   static UserInfo? userInfo;
 
   static Future<void> init() async {
@@ -11,6 +13,7 @@ class CredentialSaver {
       AuthPreferencesHelper preferencesHelper = getIt();
 
       accessToken = await preferencesHelper.getAccessToken();
+      fcmToken = await preferencesHelper.getFcmToken();
     }
   }
 }

@@ -179,4 +179,29 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(CacheFailure(e.message!));
     }
   }
+
+  @override
+  Future<Either<Failure, String>> registerFcpToken(String fcmToken) async {
+    try {
+      final result = await authDataSources.registerFcpToken(
+        {'fcp_token': fcmToken},
+      );
+
+      return Right(result.data ?? result.message);
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError) {
+        return const Left(ConnectionFailure(kNoInternetConnection));
+      }
+
+      if (e.response != null) {
+        if (e.response?.statusCode == HttpStatus.internalServerError) {
+          return Left(ServerFailure(e.message!));
+        }
+        return Left(failureMessageHandler(
+            ApiResponse.fromJson(e.response?.data).message ?? ''));
+      }
+
+      return Left(ServerFailure(e.message ?? 'Unknown'));
+    }
+  }
 }

@@ -13,4 +13,6 @@ abstract class AuthRepository {
   Future<Either<Failure, String>> resendVerificationCode();
 
   Future<Either<Failure, String>> verificationEmail(Map<String, dynamic> pin);
+
+  Future<Either<Failure, String>> registerFcpToken(String fcmToken);
 }

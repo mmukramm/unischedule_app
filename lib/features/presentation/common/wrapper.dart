@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:unischedule_app/core/enums/snack_bar_type.dart';
 import 'package:unischedule_app/core/extensions/context_extension.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/utils/const.dart';
+import 'package:unischedule_app/core/utils/credential_saver.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/features/presentation/admin/home_page.dart';
 import 'package:unischedule_app/features/presentation/bloc/is_sign_in/is_sign_in_cubit.dart';
@@ -24,7 +26,11 @@ class _WrapperState extends State<Wrapper> {
   void initState() {
     super.initState();
     isSignInCubit = context.read<IsSignInCubit>();
-    isSignInCubit.userInfo();
+    if (CredentialSaver.isFcmTokenChange!) {
+      isSignInCubit.registerFcpToken(CredentialSaver.fcmToken!);
+    } else {
+      isSignInCubit.userInfo();
+    }
   }
 
   @override
@@ -33,32 +39,60 @@ class _WrapperState extends State<Wrapper> {
       body: BlocListener<IsSignInCubit, IsSignInState>(
         listener: (context, state) {
           if (state.isFailure) {
-            if (state.message == kNoInternetConnection) {
-              debugPrint('Error: $kNoInternetConnection');
-              context.showCustomConfirmationDialog(
+            if (state.message == kJwtMalformed ||
+                state.message == kThisUserIsNotLoggedIn) {
+              navigatorKey.currentState!.pushReplacement(
+                MaterialPageRoute(builder: (_) => const UserMainMenu()),
+              );
+            } else if (state.message == kNoInternetConnection) {
+              context.showCustomSnackbar(
+                message: state.message!,
+                type: SnackBarType.error,
+              );
+              context.showNoInternetConnectionDialog(
                 title: 'Tidak Terhubung ke Jaringan ',
-                message: 'Pastikan perangkat Anda terhubung ke jaringan, lalu silahkan soba lagi.',
+                withCloseButton: false,
+                message:
+                    'Pastikan perangkat Anda terhubung ke jaringan, lalu silahkan soba lagi.',
                 onTapPrimaryButton: () {
+                  navigatorKey.currentState!.pop();
                   isSignInCubit.userInfo();
                 },
                 primaryButtonText: 'Refresh',
               );
             } else if (state.message == kInternalServerError) {
-              debugPrint('Error: $kInternalServerError');
-              context.showCustomConfirmationDialog(
+              context.showServerErrorDialog(
                 title: 'Terjadi Kesalahan',
                 message:
                     'Terjadi kesalahan saat menghubungkan ke server. Silahkan coba lagi.',
+                withCloseButton: false,
                 onTapPrimaryButton: () {
+                  navigatorKey.currentState!.pop();
                   isSignInCubit.userInfo();
                 },
                 primaryButtonText: 'Refresh',
               );
             } else {
-              navigatorKey.currentState!.pushReplacement(
-                MaterialPageRoute(builder: (_) => const UserMainMenu()),
+              context.showServerErrorDialog(
+                title: 'Terjadi Kesalahan',
+                message:
+                    'Terjadi kesalahan saat menghubungkan ke server. Silahkan coba lagi.',
+                withCloseButton: false,
+                onTapPrimaryButton: () {
+                  navigatorKey.currentState!.pop();
+                  isSignInCubit.userInfo();
+                },
+                primaryButtonText: 'Refresh',
               );
             }
+          }
+
+          if (state.isFcmTokenChange) {
+            context.showCustomSnackbar(
+              message: state.message!,
+              type: SnackBarType.success,
+            );
+            isSignInCubit.userInfo();
           }
 
           if (state.isSuccess) {

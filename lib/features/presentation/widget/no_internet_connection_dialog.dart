@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
-import 'package:unischedule_app/core/utils/keys.dart';
+import 'package:unischedule_app/core/utils/asset_path.dart';
 
-class CustomConfirmationDialog extends StatelessWidget {
+class NoInternetConnectionDialog extends StatelessWidget {
   final String title;
   final String message;
   final String primaryButtonText;
   final bool withCloseButton;
   final VoidCallback onTapPrimaryButton;
 
-  const CustomConfirmationDialog({
+  const NoInternetConnectionDialog({
     super.key,
     required this.title,
     required this.message,
@@ -38,32 +39,18 @@ class CustomConfirmationDialog extends StatelessWidget {
                 color: primaryColor,
               ),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 8, 16, 8),
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
                 child: Row(
                   children: [
                     Expanded(
                       child: Text(
                         title,
-                        style: textTheme.headlineSmall!.copyWith(
-                          fontSize: 20,
+                        textAlign: TextAlign.center,
+                        style: textTheme.titleMedium!.copyWith(
                           color: secondaryTextColor,
                         ),
                       ),
                     ),
-                    if (withCloseButton)
-                      IconButton(
-                        onPressed: () {
-                          navigatorKey.currentState!.pop();
-                        },
-                        style: IconButton.styleFrom(
-                          backgroundColor: dangerColor,
-                          shape: const RoundedRectangleBorder(),
-                        ),
-                        icon: const Icon(
-                          Icons.close,
-                          color: scaffoldColor,
-                        ),
-                      ),
                   ],
                 ),
               ),
@@ -71,9 +58,20 @@ class CustomConfirmationDialog extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(message),
+                  SvgPicture.asset(
+                    AssetPath.getSvg('no-internet.svg'),
+                    height: 240,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    message,
+                    textAlign: TextAlign.center,
+                    style: textTheme.bodyMedium,
+                  ),
                   const SizedBox(
                     height: 20,
                   ),

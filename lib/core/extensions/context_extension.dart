@@ -8,6 +8,7 @@ import 'package:unischedule_app/features/presentation/widget/custom_confirmation
 import 'package:unischedule_app/features/presentation/widget/custom_confirmation_dialog.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_selector_dialog.dart';
 import 'package:unischedule_app/features/presentation/widget/loading.dart';
+import 'package:unischedule_app/features/presentation/widget/no_internet_connection_dialog.dart';
 
 extension CustomSnackBarExtension on BuildContext {
   showCustomSnackbar({
@@ -80,12 +81,52 @@ extension CustomDialogExtension on BuildContext {
     required String message,
     required VoidCallback onTapPrimaryButton,
     required String primaryButtonText,
+    bool withCloseButton = true,
   }) {
     return showDialog(
       context: this,
       builder: (context) => CustomConfirmationDialog(
         title: title,
         message: message,
+        withCloseButton: withCloseButton,
+        onTapPrimaryButton: onTapPrimaryButton,
+        primaryButtonText: primaryButtonText,
+      ),
+    );
+  }
+
+  Future<Object?> showServerErrorDialog({
+    required String title,
+    required String message,
+    required VoidCallback onTapPrimaryButton,
+    required String primaryButtonText,
+    bool withCloseButton = true,
+  }) {
+    return showDialog(
+      context: this,
+      builder: (context) => CustomConfirmationDialog(
+        title: title,
+        message: message,
+        withCloseButton: withCloseButton,
+        onTapPrimaryButton: onTapPrimaryButton,
+        primaryButtonText: primaryButtonText,
+      ),
+    );
+  }
+
+  Future<Object?> showNoInternetConnectionDialog({
+    required String title,
+    required String message,
+    required VoidCallback onTapPrimaryButton,
+    required String primaryButtonText,
+    bool withCloseButton = true,
+  }) {
+    return showDialog(
+      context: this,
+      builder: (context) => NoInternetConnectionDialog(
+        title: title,
+        message: message,
+        withCloseButton: withCloseButton,
         onTapPrimaryButton: onTapPrimaryButton,
         primaryButtonText: primaryButtonText,
       ),

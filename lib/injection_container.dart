@@ -24,6 +24,7 @@ import 'package:unischedule_app/features/domain/usecases/get_single_user.dart';
 import 'package:unischedule_app/features/domain/usecases/get_user_info.dart';
 import 'package:unischedule_app/features/domain/usecases/post_activity.dart';
 import 'package:unischedule_app/features/domain/usecases/post_register_event.dart';
+import 'package:unischedule_app/features/domain/usecases/post_register_fcp_token.dart';
 import 'package:unischedule_app/features/domain/usecases/post_sign_in.dart';
 import 'package:unischedule_app/features/domain/usecases/post_sign_up.dart';
 import 'package:unischedule_app/features/domain/usecases/post_user.dart';
@@ -62,7 +63,7 @@ void initBlocs() {
     () => SignInCubit(getIt(), getIt()),
   );
   getIt.registerFactory(
-    () => IsSignInCubit(getIt()),
+    () => IsSignInCubit(getIt(), getIt()),
   );
   getIt.registerFactory(
     () => ProfileCubit(getIt(), getIt()),
@@ -156,6 +157,9 @@ void initUseCases() {
   );
   getIt.registerLazySingleton(
     () => PostRegisterEvent(getIt()),
+  );
+  getIt.registerLazySingleton(
+    () => PostRegisterFcpToken(getIt()),
   );
 }
 

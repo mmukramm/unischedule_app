@@ -3,6 +3,7 @@ class IsSignInState<T> {
   final bool isInProgress;
   final bool isFailure;
   final bool isSuccess;
+  final bool isFcmTokenChange;
 
   final String? message;
   final T? data;
@@ -12,6 +13,7 @@ class IsSignInState<T> {
     this.isInProgress = false,
     this.isFailure = false,
     this.isSuccess = false,
+    this.isFcmTokenChange = false,
     this.message = '',
     this.data,
   });
@@ -22,6 +24,9 @@ class IsSignInState<T> {
 
   factory IsSignInState.failure(String? message) =>
       IsSignInState(isFailure: true, message: message);
+
+  factory IsSignInState.fcmTokenChange(String? message) =>
+      IsSignInState(isFcmTokenChange: true, message: message);
 
   factory IsSignInState.success({required T data}) =>
       IsSignInState(isSuccess: true, data: data);
