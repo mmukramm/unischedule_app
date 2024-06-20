@@ -1,15 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:unischedule_app/core/enums/snack_bar_type.dart';
+import 'package:unischedule_app/core/extensions/context_extension.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
+import 'package:unischedule_app/core/utils/date_formatter.dart';
+import 'package:unischedule_app/core/utils/pdf_name_generator.dart';
 import 'package:unischedule_app/core/utils/pdf_service.dart';
+import 'package:unischedule_app/features/data/models/activity_participant.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_management_state.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/event_participant_cubit.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 import 'package:unischedule_app/features/presentation/widget/ink_well_container.dart';
+import 'package:unischedule_app/features/presentation/widget/loading.dart';
 
 class EventParticipantPage extends StatefulWidget {
-  const EventParticipantPage({super.key});
+  final String postId;
+  const EventParticipantPage({
+    super.key,
+    required this.postId,
+  });
 
   @override
   State<EventParticipantPage> createState() => _EventParticipantPageState();
@@ -17,11 +29,16 @@ class EventParticipantPage extends StatefulWidget {
 
 class _EventParticipantPageState extends State<EventParticipantPage> {
   late final PdfService pdfService;
+  late final EventParticipantCubit eventParticipantCubit;
+  late ActivityParticipant activityParticipant;
 
   @override
   void initState() {
     super.initState();
     pdfService = PdfService();
+    eventParticipantCubit = context.read<EventParticipantCubit>();
+    eventParticipantCubit.getPostWithParticipants(widget.postId);
+    activityParticipant = ActivityParticipant();
   }
 
   @override
@@ -34,12 +51,19 @@ class _EventParticipantPageState extends State<EventParticipantPage> {
       backgroundColor: backgroundColor,
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final dir = await getApplicationDocumentsDirectory();
-          debugPrint(dir.path);
+          if (activityParticipant.participants == null) {
+            context.showCustomSnackbar(
+              message: 'Gagal mengolah data, silahkan coba lagi.',
+              type: SnackBarType.error,
+            );
+            return;
+          }
 
-          final result = await pdfService.generateParticipantPdf();
+          final result = await pdfService
+              .generateParticipantPdf(activityParticipant.participants);
 
-          pdfService.savePdfFile("testpdf", result);
+          pdfService.savePdfFile(
+              pdfNameGenerator(activityParticipant.organizer ?? ''), result);
         },
         shape: const RoundedRectangleBorder(),
         backgroundColor: primaryColor,
@@ -52,193 +76,238 @@ class _EventParticipantPageState extends State<EventParticipantPage> {
         ),
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 24,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: BlocConsumer<EventParticipantCubit, ActivityManagementState>(
+          listener: (context, state) {
+            if (state.isFailure) {
+              context.showCustomSnackbar(
+                message: state.message!,
+                type: SnackBarType.error,
+              );
+            }
+          },
+          builder: (context, state) {
+            if (state.isInProgress) {
+              return const Column(
                 children: [
-                  Expanded(
-                    flex: 2,
-                    child: Text(
-                      'Nama Kegiatan',
-                      style: textTheme.titleMedium,
-                    ),
+                  SizedBox(
+                    height: 40,
                   ),
-                  Text(
-                    ':',
-                    style: textTheme.titleMedium,
-                  ),
-                  const SizedBox(
-                    width: 12,
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Text(
-                      'Sosialisasi Pertukaran Mahasiswa Merdeka 2023',
-                      style: textTheme.bodyMedium,
-                    ),
+                  Loading(
+                    color: secondaryTextColor,
                   ),
                 ],
-              ),
-              const SizedBox(
-                height: 4,
-              ),
-              Row(
+              );
+            }
+
+            if (state.isSuccess) {
+              activityParticipant = state.data as ActivityParticipant;
+            }
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    flex: 2,
-                    child: Text(
-                      'Penyelenggara',
-                      style: textTheme.titleMedium,
-                    ),
+                  const SizedBox(
+                    height: 24,
                   ),
-                  Text(
-                    ':',
-                    style: textTheme.titleMedium,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          'Nama Kegiatan',
+                          style: textTheme.titleMedium,
+                        ),
+                      ),
+                      Text(
+                        ':',
+                        style: textTheme.titleMedium,
+                      ),
+                      const SizedBox(
+                        width: 12,
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: Text(
+                          activityParticipant.title ?? '',
+                          style: textTheme.bodyMedium,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(
-                    width: 12,
+                    height: 4,
                   ),
-                  Expanded(
-                    flex: 3,
-                    child: Text(
-                      'Kemahasiswaan',
-                      style: textTheme.bodyMedium,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 4,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Text(
-                      'Waktu',
-                      style: textTheme.titleMedium,
-                    ),
-                  ),
-                  Text(
-                    ':',
-                    style: textTheme.titleMedium,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          'Penyelenggara',
+                          style: textTheme.titleMedium,
+                        ),
+                      ),
+                      Text(
+                        ':',
+                        style: textTheme.titleMedium,
+                      ),
+                      const SizedBox(
+                        width: 12,
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: Text(
+                          activityParticipant.organizer ?? '',
+                          style: textTheme.bodyMedium,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(
-                    width: 12,
+                    height: 4,
                   ),
-                  Expanded(
-                    flex: 3,
-                    child: Text(
-                      '30 Juli 2024 18:00',
-                      style: textTheme.bodyMedium,
-                    ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          'Waktu',
+                          style: textTheme.titleMedium,
+                        ),
+                      ),
+                      Text(
+                        ':',
+                        style: textTheme.titleMedium,
+                      ),
+                      const SizedBox(
+                        width: 12,
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: Text(
+                          formatDateTime(activityParticipant.eventDate ?? ''),
+                          style: textTheme.bodyMedium,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              const SizedBox(
-                height: 32,
-              ),
-              Text(
-                'Daftar Peserta',
-                style: textTheme.headlineSmall,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              InkWellContainer(
-                border: Border.all(
-                  color: primaryColor,
-                  width: 3,
-                ),
-                padding: const EdgeInsets.all(12),
-                borderRadiusGeometry: const BorderRadius.only(
-                  topRight: Radius.circular(32),
-                ),
-                containerBackgroundColor: scaffoldColor,
-                onTap: () {},
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 72,
-                      height: 72,
-                      decoration: BoxDecoration(
-                        color: secondaryTextColor,
-                        shape: BoxShape.circle,
+                  const SizedBox(
+                    height: 32,
+                  ),
+                  Text(
+                    'Daftar Peserta',
+                    style: textTheme.headlineSmall,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  ListView.separated(
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.only(bottom: 80),
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      final participant =
+                          activityParticipant.participants?[index];
+                      return InkWellContainer(
                         border: Border.all(
-                          width: 2,
-                          color: primaryColor,
-                        ),
-                      ),
-                      child: Padding(
+                            color: primaryColor,
+                            width: 3,
+                            strokeAlign: BorderSide.strokeAlignOutside),
                         padding: const EdgeInsets.all(12),
-                        child: SvgPicture.asset(
-                          width: 80,
-                          AssetPath.getIcons('user.svg'),
-                          colorFilter: const ColorFilter.mode(
-                            primaryColor,
-                            BlendMode.srcIn,
-                          ),
+                        borderRadiusGeometry: const BorderRadius.only(
+                          topRight: Radius.circular(32),
                         ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 12,
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Hamid Al-Hafidzurrahman Aljabbar",
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: textTheme.titleMedium,
-                          ),
-                          Text(
-                            "Mthfdz",
-                            style: textTheme.bodyMedium!.copyWith(
-                              color: primaryTextColor,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 4,
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  "19028492837",
-                                  style: textTheme.bodyMedium!.copyWith(
-                                    color: primaryTextColor,
+                        containerBackgroundColor: scaffoldColor,
+                        onTap: () {},
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 72,
+                              height: 72,
+                              decoration: BoxDecoration(
+                                color: secondaryTextColor,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  width: 2,
+                                  color: primaryColor,
+                                ),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: SvgPicture.asset(
+                                  width: 80,
+                                  AssetPath.getIcons('user.svg'),
+                                  colorFilter: const ColorFilter.mode(
+                                    primaryColor,
+                                    BlendMode.srcIn,
                                   ),
                                 ),
                               ),
-                              Text(
-                                "Mahasiswa",
-                                style: textTheme.bodyMedium!.copyWith(
-                                  color: infoColor,
-                                ),
+                            ),
+                            const SizedBox(
+                              width: 12,
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    participant?.name ?? '',
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: textTheme.titleMedium,
+                                  ),
+                                  Text(
+                                    participant?.email ?? '',
+                                    style: textTheme.bodyMedium!.copyWith(
+                                      color: primaryTextColor,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 4,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          participant?.stdCode ??
+                                              'Not Available',
+                                          style: textTheme.bodyMedium!.copyWith(
+                                            color: primaryTextColor,
+                                          ),
+                                        ),
+                                      ),
+                                      Text(
+                                        participant?.gender == 'MALE'
+                                            ? 'Laki-laki'
+                                            : 'Perempuan',
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          color: infoColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                            )
+                          ],
+                        ),
+                      );
+                    },
+                    separatorBuilder: (context, index) => const SizedBox(
+                      height: 12,
+                    ),
+                    itemCount: activityParticipant.participants?.length ?? 0,
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

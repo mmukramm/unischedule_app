@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:unischedule_app/core/errors/exceptions.dart';
 import 'package:unischedule_app/core/errors/failures.dart';
 import 'package:unischedule_app/core/utils/api_response.dart';
@@ -73,7 +74,8 @@ class AuthRepositoryImpl implements AuthRepository {
 
       if (e.response != null) {
         if (e.response?.statusCode == HttpStatus.internalServerError) {
-          return Left(ServerFailure(e.message!));
+          debugPrint(e.response.toString());
+          return const Left(ServerFailure(kInternalServerError));
         }
         return Left(failureMessageHandler(
             ApiResponse.fromJson(e.response?.data).message ?? ''));

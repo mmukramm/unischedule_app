@@ -282,6 +282,14 @@ class ActivityFormPageState extends State<ActivityFormPage> {
 
                           debugPrint(formValue.toString());
 
+                          if (postImagePath.value == null) {
+                            context.showCustomSnackbar(
+                              message: 'Pilih gambar terlebih dahulu',
+                              type: SnackBarType.error,
+                            );
+                            return;
+                          }
+
                           CreatePostParams createPostParams;
 
                           if (widget.isMagz) {
@@ -459,6 +467,13 @@ class ActivityFormPageState extends State<ActivityFormPage> {
           readOnly: true,
           hintText: 'Waktu Kegiatan',
           textInputType: TextInputType.none,
+          suffixIcon: SvgPicture.asset(
+            AssetPath.getIcons('calendar.svg'),
+            colorFilter: const ColorFilter.mode(
+              secondaryTextColor,
+              BlendMode.srcIn,
+            ),
+          ),
           validators: [
             FormBuilderValidators.required(
               errorText: 'Bagian ini harus diisi',

@@ -252,7 +252,9 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
                         FilledButton(
                           onPressed: () => navigatorKey.currentState!.push(
                             MaterialPageRoute(
-                              builder: (_) => const EventParticipantPage(),
+                              builder: (_) => EventParticipantPage(
+                                postId: activity.id!,
+                              ),
                             ),
                           ),
                           style: FilledButton.styleFrom(

@@ -5,136 +5,18 @@ import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:unischedule_app/features/data/models/user.dart';
+import 'package:unischedule_app/features/data/models/participant.dart';
 
 class PdfService {
-  Future<Uint8List> generateParticipantPdf() async {
+  Future<Uint8List> generateParticipantPdf(
+      List<Participant?>? participants) async {
     final pdf = pw.Document();
 
-    // final users = [
-    //   User(
-    //       fullName: 'fullName1',
-    //       nim: 'nim1',
-    //       gender: 'gender1',
-    //       phone: 'phone1',
-    //       email: 'email1',
-    //       image: '',),
-    //   User(
-    //       fullName: 'fullName2',
-    //       nim: 'nim2',
-    //       gender: 'gender2',
-    //       phone: 'phone2',
-    //       email: 'email2',
-    //       image: '',),
-    //   User(
-    //       fullName: 'fullName3',
-    //       nim: 'nim3',
-    //       gender: 'gender3',
-    //       phone: 'phone3',
-    //       email: 'email3',
-    //       image: '',),
-    //   User(
-    //       fullName: 'fullName4',
-    //       nim: 'nim4',
-    //       gender: 'gender4',
-    //       phone: 'phone4',
-    //       email: 'email4',
-    //       image: '',),
-    //   User(
-    //       fullName: 'fullName5',
-    //       nim: 'nim5',
-    //       gender: 'gender5',
-    //       phone: 'phone5',
-    //       email: 'email5',
-    //       image: '',),
-    //   User(
-    //       fullName: 'fullName6',
-    //       nim: 'nim6',
-    //       gender: 'gender6',
-    //       phone: 'phone6',
-    //       email: 'email6',
-    //       image: '',),
-    //   User(
-    //       fullName: 'fullName7',
-    //       nim: 'nim7',
-    //       gender: 'gender7',
-    //       phone: 'phone7',
-    //       email: 'email7',
-    //       image: '',),
-    //   User(
-    //       fullName: 'fullName8',
-    //       nim: 'nim8',
-    //       gender: 'gender8',
-    //       phone: 'phone8',
-    //       email: 'email8',
-    //       image: '',),
-    //   User(
-    //       fullName: 'fullName9',
-    //       nim: 'nim9',
-    //       gender: 'gender9',
-    //       phone: 'phone9',
-    //       email: 'email9',
-    //       image: '',),
-    //   User(
-    //       fullName: 'fullName10',
-    //       nim: 'nim10',
-    //       gender: 'gender10',
-    //       phone: 'phone10',
-    //       email: 'email10',
-    //       image: '',),
-    // ];
+    if (participants == null) return Uint8List(2);
 
-    final users = [
-      User(
-        id: '',
-        name: 'Hamid',
-        stdCode: 'Jp1028312',
-        email: 'ssadasds@gmail.com',
-        gender: 'MALE',
-        phoneNumber: '089792',
-        role: 'USER',
-      ),
-      User(
-        id: '',
-        name: 'Hamid',
-        stdCode: 'Jp1028312',
-        email: 'ssadasds@gmail.com',
-        gender: 'MALE',
-        phoneNumber: '089792',
-        role: 'USER',
-      ),
-      User(
-        id: '',
-        name: 'Hamid',
-        stdCode: 'Jp1028312',
-        email: 'ssadasds@gmail.com',
-        gender: 'MALE',
-        phoneNumber: '089792',
-        role: 'USER',
-      ),
-      User(
-        id: '',
-        name: 'Hamid',
-        stdCode: 'Jp1028312',
-        email: 'ssadasds@gmail.com',
-        gender: 'MALE',
-        phoneNumber: '089792',
-        role: 'USER',
-      ),
-      User(
-        id: '',
-        name: 'Hamid',
-        stdCode: 'Jp1028312',
-        email: 'ssadasds@gmail.com',
-        gender: 'MALE',
-        phoneNumber: '089792',
-        role: 'USER',
-      ),
-    ];
-
-    final data = users
+    final data = participants
         .map((e) => [
-              e.stdCode,
+              e!.stdCode,
               e.name,
               e.gender,
               e.phoneNumber,

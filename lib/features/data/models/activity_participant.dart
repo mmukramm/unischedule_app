@@ -22,7 +22,7 @@ class ActivityParticipant {
     this.eventDate,
     this.picture,
     this.isEvent,
-    required this.participants,
+    this.participants,
   });
 
   ActivityParticipant copyWith({
@@ -71,7 +71,7 @@ class ActivityParticipant {
       isEvent: map['is_event'] != null ? map['is_event'] as bool : null,
       participants: map['participants'] != null
           ? List<Participant?>.from(
-              (map['participants'] as List<int>).map<Participant?>(
+              (map['participants'] as List<dynamic>).map<Participant?>(
                 (x) => Participant?.fromMap(x as Map<String, dynamic>),
               ),
             )

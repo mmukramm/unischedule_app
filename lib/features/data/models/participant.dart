@@ -6,11 +6,15 @@ class Participant {
   final String? name;
   final String? stdCode;
   final String? phoneNumber;
+  final String? email;
+  final String? gender;
   Participant({
     this.userId,
     this.name,
     this.stdCode,
     this.phoneNumber,
+    this.email,
+    this.gender,
   });
 
   Participant copyWith({
@@ -18,12 +22,16 @@ class Participant {
     String? name,
     String? stdCode,
     String? phoneNumber,
+    String? email,
+    String? gender,
   }) {
     return Participant(
       userId: userId ?? this.userId,
       name: name ?? this.name,
       stdCode: stdCode ?? this.stdCode,
       phoneNumber: phoneNumber ?? this.phoneNumber,
+      email: email ?? this.email,
+      gender: gender ?? this.gender,
     );
   }
 
@@ -33,6 +41,8 @@ class Participant {
       'name': name,
       'std_code': stdCode,
       'phone_number': phoneNumber,
+      'email': email,
+      'gender': gender,
     };
   }
 
@@ -43,6 +53,8 @@ class Participant {
       stdCode: map['std_code'] != null ? map['std_code'] as String : null,
       phoneNumber:
           map['phone_number'] != null ? map['phone_number'] as String : null,
+      email: map['email'] != null ? map['email'] as String : null,
+      gender: map['gender'] != null ? map['gender'] as String : null,
     );
   }
 
@@ -53,7 +65,7 @@ class Participant {
 
   @override
   String toString() {
-    return 'Participant(userId: $userId, name: $name, stdCode: $stdCode, phoneNumber: $phoneNumber)';
+    return 'Participant(userId: $userId, name: $name, stdCode: $stdCode, phoneNumber: $phoneNumber, email: $email, gender: $gender)';
   }
 
   @override
@@ -63,7 +75,9 @@ class Participant {
     return other.userId == userId &&
         other.name == name &&
         other.stdCode == stdCode &&
-        other.phoneNumber == phoneNumber;
+        other.phoneNumber == phoneNumber &&
+        other.email == email &&
+        other.gender == gender;
   }
 
   @override
@@ -71,6 +85,9 @@ class Participant {
     return userId.hashCode ^
         name.hashCode ^
         stdCode.hashCode ^
-        phoneNumber.hashCode;
+        stdCode.hashCode ^
+        phoneNumber.hashCode ^
+        email.hashCode ^
+        gender.hashCode;
   }
 }

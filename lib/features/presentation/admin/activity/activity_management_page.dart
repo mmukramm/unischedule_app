@@ -107,151 +107,156 @@ class ActivityManagementPageState extends State<ActivityManagementPage> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(
-                height: 24,
-              ),
-              ValueListenableBuilder(
-                valueListenable: activityType,
-                builder: (context, activityTypeValue, _) =>
-                    ValueListenableBuilder(
-                  valueListenable: eventStatus,
-                  builder: (context, eventStatusValue, _) => Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      SegmentedButton<ActivityType>(
-                        style: SegmentedButton.styleFrom(
-                          side: const BorderSide(color: primaryColor),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          foregroundColor: scaffoldColor,
-                          selectedBackgroundColor: scaffoldColor,
-                          backgroundColor: highlightTextColor,
-                        ),
-                        segments: const [
-                          ButtonSegment(
-                            value: ActivityType.all,
-                            label: Text("Semua"),
-                          ),
-                          ButtonSegment(
-                            value: ActivityType.event,
-                            label: Text("Kegiatan"),
-                          ),
-                          ButtonSegment(
-                            value: ActivityType.magz,
-                            label: Text("Mading"),
-                          ),
-                        ],
-                        selected: {activityTypeValue},
-                        showSelectedIcon: false,
-                        onSelectionChanged: (selection) {
-                          activityType.value = selection.first;
-                        },
-                      ),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      activityTypeValue == ActivityType.event
-                          ? DropdownButton(
-                              underline: const Divider(
-                                thickness: 2,
-                                height: 0,
-                                color: primaryColor,
-                              ),
-                              items: const [
-                                DropdownMenuItem(
-                                  value: "Aktif",
-                                  child: Text("Aktif"),
-                                ),
-                                DropdownMenuItem(
-                                  value: "Riwayat",
-                                  child: Text("Riwayat"),
-                                ),
-                              ],
-                              value: eventStatusValue,
-                              onChanged: (result) {
-                                eventStatus.value = result!;
-                              },
-                              dropdownColor: primaryColor,
+      body: RefreshIndicator(
+        onRefresh: () async {
+          debugPrint('Refresh');
+        },
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(
+                  height: 24,
+                ),
+                ValueListenableBuilder(
+                  valueListenable: activityType,
+                  builder: (context, activityTypeValue, _) =>
+                      ValueListenableBuilder(
+                    valueListenable: eventStatus,
+                    builder: (context, eventStatusValue, _) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SegmentedButton<ActivityType>(
+                          style: SegmentedButton.styleFrom(
+                            side: const BorderSide(color: primaryColor),
+                            shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
-                              isExpanded: true,
-                            )
-                          : const SizedBox(),
-                      const SizedBox(
-                        height: 24,
-                      ),
-                      BlocConsumer<ActivityManagementCubit,
-                          ActivityManagementState>(
-                        listener: (context, state) {
-                          if (state.isFailure) {
-                            context.showCustomSnackbar(
-                              message: state.message!,
-                              type: SnackBarType.error,
-                            );
-                          }
-                        },
-                        builder: (context, state) {
-                          if (state.isInProgress) {
-                            return const Loading(
-                              color: secondaryTextColor,
-                            );
-                          }
-
-                          if (state.isSuccess) {
-                            final result = state.data as List<Post>;
-                            List<Post> data;
-
-                            if (activityTypeValue == ActivityType.event) {
-                              data = result.where((element) {
-                                final now = DateTime.now();
-                                if (eventStatusValue == 'Aktif') {
-                                  return element.isEvent! &&
-                                      now.isBefore(
-                                        DateTime.parse(element.eventDate!),
-                                      );
-                                }
-                                return element.isEvent! &&
-                                    now.isAfter(
-                                        DateTime.parse(element.eventDate!));
-                              }).toList();
-                            } else if (activityTypeValue == ActivityType.magz) {
-                              data = result
-                                  .where((element) => !element.isEvent!)
-                                  .toList();
-                            } else {
-                              data = result;
-                            }
-
-                            activities.clear();
-                            activities.addAll(data);
-                          }
-
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: activities.length,
-                            padding: const EdgeInsets.only(bottom: 40),
-                            itemBuilder: (context, index) {
-                              final activity = activities[index];
-
-                              return ActivityItemCard(
-                                item: activity,
+                            ),
+                            foregroundColor: scaffoldColor,
+                            selectedBackgroundColor: scaffoldColor,
+                            backgroundColor: highlightTextColor,
+                          ),
+                          segments: const [
+                            ButtonSegment(
+                              value: ActivityType.all,
+                              label: Text("Semua"),
+                            ),
+                            ButtonSegment(
+                              value: ActivityType.event,
+                              label: Text("Kegiatan"),
+                            ),
+                            ButtonSegment(
+                              value: ActivityType.magz,
+                              label: Text("Mading"),
+                            ),
+                          ],
+                          selected: {activityTypeValue},
+                          showSelectedIcon: false,
+                          onSelectionChanged: (selection) {
+                            activityType.value = selection.first;
+                          },
+                        ),
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        activityTypeValue == ActivityType.event
+                            ? DropdownButton(
+                                underline: const Divider(
+                                  thickness: 2,
+                                  height: 0,
+                                  color: primaryColor,
+                                ),
+                                items: const [
+                                  DropdownMenuItem(
+                                    value: "Aktif",
+                                    child: Text("Aktif"),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "Riwayat",
+                                    child: Text("Riwayat"),
+                                  ),
+                                ],
+                                value: eventStatusValue,
+                                onChanged: (result) {
+                                  eventStatus.value = result!;
+                                },
+                                dropdownColor: primaryColor,
+                                borderRadius: BorderRadius.circular(12),
+                                isExpanded: true,
+                              )
+                            : const SizedBox(),
+                        const SizedBox(
+                          height: 24,
+                        ),
+                        BlocConsumer<ActivityManagementCubit,
+                            ActivityManagementState>(
+                          listener: (context, state) {
+                            if (state.isFailure) {
+                              context.showCustomSnackbar(
+                                message: state.message!,
+                                type: SnackBarType.error,
                               );
-                            },
-                          );
-                        },
-                      ),
-                    ],
+                            }
+                          },
+                          builder: (context, state) {
+                            if (state.isInProgress) {
+                              return const Loading(
+                                color: secondaryTextColor,
+                              );
+                            }
+        
+                            if (state.isSuccess) {
+                              final result = state.data as List<Post>;
+                              List<Post> data;
+        
+                              if (activityTypeValue == ActivityType.event) {
+                                data = result.where((element) {
+                                  final now = DateTime.now();
+                                  if (eventStatusValue == 'Aktif') {
+                                    return element.isEvent! &&
+                                        now.isBefore(
+                                          DateTime.parse(element.eventDate!),
+                                        );
+                                  }
+                                  return element.isEvent! &&
+                                      now.isAfter(
+                                          DateTime.parse(element.eventDate!));
+                                }).toList();
+                              } else if (activityTypeValue == ActivityType.magz) {
+                                data = result
+                                    .where((element) => !element.isEvent!)
+                                    .toList();
+                              } else {
+                                data = result;
+                              }
+        
+                              activities.clear();
+                              activities.addAll(data);
+                            }
+        
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: activities.length,
+                              padding: const EdgeInsets.only(bottom: 40),
+                              itemBuilder: (context, index) {
+                                final activity = activities[index];
+        
+                                return ActivityItemCard(
+                                  item: activity,
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

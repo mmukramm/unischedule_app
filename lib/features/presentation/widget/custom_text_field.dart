@@ -11,6 +11,7 @@ class CustomTextField extends StatelessWidget {
   final int maxLines;
   final bool readOnly;
   final Widget? prefixIcon;
+  final Widget? suffixIcon;
   final TextInputAction textInputAction;
   final TextCapitalization textCapitalization;
   final TextAlign labelTextAlign;
@@ -29,6 +30,7 @@ class CustomTextField extends StatelessWidget {
     this.maxLines = 1,
     this.readOnly = false,
     this.prefixIcon,
+    this.suffixIcon,
     this.textInputAction = TextInputAction.next,
     this.textCapitalization = TextCapitalization.sentences,
     required this.hintText,
@@ -81,6 +83,12 @@ class CustomTextField extends StatelessWidget {
                 ? Padding(
                     padding: const EdgeInsets.all(8),
                     child: prefixIcon,
+                  )
+                : null,
+            suffixIcon: suffixIcon != null
+                ? Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: suffixIcon,
                   )
                 : null,
           ),

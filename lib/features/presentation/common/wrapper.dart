@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:unischedule_app/core/extensions/context_extension.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
+import 'package:unischedule_app/core/utils/const.dart';
 import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/features/presentation/admin/home_page.dart';
 import 'package:unischedule_app/features/presentation/bloc/is_sign_in/is_sign_in_cubit.dart';
@@ -31,9 +33,32 @@ class _WrapperState extends State<Wrapper> {
       body: BlocListener<IsSignInCubit, IsSignInState>(
         listener: (context, state) {
           if (state.isFailure) {
-            navigatorKey.currentState!.pushReplacement(
-              MaterialPageRoute(builder: (_) => const UserMainMenu()),
-            );
+            if (state.message == kNoInternetConnection) {
+              debugPrint('Error: $kNoInternetConnection');
+              context.showCustomConfirmationDialog(
+                title: 'Tidak Terhubung ke Jaringan ',
+                message: 'Pastikan perangkat Anda terhubung ke jaringan, lalu silahkan soba lagi.',
+                onTapPrimaryButton: () {
+                  isSignInCubit.userInfo();
+                },
+                primaryButtonText: 'Refresh',
+              );
+            } else if (state.message == kInternalServerError) {
+              debugPrint('Error: $kInternalServerError');
+              context.showCustomConfirmationDialog(
+                title: 'Terjadi Kesalahan',
+                message:
+                    'Terjadi kesalahan saat menghubungkan ke server. Silahkan coba lagi.',
+                onTapPrimaryButton: () {
+                  isSignInCubit.userInfo();
+                },
+                primaryButtonText: 'Refresh',
+              );
+            } else {
+              navigatorKey.currentState!.pushReplacement(
+                MaterialPageRoute(builder: (_) => const UserMainMenu()),
+              );
+            }
           }
 
           if (state.isSuccess) {

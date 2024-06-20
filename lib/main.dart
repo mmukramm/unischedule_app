@@ -10,6 +10,7 @@ import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_detail_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_form_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_management_cubit.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/event_participant_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/user_detail_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/users_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/countdown/count_down_cubit.dart';
@@ -95,6 +96,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => getIt<UserActivityDetailCubit>(),
+        ),
+        BlocProvider(
+          create: (_) => getIt<EventParticipantCubit>(),
         ),
       ],
       child: MaterialApp(

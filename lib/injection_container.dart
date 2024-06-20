@@ -33,6 +33,7 @@ import 'package:unischedule_app/features/domain/usecases/put_user.dart';
 import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_detail_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_form_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_management_cubit.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/event_participant_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/user_detail_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/users_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/countdown/count_down_cubit.dart';
@@ -95,6 +96,9 @@ void initBlocs() {
   );
   getIt.registerFactory(
     () => UserActivityDetailCubit(getIt()),
+  );
+  getIt.registerFactory(
+    () => EventParticipantCubit(getIt()),
   );
 }
 
