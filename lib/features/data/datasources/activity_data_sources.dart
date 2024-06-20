@@ -77,6 +77,11 @@ abstract class ActivityDataSources {
     @Header('Authorization') String accessToken,
     @Body() Map<String, dynamic> params,
   );
+
+  @GET('/post-user')
+  Future<ApiResponse> getPostsByUserId(
+    @Header('Authorization') String accessToken,
+  );
 }
 
 class CreatePostParams {

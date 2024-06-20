@@ -9,7 +9,7 @@ class EmailVerificationCubit extends Cubit<EmailVerificationState> {
   PostVerificationEmail postVerificationEmail;
   EmailVerificationCubit(
       this.getResendEmailVerification, this.postVerificationEmail)
-      : super(EmailVerificationState.initial());
+      : super(EmailVerificationState.inProgress());
 
   void resendEmailVerification() async {
     emit(EmailVerificationState.inProgress());

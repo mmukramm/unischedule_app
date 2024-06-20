@@ -14,6 +14,7 @@ import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/features/presentation/bloc/countdown/count_down_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/email_verification/email_verification_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/email_verification/email_verification_state.dart';
+import 'package:unischedule_app/features/presentation/bloc/profile/profile_cubit.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_text_field.dart';
 import 'package:unischedule_app/features/presentation/widget/ink_well_container.dart';
@@ -67,6 +68,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage>
               );
             }
             if (state.isResendSuccess) {
+              navigatorKey.currentState!.pop();
               context.showCustomSnackbar(
                 message:
                     'Pin berhasil dikirim ulang ke email: ${CredentialSaver.userInfo?.email}',
@@ -79,7 +81,11 @@ class _EmailVerificationPageState extends State<EmailVerificationPage>
                 message: 'Email berhasil diverifikasi',
                 type: SnackBarType.success,
               );
+
               navigatorKey.currentState!.pop();
+
+              navigatorKey.currentState!.pop();
+              context.read<ProfileCubit>().userInfo();
             }
           },
           child: Padding(

@@ -21,4 +21,6 @@ abstract class ActivityRepository {
       String postId);
 
   Future<Either<Failure, String>> registerEvent(String postId);
+
+  // Future<Either<Failure, List<Post>>> getPostsByUserId();
 }

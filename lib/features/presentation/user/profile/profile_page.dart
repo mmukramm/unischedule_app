@@ -230,7 +230,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                 MaterialPageRoute(
                                   builder: (context) =>
                                       const EmailVerificationPage(
-                                          isSend: false),
+                                    isSend: false,
+                                  ),
                                 ),
                               );
                             },
