@@ -148,7 +148,8 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<Either<Failure, String>> updateUser(
-      CreateUserParams createUserParams) async {
+    CreateUserParams createUserParams,
+  ) async {
     try {
       ApiResponse result;
       if (createUserParams.picture != null) {

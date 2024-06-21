@@ -1,23 +1,25 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:unischedule_app/core/enums/activity_type.dart';
-import 'package:unischedule_app/core/enums/snack_bar_type.dart';
-import 'package:unischedule_app/core/extensions/context_extension.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
+import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
+import 'package:unischedule_app/core/enums/activity_type.dart';
 import 'package:unischedule_app/core/utils/date_formatter.dart';
-import 'package:unischedule_app/core/utils/keys.dart';
+import 'package:unischedule_app/core/enums/snack_bar_type.dart';
 import 'package:unischedule_app/features/data/models/post.dart';
-import 'package:unischedule_app/features/presentation/admin/activity/activity_detail_page.dart';
-import 'package:unischedule_app/features/presentation/admin/activity/activity_form_page.dart';
-import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_management_cubit.dart';
-import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_management_state.dart';
+import 'package:unischedule_app/core/extensions/context_extension.dart';
+import 'package:unischedule_app/features/presentation/widget/loading.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_selector_dialog.dart';
-import 'package:unischedule_app/features/presentation/widget/loading.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/activity_form_page.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/activity_detail_page.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_management_cubit.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_management_state.dart';
 
 class ActivityManagementPage extends StatefulWidget {
   const ActivityManagementPage({super.key});
@@ -109,7 +111,7 @@ class ActivityManagementPageState extends State<ActivityManagementPage> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          debugPrint('Refresh');
+          activityManagementCubit.getAllPosts();
         },
         child: SingleChildScrollView(
           child: Padding(
@@ -206,11 +208,11 @@ class ActivityManagementPageState extends State<ActivityManagementPage> {
                                 color: secondaryTextColor,
                               );
                             }
-        
+
                             if (state.isSuccess) {
                               final result = state.data as List<Post>;
                               List<Post> data;
-        
+
                               if (activityTypeValue == ActivityType.event) {
                                 data = result.where((element) {
                                   final now = DateTime.now();
@@ -224,18 +226,19 @@ class ActivityManagementPageState extends State<ActivityManagementPage> {
                                       now.isAfter(
                                           DateTime.parse(element.eventDate!));
                                 }).toList();
-                              } else if (activityTypeValue == ActivityType.magz) {
+                              } else if (activityTypeValue ==
+                                  ActivityType.magz) {
                                 data = result
                                     .where((element) => !element.isEvent!)
                                     .toList();
                               } else {
                                 data = result;
                               }
-        
+
                               activities.clear();
                               activities.addAll(data);
                             }
-        
+
                             return ListView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
@@ -243,7 +246,7 @@ class ActivityManagementPageState extends State<ActivityManagementPage> {
                               padding: const EdgeInsets.only(bottom: 40),
                               itemBuilder: (context, index) {
                                 final activity = activities[index];
-        
+
                                 return ActivityItemCard(
                                   item: activity,
                                 );

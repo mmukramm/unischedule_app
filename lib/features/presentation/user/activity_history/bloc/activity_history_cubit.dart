@@ -5,7 +5,8 @@ import 'package:unischedule_app/features/presentation/user/activity_history/bloc
 
 class ActivityHistoryCubit extends Cubit<ActivityHistoryState> {
   GetActivitiesByUser getActivitiesByUser;
-  ActivityHistoryCubit(this.getActivitiesByUser) : super(ActivityHistoryState.initial());
+  ActivityHistoryCubit(this.getActivitiesByUser)
+      : super(ActivityHistoryState.initial());
 
   void getUserActivities() async {
     emit(ActivityHistoryState.inProgress());

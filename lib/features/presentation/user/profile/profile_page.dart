@@ -1,22 +1,25 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:flutter_svg/svg.dart';
-import 'package:unischedule_app/core/enums/snack_bar_type.dart';
-import 'package:unischedule_app/core/extensions/context_extension.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
+import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
+import 'package:unischedule_app/core/enums/snack_bar_type.dart';
 import 'package:unischedule_app/core/utils/credential_saver.dart';
-import 'package:unischedule_app/core/utils/keys.dart';
-import 'package:unischedule_app/features/presentation/bloc/profile/profile_cubit.dart';
-import 'package:unischedule_app/features/presentation/bloc/profile/profile_state.dart';
-import 'package:unischedule_app/features/presentation/common/email_verification_page.dart';
-import 'package:unischedule_app/features/presentation/common/image_view_page.dart';
+import 'package:unischedule_app/core/extensions/context_extension.dart';
+import 'package:unischedule_app/features/presentation/user/profile/edit_profile_page.dart';
+import 'package:unischedule_app/features/presentation/widget/loading.dart';
 import 'package:unischedule_app/features/presentation/common/login_page.dart';
 import 'package:unischedule_app/features/presentation/user/user_main_menu.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
-import 'package:unischedule_app/features/presentation/widget/loading.dart';
+import 'package:unischedule_app/features/presentation/common/image_view_page.dart';
+import 'package:unischedule_app/features/presentation/bloc/profile/profile_cubit.dart';
+import 'package:unischedule_app/features/presentation/bloc/profile/profile_state.dart';
+import 'package:unischedule_app/features/presentation/common/email_verification_page.dart';
 
 class ProfilePage extends StatefulWidget {
   final bool withBackButton;
@@ -252,6 +255,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           FilledButton(
                             style: FilledButton.styleFrom(
@@ -278,6 +282,42 @@ class _ProfilePageState extends State<ProfilePage> {
                                   'Logout',
                                   style: textTheme.titleLarge!.copyWith(
                                     color: dangerColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          FilledButton(
+                            style: FilledButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              backgroundColor: Colors.transparent,
+                            ),
+                            onPressed: () {
+                              navigatorKey.currentState!.push(
+                                MaterialPageRoute(
+                                  builder: (_) => EditProfilePage(
+                                    user: CredentialSaver.userInfo!,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SvgPicture.asset(
+                                  AssetPath.getIcons('pencil.svg'),
+                                  colorFilter: const ColorFilter.mode(
+                                    infoColor,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text(
+                                  'Edit Profil',
+                                  style: textTheme.titleLarge!.copyWith(
+                                    color: infoColor,
                                   ),
                                 ),
                               ],

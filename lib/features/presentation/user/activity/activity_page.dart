@@ -51,7 +51,7 @@ class _ActivityPageState extends State<ActivityPage> {
             ),
             Text(
               "Daftar Kegiatan Aktif",
-              style: textTheme.displaySmall!,
+              style: textTheme.titleLarge!,
             ),
             const SizedBox(
               height: 12,
@@ -67,8 +67,13 @@ class _ActivityPageState extends State<ActivityPage> {
               },
               builder: (context, state) {
                 if (state.isInProgress) {
-                  return const Loading(
-                    color: secondaryTextColor,
+                  return const Column(
+                    children: [
+                      SizedBox(height: 24),
+                      Loading(
+                        color: secondaryTextColor,
+                      ),
+                    ],
                   );
                 }
 

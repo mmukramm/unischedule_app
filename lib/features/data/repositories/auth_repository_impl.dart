@@ -74,10 +74,8 @@ class AuthRepositoryImpl implements AuthRepository {
 
       if (e.response != null) {
         if (e.response?.statusCode == HttpStatus.internalServerError) {
-          debugPrint(e.response.toString());
           return const Left(ServerFailure(kInternalServerError));
         }
-        debugPrint(e.response.toString());
         return Left(failureMessageHandler(
             ApiResponse.fromJson(e.response?.data).message ?? ''));
       }

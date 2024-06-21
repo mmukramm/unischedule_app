@@ -74,7 +74,9 @@ class _UserActivityDetailPageState extends State<UserActivityDetailPage> {
           if (state.isSuccess) {
             navigatorKey.currentState!.pop();
             context.showCustomSnackbar(
-              message: state.data,
+              message: state.data == 'OK'
+                  ? 'Berhasil mendaftar kegiatan.'
+                  : state.data,
               type: SnackBarType.success,
             );
           }

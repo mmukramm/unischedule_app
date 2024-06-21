@@ -1,16 +1,16 @@
 import 'dart:io';
 
-import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
+import 'package:dartz/dartz.dart';
+
+import 'package:unischedule_app/core/utils/const.dart';
 import 'package:unischedule_app/core/errors/failures.dart';
 import 'package:unischedule_app/core/utils/api_response.dart';
-import 'package:unischedule_app/core/utils/const.dart';
-import 'package:unischedule_app/core/utils/credential_saver.dart';
-import 'package:unischedule_app/features/data/datasources/activity_data_sources.dart';
-import 'package:unischedule_app/features/data/models/activity_participant.dart';
 import 'package:unischedule_app/features/data/models/post.dart';
+import 'package:unischedule_app/core/utils/credential_saver.dart';
 import 'package:unischedule_app/features/data/models/post_by_user.dart';
+import 'package:unischedule_app/features/data/models/activity_participant.dart';
+import 'package:unischedule_app/features/data/datasources/activity_data_sources.dart';
 import 'package:unischedule_app/features/domain/repositories/activity_repository.dart';
 
 class ActivityRepositoryImpl implements ActivityRepository {
@@ -39,8 +39,6 @@ class ActivityRepositoryImpl implements ActivityRepository {
       }
 
       if (e.response != null) {
-        debugPrint(e.response.toString());
-        // rethrow;
         if (e.response?.statusCode == HttpStatus.internalServerError) {
           return Left(ServerFailure(e.message!));
         }
@@ -66,8 +64,6 @@ class ActivityRepositoryImpl implements ActivityRepository {
       }
 
       if (e.response != null) {
-        debugPrint(e.response.toString());
-
         if (e.response?.statusCode == HttpStatus.internalServerError) {
           return Left(ServerFailure(e.message!));
         }

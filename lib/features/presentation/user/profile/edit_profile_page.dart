@@ -17,37 +17,34 @@ import 'package:unischedule_app/core/enums/gender.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
 import 'package:unischedule_app/core/utils/image_service.dart';
-import 'package:unischedule_app/features/data/models/user.dart';
 import 'package:unischedule_app/core/enums/snack_bar_type.dart';
 import 'package:unischedule_app/core/extensions/context_extension.dart';
+
+import 'package:unischedule_app/features/data/models/user_info.dart';
 import 'package:unischedule_app/features/presentation/widget/loading.dart';
-import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 import 'package:unischedule_app/features/data/datasources/user_data_sources.dart';
+import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 import 'package:unischedule_app/features/presentation/common/image_view_page.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_text_field.dart';
 import 'package:unischedule_app/features/presentation/widget/ink_well_container.dart';
-import 'package:unischedule_app/features/presentation/admin/user/bloc/users_cubit.dart';
+import 'package:unischedule_app/features/presentation/bloc/profile/profile_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/user_form_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/user_form_state.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_password_text_field.dart';
 
-class UserFormPage extends StatefulWidget {
-  final bool isEdit;
-  final bool isAdmin;
-  final User? user;
+class EditProfilePage extends StatefulWidget {
+  final UserInfo user;
 
-  const UserFormPage({
+  const EditProfilePage({
     super.key,
-    this.user,
-    this.isEdit = false,
-    required this.isAdmin,
+    required this.user,
   });
 
   @override
-  State<UserFormPage> createState() => _UserFormPageState();
+  State<EditProfilePage> createState() => _EditProfilePageState();
 }
 
-class _UserFormPageState extends State<UserFormPage> {
+class _EditProfilePageState extends State<EditProfilePage> {
   final formKey = GlobalKey<FormBuilderState>();
   late final ValueNotifier<Gender> genderType;
   late final ValueNotifier<String?> imagePath;
@@ -76,10 +73,8 @@ class _UserFormPageState extends State<UserFormPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        title: widget.isEdit
-            ? 'Edit ${widget.isAdmin ? 'Admin' : 'User'}'
-            : 'Tambah ${widget.isAdmin ? 'Admin' : 'User'}',
+      appBar: const CustomAppBar(
+        title: 'EDIT PROFIL',
         withBackButton: true,
       ),
       body: BlocListener<UserFormCubit, UserFormState>(
@@ -95,16 +90,14 @@ class _UserFormPageState extends State<UserFormPage> {
               type: SnackBarType.error,
             );
           }
+
           if (state.isSuccess) {
-            if (widget.isEdit) {
-              navigatorKey.currentState!.pop();
-            }
             navigatorKey.currentState!.pop();
             context.showCustomSnackbar(
               message: state.data! as String,
               type: SnackBarType.success,
             );
-            context.read<UsersCubit>().getUsers();
+            context.read<ProfileCubit>().userInfo();
 
             navigatorKey.currentState!.pop();
           }
@@ -131,68 +124,25 @@ class _UserFormPageState extends State<UserFormPage> {
                       ValueListenableBuilder(
                         valueListenable: imagePath,
                         builder: (context, value, _) {
-                          if (widget.isEdit) {
-                            return value == null
-                                ? widget.user!.profileImage != null
-                                    ? InkWell(
-                                        onTap: () {
-                                          navigatorKey.currentState!.push(
-                                            MaterialPageRoute(
-                                              builder: (_) => ImageViewPage(
-                                                imagePath:
-                                                    widget.user!.profileImage,
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                        borderRadius:
-                                            BorderRadius.circular(500),
-                                        child: Container(
-                                          width: 160,
-                                          height: 160,
-                                          clipBehavior: Clip.hardEdge,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                              width: 3,
-                                              color: primaryColor,
-                                              strokeAlign:
-                                                  BorderSide.strokeAlignOutside,
+                          return value == null
+                              ? widget.user.profileImage != null
+                                  ? InkWell(
+                                      onTap: () {
+                                        navigatorKey.currentState!.push(
+                                          MaterialPageRoute(
+                                            builder: (_) => ImageViewPage(
+                                              imagePath:
+                                                  widget.user.profileImage,
                                             ),
                                           ),
-                                          child: CachedNetworkImage(
-                                            imageUrl:
-                                                widget.user!.profileImage!,
-                                            placeholder: (_, __) =>
-                                                const Padding(
-                                              padding: EdgeInsets.all(20),
-                                              child: Loading(
-                                                color: scaffoldColor,
-                                              ),
-                                            ),
-                                            errorWidget: (_, __, ___) =>
-                                                Padding(
-                                              padding: const EdgeInsets.all(12),
-                                              child: SvgPicture.asset(
-                                                width: 80,
-                                                AssetPath.getIcons('user.svg'),
-                                                colorFilter:
-                                                    const ColorFilter.mode(
-                                                  primaryColor,
-                                                  BlendMode.srcIn,
-                                                ),
-                                              ),
-                                            ),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      )
-                                    : Container(
+                                        );
+                                      },
+                                      borderRadius: BorderRadius.circular(500),
+                                      child: Container(
                                         width: 160,
                                         height: 160,
                                         clipBehavior: Clip.hardEdge,
                                         decoration: BoxDecoration(
-                                          color: secondaryTextColor,
                                           shape: BoxShape.circle,
                                           border: Border.all(
                                             width: 3,
@@ -201,34 +151,36 @@ class _UserFormPageState extends State<UserFormPage> {
                                                 BorderSide.strokeAlignOutside,
                                           ),
                                         ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(12),
-                                          child: SvgPicture.asset(
-                                            width: 80,
-                                            AssetPath.getIcons('user.svg'),
-                                            colorFilter: const ColorFilter.mode(
-                                              primaryColor,
-                                              BlendMode.srcIn,
+                                        child: CachedNetworkImage(
+                                          imageUrl: widget.user.profileImage!,
+                                          placeholder: (_, __) => const Padding(
+                                            padding: EdgeInsets.all(20),
+                                            child: Loading(
+                                              color: scaffoldColor,
                                             ),
                                           ),
-                                        ),
-                                      )
-                                : InkWell(
-                                    onTap: () {
-                                      navigatorKey.currentState!.push(
-                                        MaterialPageRoute(
-                                          builder: (_) => ImageViewPage(
-                                            imagePath: value,
+                                          errorWidget: (_, __, ___) => Padding(
+                                            padding: const EdgeInsets.all(12),
+                                            child: SvgPicture.asset(
+                                              width: 80,
+                                              AssetPath.getIcons('user.svg'),
+                                              colorFilter:
+                                                  const ColorFilter.mode(
+                                                primaryColor,
+                                                BlendMode.srcIn,
+                                              ),
+                                            ),
                                           ),
+                                          fit: BoxFit.cover,
                                         ),
-                                      );
-                                    },
-                                    borderRadius: BorderRadius.circular(500),
-                                    child: Container(
+                                      ),
+                                    )
+                                  : Container(
                                       width: 160,
                                       height: 160,
                                       clipBehavior: Clip.hardEdge,
                                       decoration: BoxDecoration(
+                                        color: secondaryTextColor,
                                         shape: BoxShape.circle,
                                         border: Border.all(
                                           width: 3,
@@ -236,41 +188,19 @@ class _UserFormPageState extends State<UserFormPage> {
                                           strokeAlign:
                                               BorderSide.strokeAlignOutside,
                                         ),
-                                        image: DecorationImage(
-                                          image: FileImage(File(value)),
-                                          fit: BoxFit.cover,
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12),
+                                        child: SvgPicture.asset(
+                                          width: 80,
+                                          AssetPath.getIcons('user.svg'),
+                                          colorFilter: const ColorFilter.mode(
+                                            primaryColor,
+                                            BlendMode.srcIn,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                          }
-                          return value == null
-                              ? Container(
-                                  width: 160,
-                                  height: 160,
-                                  clipBehavior: Clip.hardEdge,
-                                  decoration: BoxDecoration(
-                                    color: secondaryTextColor,
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      width: 3,
-                                      color: primaryColor,
-                                      strokeAlign:
-                                          BorderSide.strokeAlignOutside,
-                                    ),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(12),
-                                    child: SvgPicture.asset(
-                                      width: 80,
-                                      AssetPath.getIcons('user.svg'),
-                                      colorFilter: const ColorFilter.mode(
-                                        primaryColor,
-                                        BlendMode.srcIn,
-                                      ),
-                                    ),
-                                  ),
-                                )
+                                    )
                               : InkWell(
                                   onTap: () {
                                     navigatorKey.currentState!.push(
@@ -289,10 +219,11 @@ class _UserFormPageState extends State<UserFormPage> {
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       border: Border.all(
-                                          width: 3,
-                                          color: primaryColor,
-                                          strokeAlign:
-                                              BorderSide.strokeAlignOutside),
+                                        width: 3,
+                                        color: primaryColor,
+                                        strokeAlign:
+                                            BorderSide.strokeAlignOutside,
+                                      ),
                                       image: DecorationImage(
                                         image: FileImage(File(value)),
                                         fit: BoxFit.cover,
@@ -344,25 +275,24 @@ class _UserFormPageState extends State<UserFormPage> {
                     key: formKey,
                     child: Column(
                       children: [
-                        if (!widget.isAdmin)
-                          CustomTextField(
-                            name: 'nim',
-                            labelText: 'NIM',
-                            initialValue: widget.user?.stdCode,
-                            hintText: 'Nomor Induk Mahasiswa',
-                            validators: [
-                              FormBuilderValidators.required(
-                                errorText: 'Bagian ini harus diisi',
-                              ),
-                            ],
-                          ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        CustomTextField(
+                          name: 'nim',
+                          labelText: 'NIM',
+                          initialValue: widget.user.stdCode,
+                          isRequired: false,
+                          hintText: 'Nomor Induk Mahasiswa',
+                        ),
                         const SizedBox(
                           height: 20,
                         ),
                         CustomTextField(
                           name: 'name',
                           labelText: 'Nama Lengkap',
-                          initialValue: widget.user?.name,
+                          initialValue: widget.user.name,
+                          isRequired: false,
                           hintText: 'Nama Lengkap',
                           validators: [
                             FormBuilderValidators.required(
@@ -376,7 +306,8 @@ class _UserFormPageState extends State<UserFormPage> {
                         CustomTextField(
                           name: 'phone',
                           labelText: 'Nomor Telepon',
-                          initialValue: widget.user?.phoneNumber,
+                          initialValue: widget.user.phoneNumber,
+                          isRequired: false,
                           hintText: 'Nomor Telepon',
                           textInputType: TextInputType.phone,
                           validators: [
@@ -391,7 +322,9 @@ class _UserFormPageState extends State<UserFormPage> {
                         CustomTextField(
                           name: 'email',
                           labelText: 'Email',
-                          initialValue: widget.user?.email,
+                          initialValue: widget.user.email,
+                          readOnly: true,
+                          isRequired: false,
                           hintText: 'Email',
                           validators: [
                             FormBuilderValidators.required(
@@ -409,17 +342,11 @@ class _UserFormPageState extends State<UserFormPage> {
                         CustomPasswordTextField(
                           name: 'password',
                           hintText: '********',
-                          isRequired: !widget.isEdit,
+                          isRequired: false,
                           labelText: 'Password',
                           onChanged: (result) {
                             password = result!;
                           },
-                          validators: [
-                            if (!widget.isEdit)
-                              FormBuilderValidators.required(
-                                errorText: 'Bagian ini harus diisi',
-                              ),
-                          ],
                         ),
                         const SizedBox(
                           height: 20,
@@ -433,17 +360,11 @@ class _UserFormPageState extends State<UserFormPage> {
                                 CustomPasswordTextField(
                                   name: 'confirmPassword',
                                   hintText: '********',
-                                  isRequired: !widget.isEdit,
                                   labelText: 'Konfirmasi Password',
+                                  isRequired: false,
                                   onChanged: (result) {
                                     isPasswordSame.value = password == result!;
                                   },
-                                  validators: [
-                                    if (!widget.isEdit)
-                                      FormBuilderValidators.required(
-                                        errorText: 'Bagian ini harus diisi',
-                                      ),
-                                  ],
                                 ),
                                 if (!value)
                                   Column(
@@ -486,31 +407,27 @@ class _UserFormPageState extends State<UserFormPage> {
                           }
 
                           final createUserParams = CreateUserParams(
-                            id: widget.user?.id,
+                            id: widget.user.id,
                             name: value['name'],
-                            stdCode: value['nim'] == widget.user?.stdCode
+                            stdCode: value['nim'] == widget.user.stdCode
                                 ? null
                                 : value['nim'],
                             gender: value['gender'] == Gender.male
                                 ? 'MALE'
                                 : 'FEMALE',
-                            email: value['email'] == widget.user?.email
+                            email: value['email'] == widget.user.email
                                 ? null
                                 : value['email'],
                             phoneNumber:
-                                value['phone'] == widget.user?.phoneNumber
+                                value['phone'] == widget.user.phoneNumber
                                     ? null
                                     : value['phone'],
                             password: value['password'],
-                            role: widget.isAdmin ? 'ADMIN' : 'USER',
+                            role: 'USER',
                             picture: imagePath.value,
                           );
 
-                          if (widget.isEdit) {
-                            userFormCubit.updateUser(createUserParams);
-                          } else {
-                            userFormCubit.createUser(createUserParams);
-                          }
+                          userFormCubit.updateUser(createUserParams);
                         }
                       },
                       child: Text(
@@ -619,10 +536,6 @@ class _UserFormPageState extends State<UserFormPage> {
               style: textTheme.bodyMedium,
               children: const [
                 TextSpan(text: 'Jenis Kelamin'),
-                TextSpan(
-                  text: '*',
-                  style: TextStyle(color: dangerColor),
-                ),
               ],
             ),
           ),
@@ -631,7 +544,7 @@ class _UserFormPageState extends State<UserFormPage> {
             child: FormBuilderRadioGroup<Gender>(
               name: 'gender',
               initialValue:
-                  widget.user?.gender == 'MALE' ? Gender.male : Gender.female,
+                  widget.user.gender == 'MALE' ? Gender.male : Gender.female,
               decoration: const InputDecoration(
                 border: InputBorder.none,
               ),

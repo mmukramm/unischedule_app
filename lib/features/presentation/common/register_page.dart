@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+
+import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/core/enums/gender.dart';
-import 'package:unischedule_app/core/enums/snack_bar_type.dart';
-import 'package:unischedule_app/core/extensions/context_extension.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
+import 'package:unischedule_app/core/enums/snack_bar_type.dart';
 import 'package:unischedule_app/core/utils/credential_saver.dart';
-import 'package:unischedule_app/core/utils/keys.dart';
+import 'package:unischedule_app/core/extensions/context_extension.dart';
+import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 import 'package:unischedule_app/features/data/datasources/auth_data_sources.dart';
+import 'package:unischedule_app/features/presentation/widget/custom_text_field.dart';
 import 'package:unischedule_app/features/presentation/bloc/sign_up/sign_up_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/sign_up/sign_up_state.dart';
 import 'package:unischedule_app/features/presentation/common/email_verification_page.dart';
-import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_password_text_field.dart';
-import 'package:unischedule_app/features/presentation/widget/custom_text_field.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -66,13 +68,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 );
               }
               if (state.isSuccess) {
-                debugPrint('successss');
                 navigatorKey.currentState!.pop();
                 context.showCustomSnackbar(
                   message: 'Akun berhasil dibuat',
                   type: SnackBarType.success,
                 );
-                debugPrint(CredentialSaver.accessToken);
                 signUpCubit.userInfo();
               }
               if (state.isLogin) {

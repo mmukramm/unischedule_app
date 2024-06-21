@@ -2,6 +2,7 @@ class ActivityHistoryState<T> {
   final bool isInitial;
   final bool isInProgress;
   final bool isFailure;
+  final bool isEmpty;
   final bool isMutateDataSuccess;
   final bool isSuccess;
 
@@ -13,14 +14,20 @@ class ActivityHistoryState<T> {
     this.isInProgress = false,
     this.isFailure = false,
     this.isSuccess = false,
+    this.isEmpty = false,
     this.isMutateDataSuccess = false,
     this.message = '',
     this.data,
   });
 
-  factory ActivityHistoryState.initial() => const ActivityHistoryState(isInitial: true);
+  factory ActivityHistoryState.initial() =>
+      const ActivityHistoryState(isInitial: true);
 
-  factory ActivityHistoryState.inProgress() => const ActivityHistoryState(isInProgress: true);
+  factory ActivityHistoryState.inProgress() =>
+      const ActivityHistoryState(isInProgress: true);
+
+  factory ActivityHistoryState.empty() =>
+      const ActivityHistoryState(isEmpty: true);
 
   factory ActivityHistoryState.failure(String? message) =>
       ActivityHistoryState(isFailure: true, message: message);

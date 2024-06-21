@@ -1,13 +1,14 @@
 import 'dart:convert';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:unischedule_app/core/utils/credential_saver.dart';
+
 import 'package:unischedule_app/core/utils/keys.dart';
-import 'package:unischedule_app/features/data/datasources/auth_preferences_helper.dart';
-import 'package:unischedule_app/features/presentation/common/wrapper.dart';
 import 'package:unischedule_app/injection_container.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:unischedule_app/core/utils/credential_saver.dart';
+import 'package:unischedule_app/features/presentation/common/wrapper.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:unischedule_app/features/data/datasources/auth_preferences_helper.dart';
 
 class FirebaseMessagingConfig {
   final _firebaseMessaging = FirebaseMessaging.instance;
