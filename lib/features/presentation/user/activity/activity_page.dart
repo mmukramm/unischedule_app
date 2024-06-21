@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:unischedule_app/core/utils/date_formatter.dart';
 
 import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
@@ -81,7 +82,18 @@ class _ActivityPageState extends State<ActivityPage> {
 
                 if (state.isSuccess) {
                   activities.clear();
-                  activities.addAll(state.data as List<Post>);
+                  final data = state.data as List<Post>;
+                  data.sort(
+                    (a, b) => a.eventDate!.compareTo(b.eventDate!),
+                  );
+                  activities.addAll(
+                    data.where(
+                      (element) {
+                        final now = DateTime.now();
+                        return !now.isAfter(DateTime.parse(element.eventDate!));
+                      },
+                    ),
+                  );
                 }
 
                 return Padding(
@@ -136,17 +148,17 @@ class _ActivityPageState extends State<ActivityPage> {
                                 Text(
                                   activity.title ?? '',
                                   maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis,
                                   style: textTheme.titleSmall!.copyWith(
                                     color: primaryTextColor,
                                   ),
                                 ),
                                 const SizedBox(
-                                  height: 8,
+                                  height: 12,
                                 ),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     SvgPicture.asset(
                                       AssetPath.getIcons('category.svg'),
@@ -165,6 +177,32 @@ class _ActivityPageState extends State<ActivityPage> {
                                           : 'Mading',
                                       style: textTheme.bodySmall!.copyWith(
                                         color: highlightTextColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SvgPicture.asset(
+                                      AssetPath.getIcons('calendar.svg'),
+                                      width: 16,
+                                      colorFilter: const ColorFilter.mode(
+                                        highlightTextColor,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 4,
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        formatDateTime(
+                                          activity.eventDate ?? '',
+                                        ),
+                                        style: textTheme.bodySmall!.copyWith(
+                                          color: highlightTextColor,
+                                        ),
                                       ),
                                     ),
                                   ],

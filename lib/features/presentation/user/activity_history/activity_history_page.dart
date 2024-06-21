@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:unischedule_app/core/utils/date_formatter.dart';
 
 import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/core/utils/const.dart';
@@ -104,6 +105,11 @@ class _ActivityHistoryPageState extends State<ActivityHistoryPage> {
                 if (state.isSuccess) {
                   activities.clear();
                   final data = state.data as List<PostByUser>;
+
+                  data.sort(
+                    (a, b) => b.eventDate!.compareTo(a.eventDate!),
+                  );
+
                   activities.addAll(data.where(
                     (element) => element.isRegistered!,
                   ));
@@ -193,8 +199,8 @@ class _ActivityHistoryPageState extends State<ActivityHistoryPage> {
                                 Text(
                                   activity.title ?? '',
                                   maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis,
                                   style: textTheme.titleSmall!.copyWith(
                                     color: primaryTextColor,
                                   ),
@@ -203,7 +209,7 @@ class _ActivityHistoryPageState extends State<ActivityHistoryPage> {
                                   height: 8,
                                 ),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     SvgPicture.asset(
                                       AssetPath.getIcons('category.svg'),
@@ -222,6 +228,32 @@ class _ActivityHistoryPageState extends State<ActivityHistoryPage> {
                                           : 'Mading',
                                       style: textTheme.bodySmall!.copyWith(
                                         color: highlightTextColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SvgPicture.asset(
+                                      AssetPath.getIcons('calendar.svg'),
+                                      width: 16,
+                                      colorFilter: const ColorFilter.mode(
+                                        highlightTextColor,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 4,
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        formatDateTime(
+                                          activity.eventDate ?? '',
+                                        ),
+                                        style: textTheme.bodySmall!.copyWith(
+                                          color: highlightTextColor,
+                                        ),
                                       ),
                                     ),
                                   ],
