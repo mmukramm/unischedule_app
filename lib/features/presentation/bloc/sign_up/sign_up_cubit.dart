@@ -1,8 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:unischedule_app/core/usecases/no_params.dart';
-import 'package:unischedule_app/features/data/datasources/auth_data_sources.dart';
-import 'package:unischedule_app/features/domain/usecases/get_user_info.dart';
 import 'package:unischedule_app/features/domain/usecases/post_sign_up.dart';
+import 'package:unischedule_app/features/domain/usecases/get_user_info.dart';
+import 'package:unischedule_app/features/data/datasources/auth_data_sources.dart';
 import 'package:unischedule_app/features/presentation/bloc/sign_up/sign_up_state.dart';
 
 class SignUpCubit extends Cubit<SignUpState> {

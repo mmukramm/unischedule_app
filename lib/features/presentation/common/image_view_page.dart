@@ -1,9 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+
+import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
-import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 import 'package:unischedule_app/features/presentation/widget/loading.dart';
+import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 
 class ImageViewPage extends StatelessWidget {
   final String? imagePath;

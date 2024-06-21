@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 

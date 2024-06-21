@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
+
+import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
-import 'package:unischedule_app/core/utils/keys.dart';
-import 'package:unischedule_app/features/presentation/admin/activity/activity_management_page.dart';
-import 'package:unischedule_app/features/presentation/admin/user/users_management_page.dart';
-import 'package:unischedule_app/features/presentation/user/profile/profile_page.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
+import 'package:unischedule_app/features/presentation/user/profile/profile_page.dart';
 import 'package:unischedule_app/features/presentation/widget/ink_well_container.dart';
+import 'package:unischedule_app/features/presentation/admin/user/users_management_page.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/activity_management_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

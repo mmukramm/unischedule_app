@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:unischedule_app/core/theme/colors.dart';
-import 'package:unischedule_app/core/theme/text_theme.dart';
+
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+
+import 'package:unischedule_app/core/theme/colors.dart';
+import 'package:unischedule_app/core/theme/text_theme.dart';
 
 class CustomTextField extends StatelessWidget {
   final String name, hintText;

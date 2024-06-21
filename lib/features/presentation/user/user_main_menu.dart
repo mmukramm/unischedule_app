@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_svg/svg.dart';
+
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
+import 'package:unischedule_app/features/presentation/user/profile/profile_page.dart';
 import 'package:unischedule_app/features/presentation/user/activity/activity_page.dart';
 import 'package:unischedule_app/features/presentation/user/activity_history/activity_history_page.dart';
-import 'package:unischedule_app/features/presentation/user/profile/profile_page.dart';
 
 class UserMainMenu extends StatefulWidget {
   const UserMainMenu({super.key});

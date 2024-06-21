@@ -5,13 +5,10 @@ String formatDateTime(String dateTimeString) {
     return dateTimeString;
   }
 
-  // Parse the input string to a DateTime object
   DateTime dateTime = DateTime.parse(dateTimeString);
 
-  // Define the desired format
   DateFormat dateFormat = DateFormat('dd MMMM yyyy HH:mm');
 
-  // Format the DateTime object to a string
   String formattedDate = dateFormat.format(dateTime);
 
   return formattedDate;

@@ -1,17 +1,17 @@
 import 'dart:io';
 
-import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:unischedule_app/core/errors/exceptions.dart';
-import 'package:unischedule_app/core/errors/failures.dart';
-import 'package:unischedule_app/core/utils/api_response.dart';
+import 'package:dartz/dartz.dart';
+
 import 'package:unischedule_app/core/utils/const.dart';
+import 'package:unischedule_app/core/errors/failures.dart';
+import 'package:unischedule_app/core/errors/exceptions.dart';
+import 'package:unischedule_app/core/utils/api_response.dart';
 import 'package:unischedule_app/core/utils/credential_saver.dart';
-import 'package:unischedule_app/features/data/datasources/auth_data_sources.dart';
-import 'package:unischedule_app/features/data/datasources/auth_preferences_helper.dart';
 import 'package:unischedule_app/features/data/models/user_info.dart';
+import 'package:unischedule_app/features/data/datasources/auth_data_sources.dart';
 import 'package:unischedule_app/features/domain/repositories/auth_repository.dart';
+import 'package:unischedule_app/features/data/datasources/auth_preferences_helper.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthDataSources authDataSources;

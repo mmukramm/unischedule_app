@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:unischedule_app/core/errors/exceptions.dart';
+
 import 'package:unischedule_app/core/utils/const.dart';
+import 'package:unischedule_app/core/errors/exceptions.dart';
 import 'package:unischedule_app/core/utils/credential_saver.dart';
 
 abstract class AuthPreferencesHelper {

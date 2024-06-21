@@ -11,7 +11,6 @@ import 'package:unischedule_app/core/utils/asset_path.dart';
 import 'package:unischedule_app/core/enums/snack_bar_type.dart';
 import 'package:unischedule_app/core/utils/credential_saver.dart';
 import 'package:unischedule_app/core/extensions/context_extension.dart';
-import 'package:unischedule_app/features/presentation/user/profile/edit_profile_page.dart';
 import 'package:unischedule_app/features/presentation/widget/loading.dart';
 import 'package:unischedule_app/features/presentation/common/login_page.dart';
 import 'package:unischedule_app/features/presentation/user/user_main_menu.dart';
@@ -19,6 +18,7 @@ import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart
 import 'package:unischedule_app/features/presentation/common/image_view_page.dart';
 import 'package:unischedule_app/features/presentation/bloc/profile/profile_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/profile/profile_state.dart';
+import 'package:unischedule_app/features/presentation/user/profile/edit_profile_page.dart';
 import 'package:unischedule_app/features/presentation/common/email_verification_page.dart';
 
 class ProfilePage extends StatefulWidget {

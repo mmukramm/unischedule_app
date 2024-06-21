@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:unischedule_app/features/domain/usecases/post_register_event.dart';
 import 'package:unischedule_app/features/presentation/bloc/user_activity_detail/user_activity_detail_state.dart';
 

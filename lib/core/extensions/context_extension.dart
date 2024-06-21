@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:unischedule_app/core/enums/snack_bar_type.dart';
+
+import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
-import 'package:unischedule_app/core/utils/keys.dart';
-import 'package:unischedule_app/features/presentation/widget/custom_confirmation_delete_dialog.dart';
-import 'package:unischedule_app/features/presentation/widget/custom_confirmation_dialog.dart';
-import 'package:unischedule_app/features/presentation/widget/custom_selector_dialog.dart';
+import 'package:unischedule_app/core/enums/snack_bar_type.dart';
 import 'package:unischedule_app/features/presentation/widget/loading.dart';
+import 'package:unischedule_app/features/presentation/widget/custom_selector_dialog.dart';
+import 'package:unischedule_app/features/presentation/widget/custom_confirmation_dialog.dart';
 import 'package:unischedule_app/features/presentation/widget/no_internet_connection_dialog.dart';
+import 'package:unischedule_app/features/presentation/widget/custom_confirmation_delete_dialog.dart';
 
 extension CustomSnackBarExtension on BuildContext {
   showCustomSnackbar({

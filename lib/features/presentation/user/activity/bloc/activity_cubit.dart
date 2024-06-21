@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:unischedule_app/core/usecases/no_params.dart';
 import 'package:unischedule_app/features/domain/usecases/get_activities.dart';
 import 'package:unischedule_app/features/presentation/user/activity/bloc/activity_state.dart';

@@ -1,7 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:unischedule_app/core/usecases/no_params.dart';
-import 'package:unischedule_app/features/domain/usecases/get_resend_email_verification.dart';
 import 'package:unischedule_app/features/domain/usecases/post_verification_email.dart';
+import 'package:unischedule_app/features/domain/usecases/get_resend_email_verification.dart';
 import 'package:unischedule_app/features/presentation/bloc/email_verification/email_verification_state.dart';
 
 class EmailVerificationCubit extends Cubit<EmailVerificationState> {

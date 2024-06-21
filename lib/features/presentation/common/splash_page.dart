@@ -1,11 +1,13 @@
 import 'dart:async';
 
-import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
+
+import 'package:after_layout/after_layout.dart';
+
+import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
-import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/features/presentation/common/wrapper.dart';
 
 class SplashPage extends StatefulWidget {

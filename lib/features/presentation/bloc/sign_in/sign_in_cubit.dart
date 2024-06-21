@@ -1,7 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:unischedule_app/core/usecases/no_params.dart';
-import 'package:unischedule_app/features/domain/usecases/get_user_info.dart';
 import 'package:unischedule_app/features/domain/usecases/post_sign_in.dart';
+import 'package:unischedule_app/features/domain/usecases/get_user_info.dart';
 import 'package:unischedule_app/features/presentation/bloc/sign_in/sign_in_state.dart';
 
 class SignInCubit extends Cubit<SignInState> {

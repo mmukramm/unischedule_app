@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
+import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
-import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/features/presentation/widget/ink_well_container.dart';
 
 class SelectorDialogParams {

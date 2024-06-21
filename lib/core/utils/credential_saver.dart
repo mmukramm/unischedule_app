@@ -1,6 +1,6 @@
-import 'package:unischedule_app/features/data/datasources/auth_preferences_helper.dart';
-import 'package:unischedule_app/features/data/models/user_info.dart';
 import 'package:unischedule_app/injection_container.dart';
+import 'package:unischedule_app/features/data/models/user_info.dart';
+import 'package:unischedule_app/features/data/datasources/auth_preferences_helper.dart';
 
 class CredentialSaver {
   static String? accessToken;

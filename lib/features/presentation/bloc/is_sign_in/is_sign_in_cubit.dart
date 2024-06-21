@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:unischedule_app/core/usecases/no_params.dart';
 import 'package:unischedule_app/features/domain/usecases/get_user_info.dart';
 import 'package:unischedule_app/features/domain/usecases/post_register_fcp_token.dart';

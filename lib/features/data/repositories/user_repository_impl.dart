@@ -1,13 +1,14 @@
 import 'dart:io';
 
-import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:dartz/dartz.dart';
+
+import 'package:unischedule_app/core/utils/const.dart';
 import 'package:unischedule_app/core/errors/failures.dart';
 import 'package:unischedule_app/core/utils/api_response.dart';
-import 'package:unischedule_app/core/utils/const.dart';
+import 'package:unischedule_app/features/data/models/user.dart';
 import 'package:unischedule_app/core/utils/credential_saver.dart';
 import 'package:unischedule_app/features/data/datasources/user_data_sources.dart';
-import 'package:unischedule_app/features/data/models/user.dart';
 import 'package:unischedule_app/features/domain/repositories/user_repository.dart';
 
 class UserRepositoryImpl implements UserRepository {

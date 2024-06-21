@@ -1,23 +1,25 @@
 import 'dart:async';
 
-import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
+
+import 'package:after_layout/after_layout.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:unischedule_app/core/enums/snack_bar_type.dart';
-import 'package:unischedule_app/core/extensions/context_extension.dart';
+
+import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
+import 'package:unischedule_app/core/enums/snack_bar_type.dart';
 import 'package:unischedule_app/core/utils/credential_saver.dart';
-import 'package:unischedule_app/core/utils/keys.dart';
-import 'package:unischedule_app/features/presentation/bloc/countdown/count_down_cubit.dart';
-import 'package:unischedule_app/features/presentation/bloc/email_verification/email_verification_cubit.dart';
-import 'package:unischedule_app/features/presentation/bloc/email_verification/email_verification_state.dart';
-import 'package:unischedule_app/features/presentation/bloc/profile/profile_cubit.dart';
+import 'package:unischedule_app/core/extensions/context_extension.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_text_field.dart';
 import 'package:unischedule_app/features/presentation/widget/ink_well_container.dart';
+import 'package:unischedule_app/features/presentation/bloc/profile/profile_cubit.dart';
+import 'package:unischedule_app/features/presentation/bloc/countdown/count_down_cubit.dart';
+import 'package:unischedule_app/features/presentation/bloc/email_verification/email_verification_cubit.dart';
+import 'package:unischedule_app/features/presentation/bloc/email_verification/email_verification_state.dart';
 
 class EmailVerificationPage extends StatefulWidget {
   final bool isSend;

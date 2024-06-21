@@ -1,8 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:unischedule_app/core/usecases/no_params.dart';
+
 import 'package:unischedule_app/core/utils/const.dart';
-import 'package:unischedule_app/features/domain/usecases/delete_access_token.dart';
+import 'package:unischedule_app/core/usecases/no_params.dart';
 import 'package:unischedule_app/features/domain/usecases/get_user_info.dart';
+import 'package:unischedule_app/features/domain/usecases/delete_access_token.dart';
 import 'package:unischedule_app/features/presentation/bloc/profile/profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {

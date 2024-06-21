@@ -1,32 +1,34 @@
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
+import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/core/theme/theme.dart';
+import 'package:unischedule_app/firebase_options.dart';
+import 'package:unischedule_app/injection_container.dart';
+import 'package:unischedule_app/injection_container.dart' as di;
 import 'package:unischedule_app/core/utils/credential_saver.dart';
 import 'package:unischedule_app/core/utils/firebase_messaging_config.dart';
-import 'package:unischedule_app/core/utils/keys.dart';
-import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_detail_cubit.dart';
-import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_form_cubit.dart';
-import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_management_cubit.dart';
-import 'package:unischedule_app/features/presentation/admin/activity/bloc/event_participant_cubit.dart';
-import 'package:unischedule_app/features/presentation/admin/user/bloc/user_detail_cubit.dart';
-import 'package:unischedule_app/features/presentation/admin/user/bloc/users_cubit.dart';
-import 'package:unischedule_app/features/presentation/bloc/countdown/count_down_cubit.dart';
-import 'package:unischedule_app/features/presentation/bloc/email_verification/email_verification_cubit.dart';
-import 'package:unischedule_app/features/presentation/bloc/is_sign_in/is_sign_in_cubit.dart';
+import 'package:unischedule_app/features/presentation/common/splash_page.dart';
 import 'package:unischedule_app/features/presentation/bloc/profile/profile_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/sign_in/sign_in_cubit.dart';
 import 'package:unischedule_app/features/presentation/bloc/sign_up/sign_up_cubit.dart';
+import 'package:unischedule_app/features/presentation/admin/user/bloc/users_cubit.dart';
 import 'package:unischedule_app/features/presentation/admin/user/bloc/user_form_cubit.dart';
-import 'package:unischedule_app/features/presentation/bloc/user_activity_detail/user_activity_detail_cubit.dart';
-import 'package:unischedule_app/features/presentation/common/splash_page.dart';
+import 'package:unischedule_app/features/presentation/bloc/countdown/count_down_cubit.dart';
+import 'package:unischedule_app/features/presentation/bloc/is_sign_in/is_sign_in_cubit.dart';
+import 'package:unischedule_app/features/presentation/admin/user/bloc/user_detail_cubit.dart';
 import 'package:unischedule_app/features/presentation/user/activity/bloc/activity_cubit.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_form_cubit.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_detail_cubit.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/event_participant_cubit.dart';
+import 'package:unischedule_app/features/presentation/admin/activity/bloc/activity_management_cubit.dart';
+import 'package:unischedule_app/features/presentation/bloc/email_verification/email_verification_cubit.dart';
+import 'package:unischedule_app/features/presentation/bloc/user_activity_detail/user_activity_detail_cubit.dart';
 import 'package:unischedule_app/features/presentation/user/activity_history/bloc/activity_history_cubit.dart';
-import 'package:unischedule_app/firebase_options.dart';
-import 'package:unischedule_app/injection_container.dart' as di;
-import 'package:unischedule_app/injection_container.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

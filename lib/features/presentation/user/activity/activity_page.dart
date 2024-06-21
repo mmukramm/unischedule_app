@@ -1,21 +1,23 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:unischedule_app/core/enums/snack_bar_type.dart';
-import 'package:unischedule_app/core/extensions/context_extension.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+
+import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
-import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/features/data/models/post.dart';
+import 'package:unischedule_app/core/enums/snack_bar_type.dart';
+import 'package:unischedule_app/core/extensions/context_extension.dart';
+import 'package:unischedule_app/features/presentation/widget/loading.dart';
+import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
+import 'package:unischedule_app/features/presentation/widget/ink_well_container.dart';
 import 'package:unischedule_app/features/presentation/common/user_activity_detail_page.dart';
 import 'package:unischedule_app/features/presentation/user/activity/bloc/activity_cubit.dart';
 import 'package:unischedule_app/features/presentation/user/activity/bloc/activity_state.dart';
-import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
-import 'package:unischedule_app/features/presentation/widget/ink_well_container.dart';
-import 'package:unischedule_app/features/presentation/widget/loading.dart';
 
 class ActivityPage extends StatefulWidget {
   const ActivityPage({super.key});

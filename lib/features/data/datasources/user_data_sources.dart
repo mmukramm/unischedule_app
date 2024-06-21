@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:http_parser/http_parser.dart';
 
 import 'package:unischedule_app/core/utils/api_response.dart';
 
