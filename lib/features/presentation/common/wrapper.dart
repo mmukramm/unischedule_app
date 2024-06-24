@@ -73,6 +73,17 @@ class _WrapperState extends State<Wrapper> {
                 },
                 primaryButtonText: 'Refresh',
               );
+            } else if (state.message == kUserInfoNull) {
+              context.showServerErrorDialog(
+                title: 'Terjadi Kesalahan',
+                message: 'Terjadi kesalahan saat menghubungkan Akun Anda.',
+                withCloseButton: false,
+                onTapPrimaryButton: () {
+                  navigatorKey.currentState!.pop();
+                  isSignInCubit.removeAccessToken();
+                },
+                primaryButtonText: 'Refresh',
+              );
             } else {
               context.showServerErrorDialog(
                 title: 'Terjadi Kesalahan',
@@ -83,9 +94,15 @@ class _WrapperState extends State<Wrapper> {
                   navigatorKey.currentState!.pop();
                   isSignInCubit.userInfo();
                 },
-                primaryButtonText: 'Refresh',
+                primaryButtonText: 'Sign Out',
               );
             }
+          }
+
+          if (state.isSignOut) {
+            navigatorKey.currentState!.pushReplacement(
+              MaterialPageRoute(builder: (_) => const UserMainMenu()),
+            );
           }
 
           if (state.isFcmTokenChange) {

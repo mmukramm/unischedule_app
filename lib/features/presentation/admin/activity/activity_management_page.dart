@@ -13,6 +13,7 @@ import 'package:unischedule_app/core/utils/date_formatter.dart';
 import 'package:unischedule_app/core/enums/snack_bar_type.dart';
 import 'package:unischedule_app/features/data/models/post.dart';
 import 'package:unischedule_app/core/extensions/context_extension.dart';
+import 'package:unischedule_app/features/presentation/widget/data_empty.dart';
 import 'package:unischedule_app/features/presentation/widget/loading.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_selector_dialog.dart';
@@ -233,6 +234,14 @@ class ActivityManagementPageState extends State<ActivityManagementPage> {
                                     .toList();
                               } else {
                                 data = result;
+                              }
+
+                              if (data.isEmpty) {
+                                if (data.isEmpty) {
+                                  return const DataEmpty(
+                                    message: 'Tidak ada postingan.',
+                                  );
+                                }
                               }
 
                               activities.clear();

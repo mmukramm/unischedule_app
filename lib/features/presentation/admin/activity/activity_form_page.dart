@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:unischedule_app/core/utils/const.dart';
 
 import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/core/theme/theme.dart';
@@ -89,10 +90,18 @@ class ActivityFormPageState extends State<ActivityFormPage> {
 
           if (state.isFailure) {
             navigatorKey.currentState!.pop();
-            context.showCustomSnackbar(
-              message: state.message!,
-              type: SnackBarType.error,
-            );
+            if (state.message == kRequestEntityTooLarge ||
+                state.message == kFileToolarge) {
+              context.showCustomSnackbar(
+                message: 'Ukuran gambar tidak boleh lebih dari 2MB.',
+                type: SnackBarType.error,
+              );
+            } else {
+              context.showCustomSnackbar(
+                message: state.message!,
+                type: SnackBarType.error,
+              );
+            }
           }
           if (state.isSuccess) {
             navigatorKey.currentState!.pop();
@@ -171,6 +180,7 @@ class ActivityFormPageState extends State<ActivityFormPage> {
                                     MaterialPageRoute(
                                       builder: (_) => ImageViewPage(
                                         imagePath: value,
+                                        isFile: true,
                                       ),
                                     ),
                                   ),
@@ -257,6 +267,13 @@ class ActivityFormPageState extends State<ActivityFormPage> {
                         ),
                       ),
                     ],
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Text(
+                    '*Gambar tidak boleh melebihi 2MB.',
+                    style: textTheme.bodySmall!.copyWith(color: dangerColor),
                   ),
                   const SizedBox(
                     height: 32,

@@ -10,6 +10,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:unischedule_app/core/utils/const.dart';
 
 import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
@@ -34,10 +35,12 @@ import 'package:unischedule_app/features/presentation/widget/custom_password_tex
 
 class EditProfilePage extends StatefulWidget {
   final UserInfo user;
+  final bool isAdmin;
 
   const EditProfilePage({
     super.key,
     required this.user,
+    this.isAdmin = false,
   });
 
   @override
@@ -85,10 +88,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
           if (state.isFailure) {
             navigatorKey.currentState!.pop();
-            context.showCustomSnackbar(
-              message: state.message!,
-              type: SnackBarType.error,
-            );
+            if (state.message == kRequestEntityTooLarge ||
+                state.message == kFileToolarge) {
+              context.showCustomSnackbar(
+                message: 'Ukuran gambar tidak boleh lebih dari 2MB.',
+                type: SnackBarType.error,
+              );
+            } else {
+              context.showCustomSnackbar(
+                message: state.message!,
+                type: SnackBarType.error,
+              );
+            }
           }
 
           if (state.isSuccess) {
@@ -269,6 +280,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ],
                   ),
                   const SizedBox(
+                    height: 12,
+                  ),
+                  Text(
+                    '*Gambar tidak boleh melebihi 2MB.',
+                    style: textTheme.bodySmall!.copyWith(color: dangerColor),
+                  ),
+                  const SizedBox(
                     height: 24,
                   ),
                   FormBuilder(
@@ -278,13 +296,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         const SizedBox(
                           height: 20,
                         ),
-                        CustomTextField(
-                          name: 'nim',
-                          labelText: 'NIM',
-                          initialValue: widget.user.stdCode,
-                          isRequired: false,
-                          hintText: 'Nomor Induk Mahasiswa',
-                        ),
+                        if (!widget.isAdmin)
+                          CustomTextField(
+                            name: 'nim',
+                            labelText: 'NIM',
+                            initialValue: widget.user.stdCode,
+                            isRequired: false,
+                            hintText: 'Nomor Induk Mahasiswa',
+                          ),
                         const SizedBox(
                           height: 20,
                         ),
@@ -310,22 +329,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           isRequired: false,
                           hintText: 'Nomor Telepon',
                           textInputType: TextInputType.phone,
-                          validators: [
-                            FormBuilderValidators.required(
-                              errorText: 'Bagian ini harus diisi',
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        CustomTextField(
-                          name: 'email',
-                          labelText: 'Email',
-                          initialValue: widget.user.email,
-                          readOnly: true,
-                          isRequired: false,
-                          hintText: 'Email',
                           validators: [
                             FormBuilderValidators.required(
                               errorText: 'Bagian ini harus diisi',
@@ -415,9 +418,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             gender: value['gender'] == Gender.male
                                 ? 'MALE'
                                 : 'FEMALE',
-                            email: value['email'] == widget.user.email
-                                ? null
-                                : value['email'],
+                            email: widget.user.email,
                             phoneNumber:
                                 value['phone'] == widget.user.phoneNumber
                                     ? null

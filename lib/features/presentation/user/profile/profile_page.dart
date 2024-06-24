@@ -297,6 +297,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 MaterialPageRoute(
                                   builder: (_) => EditProfilePage(
                                     user: CredentialSaver.userInfo!,
+                                    isAdmin: true,
                                   ),
                                 ),
                               );

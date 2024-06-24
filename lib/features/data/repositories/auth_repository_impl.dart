@@ -61,7 +61,7 @@ class AuthRepositoryImpl implements AuthRepository {
       );
 
       if (result.data == null) {
-        return Left(ServerFailure(result.message!));
+        return const Left(ServerFailure(kUserInfoNull));
       }
 
       CredentialSaver.userInfo = UserInfo.fromMap(result.data);

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:unischedule_app/core/utils/const.dart';
 import 'package:unischedule_app/core/errors/failures.dart';
@@ -39,8 +40,15 @@ class ActivityRepositoryImpl implements ActivityRepository {
       }
 
       if (e.response != null) {
+        debugPrint(e.response?.data.toString());
         if (e.response?.statusCode == HttpStatus.internalServerError) {
+          if (e.response?.data['message'] == kFileToolarge) {
+            return const Left(ServerFailure(kFileToolarge));
+          }
           return Left(ServerFailure(e.message!));
+        }
+        if (e.response?.statusCode == HttpStatus.requestEntityTooLarge) {
+          return const Left(ServerFailure(kRequestEntityTooLarge));
         }
         return Left(failureMessageHandler(
             ApiResponse.fromJson(e.response?.data).message ?? ''));
@@ -165,7 +173,13 @@ class ActivityRepositoryImpl implements ActivityRepository {
 
       if (e.response != null) {
         if (e.response?.statusCode == HttpStatus.internalServerError) {
+          if (e.response?.data['message'] == kFileToolarge) {
+            return const Left(ServerFailure(kFileToolarge));
+          }
           return Left(ServerFailure(e.message!));
+        }
+        if (e.response?.statusCode == HttpStatus.requestEntityTooLarge) {
+          return const Left(ServerFailure(kRequestEntityTooLarge));
         }
         return Left(failureMessageHandler(
             ApiResponse.fromJson(e.response?.data).message ?? ''));

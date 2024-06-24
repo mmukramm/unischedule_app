@@ -67,7 +67,7 @@ void initBlocs() {
     () => SignInCubit(getIt(), getIt()),
   );
   getIt.registerFactory(
-    () => IsSignInCubit(getIt(), getIt()),
+    () => IsSignInCubit(getIt(), getIt(), getIt()),
   );
   getIt.registerFactory(
     () => ProfileCubit(getIt(), getIt()),

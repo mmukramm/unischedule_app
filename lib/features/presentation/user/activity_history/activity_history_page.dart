@@ -15,6 +15,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:unischedule_app/features/data/models/post.dart';
 import 'package:unischedule_app/core/extensions/context_extension.dart';
 import 'package:unischedule_app/features/data/models/post_by_user.dart';
+import 'package:unischedule_app/features/presentation/widget/data_empty.dart';
 import 'package:unischedule_app/features/presentation/widget/loading.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 import 'package:unischedule_app/features/presentation/widget/ink_well_container.dart';
@@ -115,24 +116,8 @@ class _ActivityHistoryPageState extends State<ActivityHistoryPage> {
                   ));
 
                   if (activities.isEmpty) {
-                    return Column(
-                      children: [
-                        const SizedBox(
-                          height: 40,
-                        ),
-                        SvgPicture.asset(
-                          AssetPath.getSvg('data-empty.svg'),
-                          height: 220,
-                        ),
-                        const SizedBox(
-                          height: 32,
-                        ),
-                        Text(
-                          'Kamu tidak memiliki riwayat kegiatan.',
-                          textAlign: TextAlign.center,
-                          style: textTheme.titleSmall,
-                        )
-                      ],
+                    return const DataEmpty(
+                      message: 'Kamu tidak memiliki riwayat kegiatan.',
                     );
                   }
                 }

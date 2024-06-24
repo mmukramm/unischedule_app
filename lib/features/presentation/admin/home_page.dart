@@ -29,46 +29,42 @@ class HomePage extends StatelessWidget {
             const SizedBox(
               height: 32,
             ),
-            Container(
+            InkWellContainer(
               padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: scaffoldColor,
-                border: Border.all(
-                  color: primaryColor,
-                  width: 3,
-                ),
+              containerBackgroundColor: scaffoldColor,
+              border: Border.all(
+                color: primaryColor,
+                width: 3,
               ),
+              onTap: () {
+                navigatorKey.currentState!.push(
+                  MaterialPageRoute(
+                    builder: (_) => const ProfilePage(withBackButton: true),
+                  ),
+                );
+              },
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  InkWell(
-                    onTap: () => navigatorKey.currentState!.push(
-                      MaterialPageRoute(
-                        builder: (_) => const ProfilePage(
-                          withBackButton: true,
-                        ),
+                  Container(
+                    width: 72,
+                    height: 72,
+                    decoration: BoxDecoration(
+                      color: secondaryTextColor,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        width: 2,
+                        color: primaryColor,
                       ),
                     ),
-                    child: Container(
-                      width: 72,
-                      height: 72,
-                      decoration: BoxDecoration(
-                        color: secondaryTextColor,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          width: 2,
-                          color: primaryColor,
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: SvgPicture.asset(
-                          width: 80,
-                          AssetPath.getIcons('user.svg'),
-                          colorFilter: const ColorFilter.mode(
-                            primaryColor,
-                            BlendMode.srcIn,
-                          ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: SvgPicture.asset(
+                        width: 80,
+                        AssetPath.getIcons('user.svg'),
+                        colorFilter: const ColorFilter.mode(
+                          primaryColor,
+                          BlendMode.srcIn,
                         ),
                       ),
                     ),

@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:unischedule_app/core/usecases/no_params.dart';
+import 'package:unischedule_app/features/domain/usecases/delete_access_token.dart';
 import 'package:unischedule_app/features/domain/usecases/get_user_info.dart';
 import 'package:unischedule_app/features/domain/usecases/post_register_fcp_token.dart';
 import 'package:unischedule_app/features/presentation/bloc/is_sign_in/is_sign_in_state.dart';
@@ -8,8 +9,9 @@ import 'package:unischedule_app/features/presentation/bloc/is_sign_in/is_sign_in
 class IsSignInCubit extends Cubit<IsSignInState> {
   GetUserInfo getUserInfo;
   PostRegisterFcpToken postRegisterFcpToken;
+  DeleteAccessToken deleteAccessToken;
 
-  IsSignInCubit(this.getUserInfo, this.postRegisterFcpToken)
+  IsSignInCubit(this.getUserInfo, this.postRegisterFcpToken, this.deleteAccessToken)
       : super(IsSignInState.initial());
 
   void registerFcpToken(String fcmToken) async {
@@ -29,6 +31,17 @@ class IsSignInCubit extends Cubit<IsSignInState> {
     result.fold(
       (l) => emit(IsSignInState.failure(l.message)),
       (r) => emit(IsSignInState.success(data: r)),
+    );
+  }
+
+  void removeAccessToken() async {
+    emit(IsSignInState.inProgress());
+
+    final result = await deleteAccessToken(NoParams());
+
+    result.fold(
+      (l) => emit(IsSignInState.failure(l.message)),
+      (r) => emit(IsSignInState.signOut()),
     );
   }
 }
