@@ -40,7 +40,6 @@ class ActivityRepositoryImpl implements ActivityRepository {
       }
 
       if (e.response != null) {
-        debugPrint(e.response?.data.toString());
         if (e.response?.statusCode == HttpStatus.internalServerError) {
           if (e.response?.data['message'] == kFileToolarge) {
             return const Left(ServerFailure(kFileToolarge));

@@ -10,18 +10,17 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:unischedule_app/core/utils/const.dart';
 
 import 'package:unischedule_app/core/utils/keys.dart';
+import 'package:unischedule_app/core/utils/const.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/enums/gender.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
 import 'package:unischedule_app/core/utils/image_service.dart';
 import 'package:unischedule_app/core/enums/snack_bar_type.dart';
-import 'package:unischedule_app/core/extensions/context_extension.dart';
-
 import 'package:unischedule_app/features/data/models/user_info.dart';
+import 'package:unischedule_app/core/extensions/context_extension.dart';
 import 'package:unischedule_app/features/presentation/widget/loading.dart';
 import 'package:unischedule_app/features/data/datasources/user_data_sources.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';

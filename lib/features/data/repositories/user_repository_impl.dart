@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter/foundation.dart';
 
 import 'package:unischedule_app/core/utils/const.dart';
 import 'package:unischedule_app/core/errors/failures.dart';
@@ -137,7 +136,6 @@ class UserRepositoryImpl implements UserRepository {
       }
 
       if (e.response != null) {
-        debugPrint(e.response?.data.toString());
         if (e.response?.statusCode == HttpStatus.internalServerError) {
           if (e.response?.data['message'] == kFileToolarge) {
             return const Left(ServerFailure(kFileToolarge));

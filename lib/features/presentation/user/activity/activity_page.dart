@@ -4,13 +4,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:unischedule_app/core/enums/activity_type.dart';
-import 'package:unischedule_app/core/utils/date_formatter.dart';
 
 import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
 import 'package:unischedule_app/core/utils/asset_path.dart';
+import 'package:unischedule_app/core/enums/activity_type.dart';
+import 'package:unischedule_app/core/utils/date_formatter.dart';
 import 'package:unischedule_app/features/data/models/post.dart';
 import 'package:unischedule_app/core/enums/snack_bar_type.dart';
 import 'package:unischedule_app/core/extensions/context_extension.dart';
@@ -131,9 +131,15 @@ class _ActivityPageState extends State<ActivityPage> {
                           activities.clear();
                           final data = state.data as List<Post>;
 
-                          data.sort(
-                            (a, b) => a.eventDate!.compareTo(b.eventDate!),
-                          );
+                          if (activityTypeValue == ActivityType.event) {
+                            data.sort(
+                              (a, b) => a.eventDate!.compareTo(b.eventDate!),
+                            );
+                          } else {
+                            data.sort(
+                              (a, b) => b.eventDate!.compareTo(a.eventDate!),
+                            );
+                          }
 
                           activities.addAll(
                             data.where(
