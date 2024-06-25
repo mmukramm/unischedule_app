@@ -10,6 +10,7 @@ import 'package:unischedule_app/core/enums/snack_bar_type.dart';
 import 'package:unischedule_app/core/utils/date_formatter.dart';
 import 'package:unischedule_app/core/utils/pdf_name_generator.dart';
 import 'package:unischedule_app/core/extensions/context_extension.dart';
+import 'package:unischedule_app/features/presentation/widget/data_empty.dart';
 import 'package:unischedule_app/features/presentation/widget/loading.dart';
 import 'package:unischedule_app/features/data/models/activity_participant.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
@@ -60,8 +61,8 @@ class _EventParticipantPageState extends State<EventParticipantPage> {
             return;
           }
 
-          final result = await pdfService
-              .generateParticipantPdf(activityParticipant.participants);
+          final result =
+              await pdfService.generateParticipantPdf(activityParticipant);
 
           pdfService.savePdfFile(
               pdfNameGenerator(activityParticipant.organizer ?? ''), result);
@@ -190,7 +191,9 @@ class _EventParticipantPageState extends State<EventParticipantPage> {
                       Expanded(
                         flex: 3,
                         child: Text(
-                          formatDateTime(activityParticipant.eventDate ?? ''),
+                          formatDateTime(
+                              dateTimeString:
+                                  activityParticipant.eventDate ?? ''),
                           style: textTheme.bodyMedium,
                         ),
                       ),
@@ -206,105 +209,121 @@ class _EventParticipantPageState extends State<EventParticipantPage> {
                   const SizedBox(
                     height: 20,
                   ),
-                  ListView.separated(
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.only(bottom: 80),
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      final participant =
-                          activityParticipant.participants?[index];
-                      return InkWellContainer(
-                        border: Border.all(
-                            color: primaryColor,
-                            width: 3,
-                            strokeAlign: BorderSide.strokeAlignOutside),
-                        padding: const EdgeInsets.all(12),
-                        borderRadiusGeometry: const BorderRadius.only(
-                          topRight: Radius.circular(32),
-                        ),
-                        containerBackgroundColor: scaffoldColor,
-                        onTap: () {},
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: 72,
-                              height: 72,
-                              decoration: BoxDecoration(
-                                color: secondaryTextColor,
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  width: 2,
+                  activityParticipant.participants == null ||
+                          activityParticipant.participants!.isEmpty
+                      ? const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              DataEmpty(
+                                  message: 'Tidak ada Peserta yang mendaftar'),
+                            ],
+                          ),
+                        )
+                      : ListView.separated(
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.only(bottom: 80),
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            final participant =
+                                activityParticipant.participants?[index];
+                            return InkWellContainer(
+                              border: Border.all(
                                   color: primaryColor,
-                                ),
+                                  width: 3,
+                                  strokeAlign: BorderSide.strokeAlignOutside),
+                              padding: const EdgeInsets.all(12),
+                              borderRadiusGeometry: const BorderRadius.only(
+                                topRight: Radius.circular(32),
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: SvgPicture.asset(
-                                  width: 80,
-                                  AssetPath.getIcons('user.svg'),
-                                  colorFilter: const ColorFilter.mode(
-                                    primaryColor,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 12,
-                            ),
-                            Expanded(
-                              child: Column(
+                              containerBackgroundColor: scaffoldColor,
+                              onTap: () {},
+                              child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    participant?.name ?? '',
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: textTheme.titleMedium,
-                                  ),
-                                  Text(
-                                    participant?.email ?? '',
-                                    style: textTheme.bodyMedium!.copyWith(
-                                      color: primaryTextColor,
+                                  Container(
+                                    width: 72,
+                                    height: 72,
+                                    decoration: BoxDecoration(
+                                      color: secondaryTextColor,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        width: 2,
+                                        color: primaryColor,
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12),
+                                      child: SvgPicture.asset(
+                                        width: 80,
+                                        AssetPath.getIcons('user.svg'),
+                                        colorFilter: const ColorFilter.mode(
+                                          primaryColor,
+                                          BlendMode.srcIn,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                   const SizedBox(
-                                    height: 4,
+                                    width: 12,
                                   ),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          participant?.stdCode ??
-                                              'Not Available',
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          participant?.name ?? '',
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: textTheme.titleMedium,
+                                        ),
+                                        Text(
+                                          participant?.email ?? '',
                                           style: textTheme.bodyMedium!.copyWith(
                                             color: primaryTextColor,
                                           ),
                                         ),
-                                      ),
-                                      Text(
-                                        participant?.gender == 'MALE'
-                                            ? 'Laki-laki'
-                                            : 'Perempuan',
-                                        style: textTheme.bodyMedium!.copyWith(
-                                          color: infoColor,
+                                        const SizedBox(
+                                          height: 4,
                                         ),
-                                      ),
-                                    ],
-                                  ),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                participant?.stdCode ??
+                                                    'Not Available',
+                                                style: textTheme.bodyMedium!
+                                                    .copyWith(
+                                                  color: primaryTextColor,
+                                                ),
+                                              ),
+                                            ),
+                                            Text(
+                                              participant?.gender == 'MALE'
+                                                  ? 'Laki-laki'
+                                                  : 'Perempuan',
+                                              style: textTheme.bodyMedium!
+                                                  .copyWith(
+                                                color: infoColor,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  )
                                 ],
                               ),
-                            )
-                          ],
+                            );
+                          },
+                          separatorBuilder: (context, index) => const SizedBox(
+                            height: 12,
+                          ),
+                          itemCount:
+                              activityParticipant.participants?.length ?? 0,
                         ),
-                      );
-                    },
-                    separatorBuilder: (context, index) => const SizedBox(
-                      height: 12,
-                    ),
-                    itemCount: activityParticipant.participants?.length ?? 0,
-                  ),
                 ],
               ),
             );

@@ -227,13 +227,32 @@ class ActivityManagementPageState extends State<ActivityManagementPage> {
                                       now.isAfter(
                                           DateTime.parse(element.eventDate!));
                                 }).toList();
+                                if (eventStatusValue == 'Aktif') {
+                                  data.sort(
+                                    (a, b) =>
+                                        a.eventDate!.compareTo(b.eventDate!),
+                                  );
+                                } else {
+                                  data.sort(
+                                    (a, b) =>
+                                        b.eventDate!.compareTo(a.eventDate!),
+                                  );
+                                }
                               } else if (activityTypeValue ==
                                   ActivityType.magz) {
                                 data = result
                                     .where((element) => !element.isEvent!)
                                     .toList();
+                                data.sort(
+                                  (a, b) =>
+                                      b.eventDate!.compareTo(a.eventDate!),
+                                );
                               } else {
                                 data = result;
+                                data.sort(
+                                  (a, b) =>
+                                      b.eventDate!.compareTo(a.eventDate!),
+                                );
                               }
 
                               if (data.isEmpty) {
@@ -350,7 +369,7 @@ class ActivityItemCard extends StatelessWidget {
                       width: 4,
                     ),
                     Text(
-                      formatDateTime(item.eventDate ?? ''),
+                      formatDateTime(dateTimeString: item.eventDate ?? ''),
                       style: textTheme.bodySmall!.copyWith(
                         color: highlightTextColor,
                       ),

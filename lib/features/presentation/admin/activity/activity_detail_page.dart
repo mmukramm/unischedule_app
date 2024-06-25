@@ -227,7 +227,9 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
                           Expanded(
                             flex: 2,
                             child: Text(
-                              (activity.isEvent ?? true) ? 'Waktu' : 'Waktu Dibuat',
+                              (activity.isEvent ?? true)
+                                  ? 'Waktu'
+                                  : 'Waktu Dibuat',
                               style: textTheme.titleMedium,
                             ),
                           ),
@@ -241,7 +243,8 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
                           Expanded(
                             flex: 3,
                             child: Text(
-                              formatDateTime(activity.eventDate ?? ''),
+                              formatDateTime(
+                                  dateTimeString: activity.eventDate ?? ''),
                               style: textTheme.bodyMedium,
                             ),
                           ),

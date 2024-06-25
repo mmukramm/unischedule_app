@@ -275,7 +275,8 @@ class _ActivityPageState extends State<ActivityPage> {
                                             Expanded(
                                               child: Text(
                                                 formatDateTime(
-                                                  activity.eventDate ?? '',
+                                                  dateTimeString:
+                                                      activity.eventDate ?? '',
                                                 ),
                                                 style: textTheme.bodySmall!
                                                     .copyWith(

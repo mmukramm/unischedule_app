@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter/foundation.dart';
 
 import 'package:unischedule_app/core/utils/const.dart';
 import 'package:unischedule_app/core/errors/failures.dart';

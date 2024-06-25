@@ -8,9 +8,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:unischedule_app/core/utils/const.dart';
 
 import 'package:unischedule_app/core/utils/keys.dart';
+import 'package:unischedule_app/core/utils/const.dart';
 import 'package:unischedule_app/core/theme/theme.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
 import 'package:unischedule_app/core/theme/text_theme.dart';
@@ -58,7 +58,8 @@ class ActivityFormPageState extends State<ActivityFormPage> {
     super.initState();
 
     postImagePath = ValueNotifier(null);
-    dateTime = DateTime.now().toUtc();
+    dateTime = DateTime.now().copyWith(isUtc: true);
+
     activityFormCubit = context.read<ActivityFormCubit>();
 
     if (widget.activity != null) {
@@ -326,8 +327,9 @@ class ActivityFormPageState extends State<ActivityFormPage> {
                                 title: formValue['magzName'],
                                 content: formValue['description'],
                                 organizer: formValue['organizer'],
-                                eventDate:
-                                    DateTime.now().toUtc().toIso8601String(),
+                                eventDate: DateTime.now()
+                                    .copyWith(isUtc: true)
+                                    .toIso8601String(),
                                 isEvent: !widget.isMagz,
                                 file: File(postImagePath.value!),
                               );
@@ -477,7 +479,7 @@ class ActivityFormPageState extends State<ActivityFormPage> {
           labelText: 'Waktu',
           name: 'eventTime',
           initialValue: widget.activity != null
-              ? formatDateTime(widget.activity!.eventDate ?? '')
+              ? formatDateTime(dateTimeString: widget.activity!.eventDate ?? '')
               : '',
           readOnly: true,
           hintText: 'Waktu Kegiatan',

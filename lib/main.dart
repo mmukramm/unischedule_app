@@ -123,8 +123,8 @@ class MyApp extends StatelessWidget {
           child: child!,
         ),
         supportedLocales: const [
-          Locale('en', 'US'), // English
           Locale('id', 'ID'), // Indonesia
+          Locale('en', 'US'), // English
         ],
         home: const SplashPage(),
       ),

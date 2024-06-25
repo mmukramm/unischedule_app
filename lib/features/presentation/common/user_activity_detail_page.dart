@@ -211,7 +211,9 @@ class _UserActivityDetailPageState extends State<UserActivityDetailPage> {
                         Expanded(
                           flex: 3,
                           child: Text(
-                            formatDateTime(widget.activity.eventDate ?? ''),
+                            formatDateTime(
+                                dateTimeString:
+                                    widget.activity.eventDate ?? ''),
                             style: textTheme.bodyMedium,
                           ),
                         ),

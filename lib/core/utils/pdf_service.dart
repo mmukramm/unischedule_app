@@ -6,13 +6,18 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:unischedule_app/core/utils/date_formatter.dart';
+import 'package:unischedule_app/features/data/models/activity_participant.dart';
 
 import 'package:unischedule_app/features/data/models/participant.dart';
 
 class PdfService {
   Future<Uint8List> generateParticipantPdf(
-      List<Participant?>? participants) async {
+    ActivityParticipant activityParticipant,
+  ) async {
     final pdf = pw.Document();
+
+    List<Participant?>? participants = activityParticipant.participants;
 
     if (participants == null) return Uint8List(2);
 
@@ -37,9 +42,9 @@ class PdfService {
         build: (context) {
           return [
             buildEventDetail(
-              eventName: 'Sosialisasi Pertukaran Mahasiswa Merdeka',
-              organizer: 'Kemahasiswaaan',
-              date: '18 Juni 2024 18.00',
+              eventName: activityParticipant.title!,
+              organizer: activityParticipant.organizer!,
+              date: formatDateTime(dateTimeString: activityParticipant.eventDate!),
             ),
             pw.SizedBox(height: 32),
             pw.Text(

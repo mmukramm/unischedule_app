@@ -234,7 +234,8 @@ class _ActivityHistoryPageState extends State<ActivityHistoryPage> {
                                     Expanded(
                                       child: Text(
                                         formatDateTime(
-                                          activity.eventDate ?? '',
+                                          dateTimeString:
+                                              activity.eventDate ?? '',
                                         ),
                                         style: textTheme.bodySmall!.copyWith(
                                           color: highlightTextColor,
