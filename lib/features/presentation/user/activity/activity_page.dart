@@ -51,256 +51,256 @@ class _ActivityPageState extends State<ActivityPage> {
         withBackButton: false,
       ),
       backgroundColor: backgroundColor,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(
-              height: 24,
-            ),
-            // Text(
-            //   "Daftar Kegiatan Aktif",
-            //   textAlign: TextAlign.center,
-            //   style: textTheme.titleLarge!,
-            // ),
-            // const SizedBox(
-            //   height: 12,
-            // ),
-            ValueListenableBuilder(
-              valueListenable: activityType,
-              builder: (context, activityTypeValue, _) {
-                return Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: SegmentedButton<ActivityType>(
-                          style: SegmentedButton.styleFrom(
-                            side: const BorderSide(color: primaryColor),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          activityCubit.getAllActivities();
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(
+                height: 24,
+              ),
+              ValueListenableBuilder(
+                valueListenable: activityType,
+                builder: (context, activityTypeValue, _) {
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: SegmentedButton<ActivityType>(
+                            style: SegmentedButton.styleFrom(
+                              side: const BorderSide(color: primaryColor),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              foregroundColor: scaffoldColor,
+                              selectedBackgroundColor: scaffoldColor,
+                              backgroundColor: highlightTextColor,
                             ),
-                            foregroundColor: scaffoldColor,
-                            selectedBackgroundColor: scaffoldColor,
-                            backgroundColor: highlightTextColor,
-                          ),
-                          segments: const [
-                            ButtonSegment(
-                              value: ActivityType.event,
-                              label: Text("Kegiatan"),
-                            ),
-                            ButtonSegment(
-                              value: ActivityType.magz,
-                              label: Text("Mading"),
-                            ),
-                          ],
-                          selected: {activityTypeValue},
-                          showSelectedIcon: false,
-                          onSelectionChanged: (selection) {
-                            activityType.value = selection.first;
-                          },
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    BlocConsumer<ActivityCubit, ActivityState>(
-                      listener: (context, state) {
-                        if (state.isFailure) {
-                          context.showCustomSnackbar(
-                            message: state.message!,
-                            type: SnackBarType.error,
-                          );
-                        }
-                      },
-                      builder: (context, state) {
-                        if (state.isInProgress) {
-                          return const Column(
-                            children: [
-                              SizedBox(height: 24),
-                              Loading(
-                                color: secondaryTextColor,
+                            segments: const [
+                              ButtonSegment(
+                                value: ActivityType.event,
+                                label: Text("Kegiatan"),
+                              ),
+                              ButtonSegment(
+                                value: ActivityType.magz,
+                                label: Text("Mading"),
                               ),
                             ],
-                          );
-                        }
-
-                        if (state.isSuccess) {
-                          activities.clear();
-                          final data = state.data as List<Post>;
-
-                          if (activityTypeValue == ActivityType.event) {
-                            data.sort(
-                              (a, b) => a.eventDate!.compareTo(b.eventDate!),
+                            selected: {activityTypeValue},
+                            showSelectedIcon: false,
+                            onSelectionChanged: (selection) {
+                              activityType.value = selection.first;
+                            },
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      BlocConsumer<ActivityCubit, ActivityState>(
+                        listener: (context, state) {
+                          if (state.isFailure) {
+                            context.showCustomSnackbar(
+                              message: state.message!,
+                              type: SnackBarType.error,
                             );
-                          } else {
-                            data.sort(
-                              (a, b) => b.eventDate!.compareTo(a.eventDate!),
+                          }
+                        },
+                        builder: (context, state) {
+                          if (state.isInProgress) {
+                            return const Column(
+                              children: [
+                                SizedBox(height: 24),
+                                Loading(
+                                  color: secondaryTextColor,
+                                ),
+                              ],
                             );
                           }
 
-                          activities.addAll(
-                            data.where(
-                              (element) {
-                                final now = DateTime.now();
-                                if (activityTypeValue == ActivityType.event) {
-                                  return element.isEvent! &&
-                                      !now.isAfter(
-                                          DateTime.parse(element.eventDate!));
-                                }
-                                return !element.isEvent!;
-                              },
-                            ),
-                          );
+                          if (state.isSuccess) {
+                            activities.clear();
+                            final data = state.data as List<Post>;
 
-                          if (activities.isEmpty) {
-                            return const DataEmpty(
-                              message: 'Tidak ada aktivitas.',
+                            if (activityTypeValue == ActivityType.event) {
+                              data.sort(
+                                (a, b) => a.eventDate!.compareTo(b.eventDate!),
+                              );
+                            } else {
+                              data.sort(
+                                (a, b) => b.eventDate!.compareTo(a.eventDate!),
+                              );
+                            }
+
+                            activities.addAll(
+                              data.where(
+                                (element) {
+                                  final now = DateTime.now();
+                                  if (activityTypeValue == ActivityType.event) {
+                                    return element.isEvent! &&
+                                        !now.isAfter(
+                                            DateTime.parse(element.eventDate!));
+                                  }
+                                  return !element.isEvent!;
+                                },
+                              ),
                             );
-                          }
-                        }
 
-                        return Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: StaggeredGrid.count(
-                            crossAxisCount: 8,
-                            crossAxisSpacing: 8,
-                            mainAxisSpacing: 8,
-                            children: List.generate(
-                              activities.length,
-                              (index) {
-                                final activity = activities[index];
-                                return StaggeredGridTile.fit(
-                                  crossAxisCellCount: 4,
-                                  child: InkWellContainer(
-                                    padding: const EdgeInsets.all(8),
-                                    onTap: () {
-                                      navigatorKey.currentState!.push(
-                                        MaterialPageRoute(
-                                          builder: (_) =>
-                                              UserActivityDetailPage(
-                                            activity: activity,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    containerBackgroundColor: scaffoldColor,
-                                    child: Column(
-                                      children: [
-                                        AspectRatio(
-                                          aspectRatio: 12 / 11,
-                                          child: CachedNetworkImage(
-                                            width: double.infinity,
-                                            imageUrl: activity.picture!,
-                                            placeholder: (_, __) =>
-                                                const Padding(
-                                              padding: EdgeInsets.all(12),
-                                              child: Loading(
-                                                color: secondaryTextColor,
-                                              ),
+                            if (activities.isEmpty) {
+                              return const DataEmpty(
+                                message: 'Tidak ada aktivitas.',
+                              );
+                            }
+                          }
+
+                          return Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: StaggeredGrid.count(
+                              crossAxisCount: 8,
+                              crossAxisSpacing: 8,
+                              mainAxisSpacing: 8,
+                              children: List.generate(
+                                activities.length,
+                                (index) {
+                                  final activity = activities[index];
+                                  return StaggeredGridTile.fit(
+                                    crossAxisCellCount: 4,
+                                    child: InkWellContainer(
+                                      padding: const EdgeInsets.all(8),
+                                      onTap: () {
+                                        navigatorKey.currentState!.push(
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                UserActivityDetailPage(
+                                              activity: activity,
                                             ),
-                                            errorWidget: (_, __, ___) =>
-                                                Image.asset(
+                                          ),
+                                        );
+                                      },
+                                      containerBackgroundColor: scaffoldColor,
+                                      child: Column(
+                                        children: [
+                                          AspectRatio(
+                                            aspectRatio: 12 / 11,
+                                            child: CachedNetworkImage(
                                               width: double.infinity,
-                                              height: 240,
-                                              AssetPath.getImages(
-                                                  'no-image.jpg'),
+                                              imageUrl: activity.picture!,
+                                              placeholder: (_, __) =>
+                                                  const Padding(
+                                                padding: EdgeInsets.all(12),
+                                                child: Loading(
+                                                  color: secondaryTextColor,
+                                                ),
+                                              ),
+                                              errorWidget: (_, __, ___) =>
+                                                  Image.asset(
+                                                width: double.infinity,
+                                                height: 240,
+                                                AssetPath.getImages(
+                                                    'no-image.jpg'),
+                                                fit: BoxFit.cover,
+                                              ),
                                               fit: BoxFit.cover,
                                             ),
-                                            fit: BoxFit.cover,
                                           ),
-                                        ),
-                                        const SizedBox(
-                                          height: 12,
-                                        ),
-                                        Text(
-                                          activity.title ?? '',
-                                          maxLines: 3,
-                                          textAlign: TextAlign.center,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: textTheme.titleSmall!.copyWith(
-                                            color: primaryTextColor,
+                                          const SizedBox(
+                                            height: 12,
                                           ),
-                                        ),
-                                        const SizedBox(
-                                          height: 12,
-                                        ),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            SvgPicture.asset(
-                                              AssetPath.getIcons(
-                                                  'category.svg'),
-                                              width: 16,
-                                              colorFilter:
-                                                  const ColorFilter.mode(
-                                                highlightTextColor,
-                                                BlendMode.srcIn,
-                                              ),
+                                          Text(
+                                            activity.title ?? '',
+                                            maxLines: 3,
+                                            textAlign: TextAlign.center,
+                                            overflow: TextOverflow.ellipsis,
+                                            style:
+                                                textTheme.titleSmall!.copyWith(
+                                              color: primaryTextColor,
                                             ),
-                                            const SizedBox(
-                                              width: 4,
-                                            ),
-                                            Text(
-                                              activity.isEvent ?? false
-                                                  ? 'Kegiatan'
-                                                  : 'Mading',
-                                              style:
-                                                  textTheme.bodySmall!.copyWith(
-                                                color: highlightTextColor,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            SvgPicture.asset(
-                                              AssetPath.getIcons(
-                                                  'calendar.svg'),
-                                              width: 16,
-                                              colorFilter:
-                                                  const ColorFilter.mode(
-                                                highlightTextColor,
-                                                BlendMode.srcIn,
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 4,
-                                            ),
-                                            Expanded(
-                                              child: Text(
-                                                formatDateTime(
-                                                  dateTimeString:
-                                                      activity.eventDate ?? '',
+                                          ),
+                                          const SizedBox(
+                                            height: 12,
+                                          ),
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              SvgPicture.asset(
+                                                AssetPath.getIcons(
+                                                    'category.svg'),
+                                                width: 16,
+                                                colorFilter:
+                                                    const ColorFilter.mode(
+                                                  highlightTextColor,
+                                                  BlendMode.srcIn,
                                                 ),
+                                              ),
+                                              const SizedBox(
+                                                width: 4,
+                                              ),
+                                              Text(
+                                                activity.isEvent ?? false
+                                                    ? 'Kegiatan'
+                                                    : 'Mading',
                                                 style: textTheme.bodySmall!
                                                     .copyWith(
                                                   color: highlightTextColor,
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                            ],
+                                          ),
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              SvgPicture.asset(
+                                                AssetPath.getIcons(
+                                                    'calendar.svg'),
+                                                width: 16,
+                                                colorFilter:
+                                                    const ColorFilter.mode(
+                                                  highlightTextColor,
+                                                  BlendMode.srcIn,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 4,
+                                              ),
+                                              Expanded(
+                                                child: Text(
+                                                  formatDateTime(
+                                                    dateTimeString:
+                                                        activity.eventDate ??
+                                                            '',
+                                                  ),
+                                                  style: textTheme.bodySmall!
+                                                      .copyWith(
+                                                    color: highlightTextColor,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                );
-                              },
+                                  );
+                                },
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                );
-              },
-            ),
-          ],
+                          );
+                        },
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

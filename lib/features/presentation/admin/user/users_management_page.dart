@@ -121,34 +121,40 @@ class _UsersManagementPageState extends State<UsersManagementPage> {
             users.addAll(state.data as List<User>);
           }
 
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 24,
-                  ),
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: users.length,
-                    padding: const EdgeInsets.only(bottom: 80),
-                    separatorBuilder: (_, __) => const SizedBox(height: 8),
-                    itemBuilder: (_, index) {
-                      final user = users[index];
+          return RefreshIndicator(
+            onRefresh: () async {
+              usersCubit.getUsers();
+            },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: users.length,
+                      padding: const EdgeInsets.only(bottom: 80),
+                      separatorBuilder: (_, __) => const SizedBox(height: 8),
+                      itemBuilder: (_, index) {
+                        final user = users[index];
 
-                      return UserCardItem(
-                        user: user,
-                        onTap: () => navigatorKey.currentState!.push(
-                          MaterialPageRoute(
-                            builder: (context) => UserDetailPage(user: user),
+                        return UserCardItem(
+                          user: user,
+                          onTap: () => navigatorKey.currentState!.push(
+                            MaterialPageRoute(
+                              builder: (context) => UserDetailPage(user: user),
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                ],
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           );

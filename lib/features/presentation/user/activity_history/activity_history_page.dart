@@ -50,211 +50,218 @@ class _ActivityHistoryPageState extends State<ActivityHistoryPage> {
         withBackButton: false,
       ),
       backgroundColor: backgroundColor,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(
-              height: 24,
-            ),
-            Text(
-              "Kegiatan Yang Telah Diikuti",
-              textAlign: TextAlign.center,
-              style: textTheme.titleLarge!,
-            ),
-            const SizedBox(
-              height: 12,
-            ),
-            BlocConsumer<ActivityHistoryCubit, ActivityHistoryState>(
-              listener: (context, state) {
-                if (state.isFailure) {
-                  context.showCustomSnackbar(
-                    message: state.message == kJwtMalformed
-                        ? 'Silakan login terlebih dahulu'
-                        : state.message!,
-                    type: SnackBarType.primary,
-                  );
-                }
-              },
-              builder: (context, state) {
-                if (state.isInProgress) {
-                  return const Column(
-                    children: [
-                      SizedBox(height: 24),
-                      Loading(color: secondaryTextColor),
-                    ],
-                  );
-                }
-
-                if (state.isFailure) {
-                  if (state.message == kJwtMalformed) {
-                    return Column(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          activityHistoryCubit.getUserActivities();
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(
+                height: 24,
+              ),
+              Text(
+                "Kegiatan Yang Telah Diikuti",
+                textAlign: TextAlign.center,
+                style: textTheme.titleLarge!,
+              ),
+              const SizedBox(
+                height: 12,
+              ),
+              BlocConsumer<ActivityHistoryCubit, ActivityHistoryState>(
+                listener: (context, state) {
+                  if (state.isFailure) {
+                    context.showCustomSnackbar(
+                      message: state.message == kJwtMalformed
+                          ? 'Silakan login terlebih dahulu'
+                          : state.message!,
+                      type: SnackBarType.primary,
+                    );
+                  }
+                },
+                builder: (context, state) {
+                  if (state.isInProgress) {
+                    return const Column(
                       children: [
-                        const SizedBox(
-                          height: 24,
-                        ),
-                        Text(
-                          'Tidak ada riwayat Kegiatan. Silahkan Login terlebih dahulu.',
-                          textAlign: TextAlign.center,
-                          style: textTheme.bodyMedium,
-                        )
+                        SizedBox(height: 24),
+                        Loading(color: secondaryTextColor),
                       ],
                     );
                   }
-                }
 
-                if (state.isSuccess) {
-                  activities.clear();
-                  final data = state.data as List<PostByUser>;
-
-                  data.sort(
-                    (a, b) => b.eventDate!.compareTo(a.eventDate!),
-                  );
-
-                  activities.addAll(data.where(
-                    (element) => element.isRegistered!,
-                  ));
-
-                  if (activities.isEmpty) {
-                    return const DataEmpty(
-                      message: 'Kamu tidak memiliki riwayat kegiatan.',
-                    );
+                  if (state.isFailure) {
+                    if (state.message == kJwtMalformed) {
+                      return Column(
+                        children: [
+                          const SizedBox(
+                            height: 24,
+                          ),
+                          Text(
+                            'Tidak ada riwayat Kegiatan. Silahkan Login terlebih dahulu.',
+                            textAlign: TextAlign.center,
+                            style: textTheme.bodyMedium,
+                          )
+                        ],
+                      );
+                    }
                   }
-                }
 
-                return Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: StaggeredGrid.count(
-                    crossAxisCount: 8,
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 8,
-                    children: List.generate(
-                      activities.length,
-                      (index) {
-                        final activity = activities[index];
-                        return StaggeredGridTile.fit(
-                          crossAxisCellCount: 4,
-                          child: InkWellContainer(
-                            padding: const EdgeInsets.all(8),
-                            onTap: () {
-                              final post = Post(
-                                id: activity.id,
-                                title: activity.title,
-                                content: activity.content,
-                                eventDate: activity.eventDate,
-                                isEvent: activity.isEvent,
-                                organizer: activity.organizer,
-                                picture: activity.picture,
-                              );
-                              navigatorKey.currentState!.push(
-                                MaterialPageRoute(
-                                  builder: (_) => UserActivityDetailPage(
-                                    activity: post,
-                                    isRegistered: true,
-                                  ),
-                                ),
-                              );
-                            },
-                            containerBackgroundColor: scaffoldColor,
-                            child: Column(
-                              children: [
-                                AspectRatio(
-                                  aspectRatio: 12 / 11,
-                                  child: CachedNetworkImage(
-                                    width: double.infinity,
-                                    imageUrl: activity.picture!,
-                                    placeholder: (_, __) => const Padding(
-                                      padding: EdgeInsets.all(12),
-                                      child: Loading(
-                                        color: secondaryTextColor,
-                                      ),
+                  if (state.isSuccess) {
+                    activities.clear();
+                    final data = state.data as List<PostByUser>;
+
+                    data.sort(
+                      (a, b) => b.eventDate!.compareTo(a.eventDate!),
+                    );
+
+                    activities.addAll(data.where(
+                      (element) => element.isRegistered!,
+                    ));
+
+                    if (activities.isEmpty) {
+                      return const DataEmpty(
+                        message: 'Kamu tidak memiliki riwayat kegiatan.',
+                      );
+                    }
+                  }
+
+                  return Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: StaggeredGrid.count(
+                      crossAxisCount: 8,
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
+                      children: List.generate(
+                        activities.length,
+                        (index) {
+                          final activity = activities[index];
+                          return StaggeredGridTile.fit(
+                            crossAxisCellCount: 4,
+                            child: InkWellContainer(
+                              padding: const EdgeInsets.all(8),
+                              onTap: () {
+                                final post = Post(
+                                  id: activity.id,
+                                  title: activity.title,
+                                  content: activity.content,
+                                  eventDate: activity.eventDate,
+                                  isEvent: activity.isEvent,
+                                  organizer: activity.organizer,
+                                  picture: activity.picture,
+                                );
+                                navigatorKey.currentState!.push(
+                                  MaterialPageRoute(
+                                    builder: (_) => UserActivityDetailPage(
+                                      activity: post,
+                                      isRegistered: true,
                                     ),
-                                    errorWidget: (_, __, ___) => Image.asset(
+                                  ),
+                                );
+                              },
+                              containerBackgroundColor: scaffoldColor,
+                              child: Column(
+                                children: [
+                                  AspectRatio(
+                                    aspectRatio: 12 / 11,
+                                    child: CachedNetworkImage(
                                       width: double.infinity,
-                                      height: 240,
-                                      AssetPath.getImages('no-image.jpg'),
+                                      imageUrl: activity.picture!,
+                                      placeholder: (_, __) => const Padding(
+                                        padding: EdgeInsets.all(12),
+                                        child: Loading(
+                                          color: secondaryTextColor,
+                                        ),
+                                      ),
+                                      errorWidget: (_, __, ___) => Image.asset(
+                                        width: double.infinity,
+                                        height: 240,
+                                        AssetPath.getImages('no-image.jpg'),
+                                        fit: BoxFit.cover,
+                                      ),
                                       fit: BoxFit.cover,
                                     ),
-                                    fit: BoxFit.cover,
                                   ),
-                                ),
-                                const SizedBox(
-                                  height: 12,
-                                ),
-                                Text(
-                                  activity.title ?? '',
-                                  maxLines: 3,
-                                  textAlign: TextAlign.center,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: textTheme.titleSmall!.copyWith(
-                                    color: primaryTextColor,
+                                  const SizedBox(
+                                    height: 12,
                                   ),
-                                ),
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    SvgPicture.asset(
-                                      AssetPath.getIcons('category.svg'),
-                                      width: 16,
-                                      colorFilter: const ColorFilter.mode(
-                                        highlightTextColor,
-                                        BlendMode.srcIn,
-                                      ),
+                                  Text(
+                                    activity.title ?? '',
+                                    maxLines: 3,
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: textTheme.titleSmall!.copyWith(
+                                      color: primaryTextColor,
                                     ),
-                                    const SizedBox(
-                                      width: 4,
-                                    ),
-                                    Text(
-                                      activity.isEvent ?? false
-                                          ? 'Kegiatan'
-                                          : 'Mading',
-                                      style: textTheme.bodySmall!.copyWith(
-                                        color: highlightTextColor,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SvgPicture.asset(
-                                      AssetPath.getIcons('calendar.svg'),
-                                      width: 16,
-                                      colorFilter: const ColorFilter.mode(
-                                        highlightTextColor,
-                                        BlendMode.srcIn,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 4,
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        formatDateTime(
-                                          dateTimeString:
-                                              activity.eventDate ?? '',
+                                  ),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      SvgPicture.asset(
+                                        AssetPath.getIcons('category.svg'),
+                                        width: 16,
+                                        colorFilter: const ColorFilter.mode(
+                                          highlightTextColor,
+                                          BlendMode.srcIn,
                                         ),
+                                      ),
+                                      const SizedBox(
+                                        width: 4,
+                                      ),
+                                      Text(
+                                        activity.isEvent ?? false
+                                            ? 'Kegiatan'
+                                            : 'Mading',
                                         style: textTheme.bodySmall!.copyWith(
                                           color: highlightTextColor,
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                    ],
+                                  ),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SvgPicture.asset(
+                                        AssetPath.getIcons('calendar.svg'),
+                                        width: 16,
+                                        colorFilter: const ColorFilter.mode(
+                                          highlightTextColor,
+                                          BlendMode.srcIn,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 4,
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          formatDateTime(
+                                            dateTimeString:
+                                                activity.eventDate ?? '',
+                                          ),
+                                          style: textTheme.bodySmall!.copyWith(
+                                            color: highlightTextColor,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                );
-              },
-            ),
-          ],
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
