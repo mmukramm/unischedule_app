@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCGrKIxWUxQvNpEEBKx3RmfzVKr_2VoD-0',
-    appId: '1:970520111755:android:59e2a4807054ad4a05028e',
+    appId: '1:970520111755:android:632a9fe49a0a2b4905028e',
     messagingSenderId: '970520111755',
     projectId: 'unischedule-app',
     storageBucket: 'unischedule-app.appspot.com',
@@ -59,10 +59,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAXq8_KQa9Bbun8GloTHw0w17Y6aeNQnyQ',
-    appId: '1:970520111755:ios:5c2f1b7b4a74fe3d05028e',
+    appId: '1:970520111755:ios:7a686520a880e53805028e',
     messagingSenderId: '970520111755',
     projectId: 'unischedule-app',
     storageBucket: 'unischedule-app.appspot.com',
-    iosBundleId: 'com.example.unischeduleApp',
+    iosBundleId: 'com.codetalkz.unischeduleApp',
   );
+
 }
