@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:unischedule_app/core/utils/const.dart';
 
 import 'package:unischedule_app/core/utils/keys.dart';
 import 'package:unischedule_app/core/theme/colors.dart';
@@ -15,6 +16,7 @@ import 'package:unischedule_app/features/data/models/post.dart';
 import 'package:unischedule_app/core/enums/snack_bar_type.dart';
 import 'package:unischedule_app/core/extensions/context_extension.dart';
 import 'package:unischedule_app/features/presentation/widget/data_empty.dart';
+import 'package:unischedule_app/features/presentation/widget/internal_server_error.dart';
 import 'package:unischedule_app/features/presentation/widget/loading.dart';
 import 'package:unischedule_app/features/presentation/widget/custom_app_bar.dart';
 import 'package:unischedule_app/features/presentation/widget/ink_well_container.dart';
@@ -106,6 +108,18 @@ class _ActivityPageState extends State<ActivityPage> {
                       BlocConsumer<ActivityCubit, ActivityState>(
                         listener: (context, state) {
                           if (state.isFailure) {
+                            context.showNoInternetConnectionDialog(
+                              title: 'Tidak Terhubung ke Jaringan ',
+                              withCloseButton: false,
+                              message:
+                                  'Pastikan perangkat Anda terhubung ke jaringan, lalu silahkan soba lagi.',
+                              onTapPrimaryButton: () {
+                                navigatorKey.currentState!.pop();
+                                activityCubit.getAllActivities();
+                              },
+                              primaryButtonText: 'Refresh',
+                            );
+
                             context.showCustomSnackbar(
                               message: state.message!,
                               type: SnackBarType.error,
@@ -121,6 +135,20 @@ class _ActivityPageState extends State<ActivityPage> {
                                   color: secondaryTextColor,
                                 ),
                               ],
+                            );
+                          }
+
+                          if (state.isFailure) {
+                            if (state.message == kNoInternetConnection) {
+                              return const SizedBox();
+                            }
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 12),
+                              child: InternalServerError(
+                                height: 280,
+                                message:
+                                    'Terdapat masalah saat menghubungkan ke server. Silahkan coba lagi.',
+                              ),
                             );
                           }
 
